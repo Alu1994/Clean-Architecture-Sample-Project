@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Endpoints\Categories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TrainingTDDWithCleanArch.Application\TrainingTDDWithCleanArch.Application.csproj" />
+    <ProjectReference Include="..\TrainingTDDWithCleanArch.Domain\TrainingTDDWithCleanArch.Domain.csproj" />
+    <ProjectReference Include="..\TrainingTDDWithCleanArch.Repository\TrainingTDDWithCleanArch.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
