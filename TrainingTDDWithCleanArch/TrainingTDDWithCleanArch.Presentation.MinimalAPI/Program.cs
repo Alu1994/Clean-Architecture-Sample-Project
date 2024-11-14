@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // =========== Add Endpoints ===========
-app.MapProducts();
+app.MapProducts().MapCategories();
 // =========== Add Endpoints ===========
 
 app.Run();

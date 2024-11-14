@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Endpoints\Categories\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TrainingTDDWithCleanArch.Application\TrainingTDDWithCleanArch.Application.csproj" />
     <ProjectReference Include="..\TrainingTDDWithCleanArch.Domain\TrainingTDDWithCleanArch.Domain.csproj" />
     <ProjectReference Include="..\TrainingTDDWithCleanArch.Repository\TrainingTDDWithCleanArch.Repository.csproj" />
