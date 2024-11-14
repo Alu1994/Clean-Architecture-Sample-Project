@@ -15,8 +15,4 @@
     <ProjectReference Include="..\TrainingTDDWithCleanArch.Domain\TrainingTDDWithCleanArch.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Outputs\" />
-  </ItemGroup>
-
 </Project>

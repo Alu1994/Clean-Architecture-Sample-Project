@@ -1,11 +1,14 @@
-﻿using System.Collections.Frozen;
+﻿using Microsoft.Extensions.Logging;
+using System.Collections.Frozen;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
 using TrainingTDDWithCleanArch.Domain.Interfaces;
 
 namespace TrainingTDDWithCleanArch.Repository.Entities;
 
-public sealed class ProductRepository : IProductRepository
+public sealed class ProductRepository(ILogger<ProductRepository> logger) : IProductRepository
 {
+    private readonly ILogger<ProductRepository> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
     //private List<Product> _products = [ Product.Create("Product", "Product", 0, 0, Domain.AggregateRoots.Products.Entities.Category.Create(Guid.NewGuid(), "Category").SuccessToSeq().First()).SuccessToSeq().First() ];
     private List<Product> _products = [];
 
@@ -25,6 +28,7 @@ public sealed class ProductRepository : IProductRepository
     {
         try
         {
+            _logger.LogInformation("Logging {MethodName} with {Id}", nameof(GetById), id);
             return await Task.FromResult(_products.First(x => x.Id == id));
         }
         catch (Exception ex)

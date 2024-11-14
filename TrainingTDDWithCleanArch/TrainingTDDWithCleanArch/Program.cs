@@ -4,6 +4,10 @@ using TrainingTDDWithCleanArch.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// =========== Add service defaults & Aspire client integrations. ===========
+builder.AddServiceDefaults();
+// =========== Add service defaults & Aspire client integrations. ===========
+
 // Add services to the container.
 
 builder.Services.AddControllers();

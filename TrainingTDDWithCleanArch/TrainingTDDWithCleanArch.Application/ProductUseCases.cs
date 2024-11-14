@@ -22,14 +22,13 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
 
     public async Task<Validation<Error, FrozenSet<Product>>> GetProducts(CancellationToken cancellation)
     {
-        var testNLogHa = "Testing NLog";
-        _logger.LogInformation("Logging Info for test on Aspire! {testNLog}", testNLogHa);
-
+        _logger.LogInformation("Logging {MethodName}", nameof(GetProducts));
         return await _productRepository.Get(cancellation);
     }
 
     public async Task<Validation<Error, Product>> GetProductById(Guid productId, CancellationToken cancellation)
     {
+        _logger.LogInformation("Logging {MethodName} with {Id}", nameof(GetProductById), productId);
         return await _productRepository.GetById(productId, cancellation);
     }
 

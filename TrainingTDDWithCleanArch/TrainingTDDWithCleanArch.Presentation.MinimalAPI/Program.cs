@@ -2,10 +2,13 @@ using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Domain;
 using TrainingTDDWithCleanArch.Repository;
 using TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
-using NLog;
 using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// =========== Add service defaults & Aspire client integrations. ===========
+builder.AddServiceDefaults();
+// =========== Add service defaults & Aspire client integrations. ===========
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
