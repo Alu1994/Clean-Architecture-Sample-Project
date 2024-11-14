@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E003A979-3FE9-47BA-BA66-31C824F5F2F2}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		NLog.config = NLog.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainingTDDWithCleanArch.Aspire.AppHost", "TrainingTDDWithCleanArch.Aspire.AppHost\TrainingTDDWithCleanArch.Aspire.AppHost.csproj", "{6BB2CDD5-5D4B-4D71-B600-36757E955448}"
