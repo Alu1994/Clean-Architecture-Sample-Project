@@ -5,7 +5,7 @@ using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Application.Inputs;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
 
-namespace TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
+namespace TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static class CategoriesEndpoints
 {
@@ -17,12 +17,12 @@ public static class CategoriesEndpoints
 
     public static WebApplication MapCategories(this WebApplication app)
     {
-        app.MapGet($"/{Controller}", async (ICategoryUseCases categoryUseCases, CancellationToken cancellation) => 
-        { 
-            return await GetAllCategories(categoryUseCases, cancellation); 
+        app.MapGet($"/{Controller}", async (ICategoryUseCases categoryUseCases, CancellationToken cancellation) =>
+        {
+            return await GetAllCategories(categoryUseCases, cancellation);
         })
-        .Produces(Success, typeof(FrozenSet<Category>), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<FrozenSet<Category>>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName("Get All Categories")
         .WithDescription("Get All Categories")
         .WithSummary("Get All Categories")
@@ -34,8 +34,8 @@ public static class CategoriesEndpoints
         {
             return await GetById(categoryUseCases, categoryId, cancellation);
         })
-        .Produces(Success, typeof(Category), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<Category>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName($"Get {Controller} By Id")
         .WithDescription($"Get {Controller} By Id")
         .WithSummary($"Get {Controller} By Id")
@@ -47,8 +47,8 @@ public static class CategoriesEndpoints
         {
             return await GetByName(categoryUseCases, categoryName, cancellation);
         })
-        .Produces(Success, typeof(Category), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<Category>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName($"Get {Controller} By Name")
         .WithDescription($"Get {Controller} By Name")
         .WithSummary($"Get {Controller} By Name")
@@ -61,8 +61,8 @@ public static class CategoriesEndpoints
             return await CreateCategory(categoryUseCases, category, cancellation);
         })
         .Accepts(typeof(CreateCategoryInput), ContentType)
-        .Produces(Success, typeof(Category), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<Category>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName($"Create {Controller}")
         .WithDescription($"Create {Controller}")
         .WithSummary($"Create {Controller}")

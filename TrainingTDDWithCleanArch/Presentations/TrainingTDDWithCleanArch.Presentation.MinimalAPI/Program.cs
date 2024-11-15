@@ -3,23 +3,29 @@ using TrainingTDDWithCleanArch.Domain;
 using TrainingTDDWithCleanArch.Repository;
 using TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
 using NLog.Web;
+using TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Categories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =========== Add service defaults & Aspire client integrations. ===========
-builder.AddServiceDefaults();
-// =========== Add service defaults & Aspire client integrations. ===========
+builder.Services.AddProblemDetails();
 
-// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // =========== Add NLog ===========
 builder.Logging.ClearProviders();
-builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseNLog();
 // =========== Add NLog ===========
+
+// =========== Add service defaults & Aspire client integrations. ===========
+// (This must be after 'builder.Logging.ClearProviders()' to re-add the LoggingProviders
+builder.AddServiceDefaults();
+// =========== Add service defaults & Aspire client integrations. ===========
 
 // =========== Add Layer Dependency Injection ===========
 builder.Services.AddDomainLayer();
@@ -34,12 +40,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
 
-// =========== Add Endpoints ===========
+// =========== Map Endpoints ===========
 app.MapProducts().MapCategories();
-// =========== Add Endpoints ===========
+// =========== Map Endpoints ===========
 
 app.Run();
