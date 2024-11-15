@@ -1,6 +1,7 @@
 ﻿using System.Collections.Frozen;
 using TrainingTDDWithCleanArch.Application.Inputs;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
+using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
 using TrainingTDDWithCleanArch.Domain.Interfaces;
 
 namespace TrainingTDDWithCleanArch.Application.UseCases;
@@ -42,21 +43,21 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(CreateProduct), productInput);
 
         var categoryResult = await _categoryUseCases.GetOrCreateCategory(productInput, cancellation);
-        if (categoryResult.IsFail) return (Seq<Error>)categoryResult;
+        return await categoryResult.MatchAsync(async category => 
+            await CreateProduct(productInput, category, cancellation), 
+            error => error);
 
-        var category = categoryResult.SuccessToSeq().First();
-        var productResult = productInput.ToProduct();
-        if (productResult.IsFail)
-            return productResult;
+        Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, Category category, CancellationToken cancellation)
+        {
+            return productInput.ToProduct().MatchAsync<Validation<Error, Product>>(async product =>
+            {
+                product.SetCategory(category);
+                var repoResult = await _productRepository.Insert(product, cancellation);
 
-        var product = productResult.SuccessToArray().First();
-        product.SetCategory(category);
-        var repoResult = await _productRepository.Insert(product, cancellation);
-
-        if (repoResult != ValidationResult.Success)
-            return Error.New(repoResult.ErrorMessage!);
-
-        product.SetCategory(category);
-        return product;
+                if (repoResult != ValidationResult.Success)
+                    return Error.New(repoResult.ErrorMessage!);
+                return product.WithCategory(category);
+            }, error => error);
+        }
     }
 }

@@ -93,4 +93,10 @@ public sealed class Product
     {
         Category = category;
     }
+
+    public Product WithCategory(Category category)
+    {
+        SetCategory(category);
+        return this;
+    }
 }

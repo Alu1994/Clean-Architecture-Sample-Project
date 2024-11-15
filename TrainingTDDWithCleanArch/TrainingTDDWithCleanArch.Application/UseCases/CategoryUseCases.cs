@@ -41,24 +41,22 @@ public sealed class CategoryUseCases(ILogger<CategoryUseCases> logger, ICategory
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(CreateCategory), categoryInput);
 
-        var categoryResult = categoryInput.ToCategory();
-        if (categoryResult.IsFail)
-            return categoryResult;
-
-        var category = categoryResult.SuccessToArray().First();
-        var repoResult = await _categoryRepository.Insert(category, cancellation);
-
-        if (repoResult == ValidationResult.Success)
-            return category;
-        return Error.New(repoResult.ErrorMessage!);
+        return await categoryInput.ToCategory().MatchAsync<Validation<Error, Category>>(async category => {
+            var repoResult = await _categoryRepository.Insert(category, cancellation);
+            if (repoResult == ValidationResult.Success)
+                return category;
+            return Error.New(repoResult.ErrorMessage!);
+        }, error => error);
     }
 
     public async Task<Validation<Error, Category>> GetOrCreateCategory(CreateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(GetOrCreateCategory), productInput);
 
-        if (productInput.Category.Id is not null)
-            return await GetCategoryById(productInput.Category.Id.Value, cancellation);
-        return await CreateCategory(productInput.Category, cancellation);
+        if (productInput?.Category is null) return Error.New($"Category {nameof(Category.Id)} or {nameof(Category.Name)} must be informed!");
+
+        if (productInput.Category.Id is null)
+            return await CreateCategory(productInput.Category, cancellation);
+        return await GetCategoryById(productInput.Category.Id.Value, cancellation);
     }
 }
