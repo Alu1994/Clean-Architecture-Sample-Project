@@ -1,8 +1,11 @@
 using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Domain;
 using TrainingTDDWithCleanArch.Repository;
+using TrainingTDDWithCleanArch.Presentation.API;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.BuildPresentation();
 
 // =========== Add service defaults & Aspire client integrations. ===========
 builder.AddServiceDefaults();
@@ -16,6 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // =========== Add Layer Dependency Injection ===========
+builder.Services.AddPresentation();
 builder.Services.AddDomainLayer();
 builder.Services.AddApplicationLayer();
 builder.Services.AddRepositoryLayer();
@@ -29,6 +33,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UsePresentation();
 
 app.UseHttpsRedirection();
 

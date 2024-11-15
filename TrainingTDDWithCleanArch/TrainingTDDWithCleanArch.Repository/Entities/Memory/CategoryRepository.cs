@@ -1,8 +1,7 @@
-﻿using System.Collections.Frozen;
-using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
+﻿using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
 using TrainingTDDWithCleanArch.Domain.Interfaces;
 
-namespace TrainingTDDWithCleanArch.Repository.Entities;
+namespace TrainingTDDWithCleanArch.Repository.Entities.Memory;
 
 public sealed class CategoryRepository : ICategoryRepository
 {

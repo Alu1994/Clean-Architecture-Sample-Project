@@ -12,15 +12,16 @@ public sealed class CreateCategoryInput
 
     }
 
-    public void SetCategoryId(Guid id)
+    public void SetCategory(Category category)
     {
-        Id = id;
+        Id = category.Id;
+        CategoryName = category.Name;
     }
 
     public Validation<Error, Category> ToCategory()
     {
         if(Id is null)
             return Category.CreateNew(CategoryName);
-        return Category.Create(Id, "CategoryName");
+        return Category.Create(Id, CategoryName);
     }
 }

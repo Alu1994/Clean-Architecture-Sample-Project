@@ -1,11 +1,13 @@
+using NLog.Web;
 using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Domain;
+using TrainingTDDWithCleanArch.Presentation.MinimalAPI;
+using TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints;
 using TrainingTDDWithCleanArch.Repository;
-using TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
-using NLog.Web;
-using TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Categories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.BuildPresentation();
 
 builder.Services.AddProblemDetails();
 
@@ -28,12 +30,15 @@ builder.AddServiceDefaults();
 // =========== Add service defaults & Aspire client integrations. ===========
 
 // =========== Add Layer Dependency Injection ===========
+builder.Services.AddPresentation();
 builder.Services.AddDomainLayer();
 builder.Services.AddApplicationLayer();
 builder.Services.AddRepositoryLayer();
 // =========== Add Layer Dependency Injection ===========
 
 var app = builder.Build();
+
+app.UsePresentation();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -46,7 +51,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // =========== Map Endpoints ===========
-app.MapProducts().MapCategories();
+app.MapDefaultEndpoints();
+app.MapEndpoints();
 // =========== Map Endpoints ===========
 
 app.Run();

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Frozen;
 using System.Net;
-using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Application.Inputs;
+using TrainingTDDWithCleanArch.Application.UseCases;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
 
 namespace TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Categories;

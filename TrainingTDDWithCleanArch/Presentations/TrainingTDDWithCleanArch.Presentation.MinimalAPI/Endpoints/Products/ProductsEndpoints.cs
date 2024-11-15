@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Frozen;
 using System.Net;
-using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Application.Inputs;
+using TrainingTDDWithCleanArch.Application.UseCases;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
 
 namespace TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
@@ -18,7 +19,7 @@ public static class ProductsEndpoints
     public static WebApplication MapProducts(this WebApplication app)
     {
         app.MapGet($"/{Controller}", async (IProductUseCases productUseCases, CancellationToken cancellation) => 
-        { 
+        {
             return await GetAllProducts(productUseCases, cancellation); 
         })
         .Produces<FrozenSet<Product>>(Success, ContentType)

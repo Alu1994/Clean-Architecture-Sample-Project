@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 using TrainingTDDWithCleanArch.Application.Inputs;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
 using TrainingTDDWithCleanArch.Domain.Interfaces;
 
-namespace TrainingTDDWithCleanArch.Application;
+namespace TrainingTDDWithCleanArch.Application.UseCases;
 
 public interface IProductUseCases
 {
@@ -28,36 +27,36 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
 
     public async Task<Validation<Error, Product>> GetProductById(Guid productId, CancellationToken cancellation)
     {
-        _logger.LogInformation("Logging {MethodName} with {Id}", nameof(GetProductById), productId);
+        _logger.LogInformation("Logging {MethodName} with {ProductId}", nameof(GetProductById), productId);
         return await _productRepository.GetById(productId, cancellation);
     }
 
     public async Task<Validation<Error, Product>> GetProductByName(string productName, CancellationToken cancellation)
     {
+        _logger.LogInformation("Logging {MethodName} with {ProductName}", nameof(GetProductByName), productName);
         return await _productRepository.GetByName(productName, cancellation);
     }
 
     public async Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation)
     {
+        _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(CreateProduct), productInput);
+
         var categoryResult = await _categoryUseCases.GetOrCreateCategory(productInput, cancellation);
         if (categoryResult.IsFail) return (Seq<Error>)categoryResult;
 
-        // Set Category Id
         var category = categoryResult.SuccessToSeq().First();
-        productInput.SetCategory(category.Id);
-
         var productResult = productInput.ToProduct();
         if (productResult.IsFail)
             return productResult;
 
         var product = productResult.SuccessToArray().First();
+        product.SetCategory(category);
         var repoResult = await _productRepository.Insert(product, cancellation);
-        
-        if (repoResult == ValidationResult.Success)
-        {
-            product.SetCategory(category);
-            return product;
-        }
-        return Error.New(repoResult.ErrorMessage!);
+
+        if (repoResult != ValidationResult.Success)
+            return Error.New(repoResult.ErrorMessage!);
+
+        product.SetCategory(category);
+        return product;
     }
 }

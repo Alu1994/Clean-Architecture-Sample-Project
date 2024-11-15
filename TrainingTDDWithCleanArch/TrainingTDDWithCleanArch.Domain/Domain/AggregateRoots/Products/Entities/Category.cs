@@ -2,9 +2,9 @@
 
 public sealed class Category
 {
-    public Guid Id { get; private set; }
-    public string Name { get; private set; }
-    public DateTime CreationDate { get; private set; }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public DateTime CreationDate { get; set; }
 
     internal Category()
     {

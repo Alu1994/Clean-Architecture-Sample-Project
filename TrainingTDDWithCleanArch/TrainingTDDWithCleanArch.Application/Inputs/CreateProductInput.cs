@@ -1,4 +1,5 @@
 ﻿using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
+using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
 
 namespace TrainingTDDWithCleanArch.Application.Inputs;
 
@@ -15,10 +16,10 @@ public sealed class CreateProductInput
 
     }
 
-    public void SetCategory(Guid id)
+    public void SetCategory(Category category)
     {
         if(Category is null) Category = new CreateCategoryInput();
-        Category.SetCategoryId(id);
+        Category.SetCategory(category);
     }
 
     public Validation<Error, Product> ToProduct()
