@@ -1,5 +1,5 @@
-using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Application.Inputs;
+using TrainingTDDWithCleanArch.Application.UseCases;
 
 namespace TrainingTDDWithCleanArch.Presentation.API.Controllers
 {

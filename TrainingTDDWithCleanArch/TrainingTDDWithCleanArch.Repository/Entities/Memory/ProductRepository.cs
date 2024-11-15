@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Collections.Frozen;
-using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
+﻿using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
 using TrainingTDDWithCleanArch.Domain.Interfaces;
 
-namespace TrainingTDDWithCleanArch.Repository.Entities;
+namespace TrainingTDDWithCleanArch.Repository.Entities.Memory;
 
 public sealed class ProductRepository(ILogger<ProductRepository> logger) : IProductRepository
 {

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using System.Collections.Frozen;
 using System.Net;
-using TrainingTDDWithCleanArch.Application;
 using TrainingTDDWithCleanArch.Application.Inputs;
+using TrainingTDDWithCleanArch.Application.UseCases;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
 
 namespace TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
@@ -18,11 +19,11 @@ public static class ProductsEndpoints
     public static WebApplication MapProducts(this WebApplication app)
     {
         app.MapGet($"/{Controller}", async (IProductUseCases productUseCases, CancellationToken cancellation) => 
-        { 
+        {
             return await GetAllProducts(productUseCases, cancellation); 
         })
-        .Produces(Success, typeof(FrozenSet<Product>), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<FrozenSet<Product>>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName("Get All Products")
         .WithDescription("Get All Products")
         .WithSummary("Get All Products")
@@ -34,8 +35,8 @@ public static class ProductsEndpoints
         {
             return await GetById(productUseCases, productId, cancellation);
         })
-        .Produces(Success, typeof(Product), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<Product>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName("Get Product By Id")
         .WithDescription("Get Product By Id")
         .WithSummary("Get Product By Id")
@@ -47,8 +48,8 @@ public static class ProductsEndpoints
         {
             return await GetByName(productUseCases, productName, cancellation);
         })
-        .Produces(Success, typeof(Product), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<Product>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName("Get Product By Name")
         .WithDescription("Get Product By Name")
         .WithSummary("Get Product By Name")
@@ -61,8 +62,8 @@ public static class ProductsEndpoints
             return await CreateProduct(productUseCases, product, cancellation);
         })
         .Accepts(typeof(CreateProductInput), ContentType)
-        .Produces(Success, typeof(Product), ContentType)
-        .Produces(BadRequest, typeof(ProblemDetails), ContentType)
+        .Produces<Product>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithName("Create Product")
         .WithDescription("Create Product")
         .WithSummary("Create Product")
