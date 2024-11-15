@@ -89,6 +89,27 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
 
     public async Task<ValidationResult> Update(Category category, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        try
+        {
+            string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
+            if (cachedData is null)
+                return new ValidationResult($"Error while Updating Category Id: '{category.Id}', there are no categories on Database.");
+
+            var previousCache = JsonConvert.DeserializeObject<List<Category>>(cachedData)!;
+            if (previousCache is not { Count: >= 0 })
+                return new ValidationResult($"Error while Updating Category, Id: '{category.Id}' was not found on Database.");
+
+            previousCache.RemoveAll(cat => cat.Id == category.Id);
+            previousCache.Add(category);
+            await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(previousCache), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
+            });
+            return ValidationResult.Success!;
+        }
+        catch (Exception ex)
+        {
+            return new ValidationResult($"Error while Updating Category '{category.Name}': {ex.Message}");
+        }
     }
 }

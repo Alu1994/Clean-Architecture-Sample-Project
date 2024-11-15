@@ -52,6 +52,15 @@ public static class CategoriesEndpoints
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Create {Controller}", TagName);
 
+        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation) =>
+        {
+            return await UpdateCategory(logger, categoryUseCases, category, cancellation);
+        })
+        .Accepts<CreateCategoryInput>(ContentType)
+        .Produces<Category>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
+        .WithConfigSummaryInfo($"Update {Controller}", TagName);
+
         return app;
     }
 
@@ -117,6 +126,25 @@ public static class CategoriesEndpoints
         const string errorTitle = "Error while creating new category.";
 
         var result = await categoryUseCases.CreateCategory(category, cancellation);
+        return result.Match(success => Results.Ok(success),
+            error =>
+            {
+                var errorMessage = logger.LogSeqError(error);
+                return Results.Problem(
+                    type: HttpStatusCode.BadRequest.ToString(),
+                    title: errorTitle,
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+            }
+        );
+    }
+
+    public static async Task<IResult> UpdateCategory(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation)
+    {
+        const string errorTitle = "Error while updating category.";
+
+        var result = await categoryUseCases.UpdateCategory(category, cancellation);
         return result.Match(success => Results.Ok(success),
             error =>
             {

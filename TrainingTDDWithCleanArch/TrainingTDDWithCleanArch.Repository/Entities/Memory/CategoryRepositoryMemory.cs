@@ -3,7 +3,7 @@ using TrainingTDDWithCleanArch.Domain.Interfaces;
 
 namespace TrainingTDDWithCleanArch.Repository.Entities.Memory;
 
-public sealed class CategoryRepository : ICategoryRepository
+public sealed class CategoryRepositoryMemory : ICategoryRepository
 {
     private List<Category> _categories = [];
 
@@ -58,6 +58,15 @@ public sealed class CategoryRepository : ICategoryRepository
 
     public async Task<ValidationResult> Update(Category category, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var memoryCategory = await GetById(category.Id, cancellation);
+            memoryCategory.Match(cat => cat.Name = category.Name, _ => { });
+            return await Task.FromResult(ValidationResult.Success!);
+        }
+        catch (Exception ex)
+        {
+            return new ValidationResult($"Error while Updating Category '{category.Name}': {ex.Message}");
+        }
     }
 }

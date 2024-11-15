@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
     <ProjectReference Include="..\TrainingTDDWithCleanArch.Domain\TrainingTDDWithCleanArch.Domain.csproj" />
   </ItemGroup>
 

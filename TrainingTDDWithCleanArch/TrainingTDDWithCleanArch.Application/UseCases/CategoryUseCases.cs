@@ -11,6 +11,7 @@ public interface ICategoryUseCases
     Task<Validation<Error, Category>> GetCategoryById(Guid categoryId, CancellationToken cancellation);
     Task<Validation<Error, Category>> GetCategoryByName(string categoryName, CancellationToken cancellation);
     Task<Validation<Error, Category>> CreateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation);
+    Task<Validation<Error, Category>> UpdateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation);
     Task<Validation<Error, Category>> GetOrCreateCategory(CreateProductInput productInput, CancellationToken cancellation);
 }
 
@@ -43,6 +44,18 @@ public sealed class CategoryUseCases(ILogger<CategoryUseCases> logger, ICategory
 
         return await categoryInput.ToCategory().MatchAsync<Validation<Error, Category>>(async category => {
             var repoResult = await _categoryRepository.Insert(category, cancellation);
+            if (repoResult == ValidationResult.Success)
+                return category;
+            return Error.New(repoResult.ErrorMessage!);
+        }, error => error);
+    }
+
+    public async Task<Validation<Error, Category>> UpdateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation)
+    {
+        _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(UpdateCategory), categoryInput);
+
+        return await categoryInput.ToCategory().MatchAsync<Validation<Error, Category>>(async category => {
+            var repoResult = await _categoryRepository.Update(category, cancellation);
             if (repoResult == ValidationResult.Success)
                 return category;
             return Error.New(repoResult.ErrorMessage!);

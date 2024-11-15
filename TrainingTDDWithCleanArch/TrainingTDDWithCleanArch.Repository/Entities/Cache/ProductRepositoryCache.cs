@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using Microsoft.Extensions.Caching.Distributed;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
 using TrainingTDDWithCleanArch.Domain.Interfaces;
 
 namespace TrainingTDDWithCleanArch.Repository.Entities.Cache;
 
-public sealed class ProductRepositoryCache(IDistributedCache cache) : IProductRepository
+public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logger, ICategoryRepository categoryRepository, IDistributedCache cache) : IProductRepository
 {
+    private readonly ILogger<ProductRepositoryCache> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly ICategoryRepository _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
     private readonly IDistributedCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
     private const string cacheKey = "Products";
@@ -17,7 +20,21 @@ public sealed class ProductRepositoryCache(IDistributedCache cache) : IProductRe
             string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
             if (cachedData is null)
                 return Enumerable.Empty<Product>().ToFrozenSet();
-            return JsonConvert.DeserializeObject<List<Product>>(cachedData)!.ToFrozenSet();
+            
+            var products = JsonConvert.DeserializeObject<List<Product>>(cachedData)!.ToFrozenSet();
+            foreach (var product in products)
+            {
+                var categoryResult = await _categoryRepository.GetById(product.Category.Id, cancellation);
+                _ = categoryResult.Match<Validation<Error, Product>>(category =>
+                {
+                    return product.WithCategory(category);
+                }, erCat =>
+                {
+                    _logger.LogSeqError(erCat);
+                    return erCat;
+                });
+            }
+            return products;
         }
         catch (Exception ex)
         {
@@ -29,12 +46,15 @@ public sealed class ProductRepositoryCache(IDistributedCache cache) : IProductRe
     {
         try
         {
-            string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
-            if (cachedData is null)
-                return default;
-
-            var products = JsonConvert.DeserializeObject<List<Product>>(cachedData);
-            return products.First(x => x.Id == id);
+            var products = await Get(cancellation);
+            return products.Match<Validation<Error, Product>>(products =>
+            {
+                return products.First(x => x.Id == id);
+            }, erCat =>
+            {
+                _logger.LogSeqError(erCat);
+                return erCat;
+            });
         }
         catch (Exception ex)
         {
@@ -46,12 +66,15 @@ public sealed class ProductRepositoryCache(IDistributedCache cache) : IProductRe
     {
         try
         {
-            string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
-            if (cachedData is null)
-                return default;
-
-            var products = JsonConvert.DeserializeObject<List<Product>>(cachedData);
-            return products.First(x => x.Name == productName);
+            var products = await Get(cancellation);
+            return products.Match<Validation<Error, Product>>(products =>
+            {
+                return products.First(x => x.Name == productName);
+            }, erCat =>
+            {
+                _logger.LogSeqError(erCat);
+                return erCat;
+            });
         }
         catch (Exception ex)
         {
