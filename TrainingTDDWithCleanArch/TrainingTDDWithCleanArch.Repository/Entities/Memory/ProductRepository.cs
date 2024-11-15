@@ -18,7 +18,7 @@ public sealed class ProductRepository(ILogger<ProductRepository> logger) : IProd
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Products: {ex.Message}");
+            return Error.New($"Error while retrieving all Products: {ex.Message}", ex);
         }
     }
 
@@ -31,7 +31,7 @@ public sealed class ProductRepository(ILogger<ProductRepository> logger) : IProd
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}");
+            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
     }
 
@@ -43,7 +43,7 @@ public sealed class ProductRepository(ILogger<ProductRepository> logger) : IProd
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}");
+            return Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
         }
     }
 

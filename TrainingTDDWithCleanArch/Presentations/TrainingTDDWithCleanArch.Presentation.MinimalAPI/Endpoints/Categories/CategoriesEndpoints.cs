@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Frozen;
 using System.Net;
 using TrainingTDDWithCleanArch.Application.Inputs;
@@ -62,8 +63,7 @@ public static class CategoriesEndpoints
         return result.Match(success => Results.Ok(success),
             error =>
             {
-                var errorMessage = error.ToSeq().Head.Message;
-                logger.LogError(errorMessage);
+                var errorMessage = logger.LogSeqError(error);
                 return Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
                     title: errorTitle,
@@ -82,8 +82,7 @@ public static class CategoriesEndpoints
         return result.Match(success => Results.Ok(success),
             error =>
             {
-                var errorMessage = error.ToSeq().Head.Message;
-                logger.LogError(errorMessage);
+                var errorMessage = logger.LogSeqError(error);
                 return Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
                     title: errorTitle,
@@ -102,8 +101,7 @@ public static class CategoriesEndpoints
         return result.Match(success => Results.Ok(success),
             error =>
             {
-                var errorMessage = error.ToSeq().Head.Message;
-                logger.LogError(errorMessage);
+                var errorMessage = logger.LogSeqError(error);
                 return Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
                     title: errorTitle,
@@ -122,8 +120,7 @@ public static class CategoriesEndpoints
         return result.Match(success => Results.Ok(success),
             error =>
             {
-                var errorMessage = error.ToSeq().Head.Message;
-                logger.LogError(errorMessage);
+                var errorMessage = logger.LogSeqError(error);
                 return Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
                     title: errorTitle,

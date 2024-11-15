@@ -21,7 +21,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Products: {ex.Message}");
+            return Error.New($"Error while retrieving all Categories: {ex.Message}", ex);
         }
     }
 
@@ -38,7 +38,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with id '{id}': {ex.Message}");
+            return Error.New($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
         }
     }
 
@@ -55,7 +55,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}");
+            return Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex);
         }
     }
 
