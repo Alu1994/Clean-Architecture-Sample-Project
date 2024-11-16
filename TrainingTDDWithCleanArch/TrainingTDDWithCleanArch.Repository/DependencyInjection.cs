@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TrainingTDDWithCleanArch.Domain.Interfaces;
+using TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 using TrainingTDDWithCleanArch.Repository.Entities.Cache;
 using TrainingTDDWithCleanArch.Repository.Entities.Memory;
 

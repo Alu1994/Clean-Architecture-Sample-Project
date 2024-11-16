@@ -1,7 +1,7 @@
 ﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using Microsoft.Extensions.Caching.Distributed;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
-using TrainingTDDWithCleanArch.Domain.Interfaces;
+using TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 
 namespace TrainingTDDWithCleanArch.Repository.Entities.Cache;
 

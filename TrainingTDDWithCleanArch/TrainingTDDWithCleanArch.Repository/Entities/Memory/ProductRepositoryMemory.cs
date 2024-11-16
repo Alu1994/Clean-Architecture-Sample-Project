@@ -1,6 +1,6 @@
 ﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
-using TrainingTDDWithCleanArch.Domain.Interfaces;
+using TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 
 namespace TrainingTDDWithCleanArch.Repository.Entities.Memory;
 

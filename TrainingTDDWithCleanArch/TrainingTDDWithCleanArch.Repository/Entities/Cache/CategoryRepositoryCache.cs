@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
-using TrainingTDDWithCleanArch.Domain.Interfaces;
+using TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 
 namespace TrainingTDDWithCleanArch.Repository.Entities.Cache;
 
