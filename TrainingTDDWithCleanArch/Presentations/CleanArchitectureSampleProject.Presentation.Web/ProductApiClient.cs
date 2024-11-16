@@ -1,4 +1,4 @@
-using TrainingTDDWithCleanArch.Application.Inputs;
+using CleanArchitectureSampleProject.Application.Inputs;
 
 namespace CleanArchitectureSampleProject.Presentation.Web;
 
