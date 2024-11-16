@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Aspire\TrainingTDDWithCleanArch.Aspire.ServiceDefaults\TrainingTDDWithCleanArch.Aspire.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\..\TrainingTDDWithCleanArch.Application\TrainingTDDWithCleanArch.Application.csproj" />
+    <ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

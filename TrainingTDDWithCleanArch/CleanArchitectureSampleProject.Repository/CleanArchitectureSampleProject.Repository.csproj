@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
+    <ProjectReference Include="..\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
