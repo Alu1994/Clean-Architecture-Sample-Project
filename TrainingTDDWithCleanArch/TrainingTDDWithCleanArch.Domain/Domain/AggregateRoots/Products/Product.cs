@@ -12,7 +12,7 @@ public sealed class Product
     public int Quantity { get; set; }
     public Category Category { get; set; }
 
-    internal Product()
+    public Product()
     {
         Id = Guid.NewGuid();
         CreationDate = DateTime.UtcNow;

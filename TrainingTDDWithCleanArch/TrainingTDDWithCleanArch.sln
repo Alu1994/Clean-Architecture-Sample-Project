@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.CrossCuttingConcerns", "CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj", "{520A5703-E9A5-47D6-B0B9-9E96E474616B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.Web", "Presentations\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj", "{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{520A5703-E9A5-47D6-B0B9-9E96E474616B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{520A5703-E9A5-47D6-B0B9-9E96E474616B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{520A5703-E9A5-47D6-B0B9-9E96E474616B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +75,7 @@ Global
 		{50385108-CE46-479D-A38F-0BA68A3D0390} = {86058926-AC8A-4E50-875F-CBD5C775377C}
 		{6BB2CDD5-5D4B-4D71-B600-36757E955448} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
 		{0C3CD584-8FA7-47BB-B120-BB7123360457} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
+		{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F} = {86058926-AC8A-4E50-875F-CBD5C775377C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B6EF806-3606-4DA6-9B36-307FFC99EE82}
