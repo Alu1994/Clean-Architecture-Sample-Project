@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
-using TrainingTDDWithCleanArch.Domain.Interfaces;
+using TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 
 namespace TrainingTDDWithCleanArch.Repository.Entities.Cache;
 
@@ -21,7 +21,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Products: {ex.Message}");
+            return Error.New($"Error while retrieving all Categories: {ex.Message}", ex);
         }
     }
 
@@ -38,7 +38,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with id '{id}': {ex.Message}");
+            return Error.New($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
         }
     }
 
@@ -55,7 +55,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}");
+            return Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex);
         }
     }
 
@@ -89,6 +89,27 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
 
     public async Task<ValidationResult> Update(Category category, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        try
+        {
+            string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
+            if (cachedData is null)
+                return new ValidationResult($"Error while Updating Category Id: '{category.Id}', there are no categories on Database.");
+
+            var previousCache = JsonConvert.DeserializeObject<List<Category>>(cachedData)!;
+            if (previousCache is not { Count: >= 0 })
+                return new ValidationResult($"Error while Updating Category, Id: '{category.Id}' was not found on Database.");
+
+            previousCache.RemoveAll(cat => cat.Id == category.Id);
+            previousCache.Add(category);
+            await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(previousCache), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
+            });
+            return ValidationResult.Success!;
+        }
+        catch (Exception ex)
+        {
+            return new ValidationResult($"Error while Updating Category '{category.Name}': {ex.Message}");
+        }
     }
 }

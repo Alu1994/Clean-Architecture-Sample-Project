@@ -1,7 +1,7 @@
 ﻿using System.Collections.Frozen;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
 
-namespace TrainingTDDWithCleanArch.Domain.Interfaces;
+namespace TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 
 public interface ICategoryRepository
 {

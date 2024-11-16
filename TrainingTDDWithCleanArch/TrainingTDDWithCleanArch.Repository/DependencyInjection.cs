@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TrainingTDDWithCleanArch.Domain.Interfaces;
+using TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 using TrainingTDDWithCleanArch.Repository.Entities.Cache;
 using TrainingTDDWithCleanArch.Repository.Entities.Memory;
 
@@ -9,13 +9,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddRepositoryLayer(this IServiceCollection services)
     {
-        services
-            .AddSingleton<ICategoryRepository, CategoryRepository>()
-            .AddSingleton<IProductRepository, ProductRepository>();
-
         //services
-        //    .AddSingleton<ICategoryRepository, CategoryRepositoryCache>()
-        //    .AddSingleton<IProductRepository, ProductRepositoryCache>();
+        //    .AddSingleton<ICategoryRepository, CategoryRepositoryMemory>()
+        //    .AddSingleton<IProductRepository, ProductRepositoryMemory>();
+
+        services
+            .AddSingleton<ICategoryRepository, CategoryRepositoryCache>()
+            .AddSingleton<IProductRepository, ProductRepositoryCache>();
 
         return services;
     }

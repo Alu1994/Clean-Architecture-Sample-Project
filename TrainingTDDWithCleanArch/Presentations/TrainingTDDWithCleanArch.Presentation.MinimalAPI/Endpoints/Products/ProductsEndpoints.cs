@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Frozen;
 using System.Net;
 using TrainingTDDWithCleanArch.Application.Inputs;
@@ -10,6 +10,7 @@ namespace TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
 
 public static class ProductsEndpoints
 {
+    public readonly struct Logging;
     private const string TagName = "Products";
     private const string Controller = "product";
     private const string ContentType = "application/json";
@@ -18,124 +19,141 @@ public static class ProductsEndpoints
 
     public static WebApplication MapProducts(this WebApplication app)
     {
-        app.MapGet($"/{Controller}", async (IProductUseCases productUseCases, CancellationToken cancellation) => 
+        app.MapGet($"/{Controller}", async (ILogger<Logging> logger, IProductUseCases productUseCases, CancellationToken cancellation) =>
         {
-            return await GetAllProducts(productUseCases, cancellation); 
+            return await GetAllProducts(logger, productUseCases, cancellation);
         })
         .Produces<FrozenSet<Product>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithName("Get All Products")
-        .WithDescription("Get All Products")
-        .WithSummary("Get All Products")
-        .WithDisplayName("Get All Products")
-        .WithTags(TagName)
-        .WithOpenApi();
+        .WithConfigSummaryInfo("Get All Products", TagName);
 
-        app.MapGet($"/{Controller}/{{productId:Guid}}", async (IProductUseCases productUseCases, Guid productId, CancellationToken cancellation) =>
+        app.MapGet($"/{Controller}/{{productId:Guid}}", async (ILogger<Logging> logger, IProductUseCases productUseCases, Guid productId, CancellationToken cancellation) =>
         {
-            return await GetById(productUseCases, productId, cancellation);
+            return await GetById(logger, productUseCases, productId, cancellation);
         })
         .Produces<Product>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithName("Get Product By Id")
-        .WithDescription("Get Product By Id")
-        .WithSummary("Get Product By Id")
-        .WithDisplayName("Get Product By Id")
-        .WithTags(TagName)
-        .WithOpenApi();
+        .WithConfigSummaryInfo("Get Product By Id", TagName);
 
-        app.MapGet($"/{Controller}/by-name/{{productName}}", async (IProductUseCases productUseCases, string productName, CancellationToken cancellation) =>
+        app.MapGet($"/{Controller}/by-name/{{productName}}", async (ILogger<Logging> logger, IProductUseCases productUseCases, string productName, CancellationToken cancellation) =>
         {
-            return await GetByName(productUseCases, productName, cancellation);
+            return await GetByName(logger, productUseCases, productName, cancellation);
         })
         .Produces<Product>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithName("Get Product By Name")
-        .WithDescription("Get Product By Name")
-        .WithSummary("Get Product By Name")
-        .WithDisplayName("Get Product By Name")
-        .WithTags(TagName)
-        .WithOpenApi();
+        .WithConfigSummaryInfo("Get Product By Name", TagName);
 
-        app.MapPost($"/{Controller}", async (IProductUseCases productUseCases, CreateProductInput product, CancellationToken cancellation) =>
+        app.MapPost($"/{Controller}", async (ILogger<Logging> logger, IProductUseCases productUseCases, CreateProductInput product, CancellationToken cancellation) =>
         {
-            return await CreateProduct(productUseCases, product, cancellation);
+            return await CreateProduct(logger, productUseCases, product, cancellation);
         })
-        .Accepts(typeof(CreateProductInput), ContentType)
+        .Accepts<CreateProductInput>(ContentType)
         .Produces<Product>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithName("Create Product")
-        .WithDescription("Create Product")
-        .WithSummary("Create Product")
-        .WithDisplayName("Create Product")
-        .WithTags(TagName)
-        .WithOpenApi();
+        .WithConfigSummaryInfo("Create Product", TagName);
+
+        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, IProductUseCases productUseCases, UpdateProductInput product, CancellationToken cancellation) =>
+        {
+            return await UpdateProduct(logger, productUseCases, product, cancellation);
+        })
+        .Accepts<CreateProductInput>(ContentType)
+        .Produces<Product>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
+        .WithConfigSummaryInfo("Update Product", TagName);
 
         return app;
     }
 
-    public static async Task<IResult> GetAllProducts(IProductUseCases productUseCases, CancellationToken cancellation)
+    public static async Task<IResult> GetAllProducts(ILogger<Logging> logger, IProductUseCases productUseCases, CancellationToken cancellation)
     {
-        var products = await productUseCases.GetProducts(cancellation);
-        return products.Match(x =>
-                    Results.Ok(x),
-                    x => Results.Problem(
-                        type: HttpStatusCode.BadRequest.ToString(),
-                        title: "Error",
-                        detail: x.ToSeq().Head.Message,
-                        statusCode: StatusCodes.Status400BadRequest
-                    )
+        var result = await productUseCases.GetProducts(cancellation);
+        return result.Match(success => Results.Ok(success),
+            error =>
+            {
+                var errorMessage = logger.LogSeqError(error);
+                return Results.Problem(
+                    type: HttpStatusCode.BadRequest.ToString(),
+                    title: "Error",
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest
                 );
+            }
+        );
     }
 
-    public static async Task<IResult> GetById(IProductUseCases productUseCases, Guid productId, CancellationToken cancellation)
+    public static async Task<IResult> GetById(ILogger<Logging> logger, IProductUseCases productUseCases, Guid productId, CancellationToken cancellation)
     {
-        const string errorMessage = "Error while getting product by id.";
+        const string errorTitle = "Error while getting product by id.";
 
         var result = await productUseCases.GetProductById(productId, cancellation);
-
-        return result.Match(x =>
-            Results.Ok(x),
-            x => Results.Problem(
-                type: HttpStatusCode.BadRequest.ToString(),
-                title: errorMessage,
-                detail: x.ToSeq().Head.Message,
-                statusCode: StatusCodes.Status400BadRequest
-            )
+        return result.Match(success => Results.Ok(success),
+            error =>
+            {
+                var errorMessage = logger.LogSeqError(error);
+                return Results.Problem(
+                    type: HttpStatusCode.BadRequest.ToString(),
+                    title: errorTitle,
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+            }
         );
     }
 
-    public static async Task<IResult> GetByName(IProductUseCases productUseCases, string productName, CancellationToken cancellation)
+    public static async Task<IResult> GetByName(ILogger<Logging> logger, IProductUseCases productUseCases, string productName, CancellationToken cancellation)
     {
-        const string errorMessage = "Error while getting product by name.";
+        const string errorTitle = "Error while getting product by name.";
 
         var result = await productUseCases.GetProductByName(productName, cancellation);
-
-        return result.Match(x =>
-            Results.Ok(x),
-            x => Results.Problem(
-                type: HttpStatusCode.BadRequest.ToString(),
-                title: errorMessage,
-                detail: x.ToSeq().Head.Message,
-                statusCode: StatusCodes.Status400BadRequest
-            )
+        return result.Match(success => Results.Ok(success),
+            error =>
+            {
+                var errorMessage = logger.LogSeqError(error);
+                return Results.Problem(
+                    type: HttpStatusCode.BadRequest.ToString(),
+                    title: errorTitle,
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+            }
         );
     }
 
-    public static async Task<IResult> CreateProduct(IProductUseCases productUseCases, CreateProductInput product, CancellationToken cancellation)
+    public static async Task<IResult> CreateProduct(ILogger<Logging> logger, IProductUseCases productUseCases, CreateProductInput product, CancellationToken cancellation)
     {
-        const string errorMessage = "Error while creating new product.";
+        const string errorTitle = "Error while creating new product.";
 
         var result = await productUseCases.CreateProduct(product, cancellation);
+        return result.Match(success => Results.Ok(success),
+            error =>
+            {
+                var errorMessage = logger.LogSeqError(error);
+                return Results.Problem(
+                    type: HttpStatusCode.BadRequest.ToString(),
+                    title: errorTitle,
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+            }
+        );
+    }
 
-        return result.Match(x =>
-            Results.Ok(x),
-            x => Results.Problem(
-                type: HttpStatusCode.BadRequest.ToString(),
-                title: errorMessage,
-                detail: x.ToSeq().Head.Message,
-                statusCode: StatusCodes.Status400BadRequest
-            )
+    public static async Task<IResult> UpdateProduct(ILogger<Logging> logger, IProductUseCases productUseCases, UpdateProductInput product, CancellationToken cancellation)
+    {
+        const string errorTitle = "Error while updating new product.";
+
+        var result = await productUseCases.UpdateProduct(product, cancellation);
+        return result.Match(success => Results.Ok(success),
+            error =>
+            {
+                var errorMessage = logger.LogSeqError(error);
+                return Results.Problem(
+                    type: HttpStatusCode.BadRequest.ToString(),
+                    title: errorTitle,
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+            }
         );
     }
 }

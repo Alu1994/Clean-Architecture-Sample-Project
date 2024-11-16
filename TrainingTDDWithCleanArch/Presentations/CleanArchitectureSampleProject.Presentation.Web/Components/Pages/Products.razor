@@ -1,0 +1,65 @@
+﻿@page "/products"
+@rendermode InteractiveServer
+@using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject ProductApiClient WeatherApi
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+<p>This component loads products from the minimal api.</p>
+
+<button class="btn btn-primary" @onclick="CreateProduct">Click me</button>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Description</th>
+                <th>Product CreationDate</th>
+                <th>Product Value</th>
+                <th>Product Quantity</th>
+                <th>Category Id</th>
+                <th>Category Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.CreationDate</td>
+                    <td>@product.Value</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Category.Id</td>
+                    <td>@product.Category.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ProductBlazor[]? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await WeatherApi.GetProductsAsync();
+    }
+
+    private async Task CreateProduct()
+    {
+        await WeatherApi.PostProductAsync();
+        products = await WeatherApi.GetProductsAsync();
+    }
+}

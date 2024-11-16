@@ -12,4 +12,14 @@ public static class MainEndpointsMapping
 
         return app;
     }
+
+    public static RouteHandlerBuilder WithConfigSummaryInfo(this RouteHandlerBuilder builder, string description, params string[] tagName)
+    {
+        return builder.WithName(description)
+            .WithDescription(description)
+            .WithSummary(description)
+            .WithDisplayName(description)
+            .WithTags(tagName)
+            .WithOpenApi();
+    }
 }

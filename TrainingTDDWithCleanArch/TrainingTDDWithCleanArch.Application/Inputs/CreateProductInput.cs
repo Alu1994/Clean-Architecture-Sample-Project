@@ -16,6 +16,15 @@ public sealed class CreateProductInput
 
     }
 
+    public CreateProductInput(UpdateProductInput input)
+    {
+        Name = input.Name;
+        Description = input.Description;
+        Value = input.Value;
+        Quantity = input.Quantity;
+        Category = input.Category;
+    }
+
     public void SetCategory(Category category)
     {
         if(Category is null) Category = new CreateCategoryInput();
@@ -29,6 +38,6 @@ public sealed class CreateProductInput
         if (category.IsFail)
             return (Seq<Error>)category;
 
-        return Product.Create(Name, Description, Value, Quantity, category.SuccessToArray().First());
+        return Product.CreateNew(Name, Description, Value, Quantity, category.SuccessToArray().First());
     }
 }

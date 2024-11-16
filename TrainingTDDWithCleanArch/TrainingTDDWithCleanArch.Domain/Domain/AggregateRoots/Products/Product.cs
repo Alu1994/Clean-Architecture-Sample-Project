@@ -12,7 +12,7 @@ public sealed class Product
     public int Quantity { get; set; }
     public Category Category { get; set; }
 
-    internal Product()
+    public Product()
     {
         Id = Guid.NewGuid();
         CreationDate = DateTime.UtcNow;
@@ -23,7 +23,18 @@ public sealed class Product
         Category = category ?? throw new ArgumentNullException(nameof(category));
     }
 
-    public static Validation<Error, Product> Create(string name, string description, decimal? value, int? quantity, Category category)
+    public static Validation<Error, Product> CreateExistent(Guid id, string name, string description, decimal? value, int? quantity, Category category)
+    {
+        return new Product(category)
+        {
+            Name = name,
+            Description = description,
+            Value = value.Value,
+            Quantity = quantity.Value
+        }.WithId(id);
+    }
+
+    public static Validation<Error, Product> CreateNew(string name, string description, decimal? value, int? quantity, Category category)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Error.New($"{nameof(Name)} must not be null.");
@@ -92,5 +103,17 @@ public sealed class Product
     public void SetCategory(Category category)
     {
         Category = category;
+    }
+
+    public Product WithCategory(Category category)
+    {
+        SetCategory(category);
+        return this;
+    }
+
+    private Product WithId(Guid id)
+    {
+        Id = id;
+        return this;
     }
 }

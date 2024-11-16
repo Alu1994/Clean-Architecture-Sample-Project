@@ -1,7 +1,8 @@
 ﻿using System.Collections.Frozen;
 using TrainingTDDWithCleanArch.Application.Inputs;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
-using TrainingTDDWithCleanArch.Domain.Interfaces;
+using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products.Entities;
+using TrainingTDDWithCleanArch.Domain.Interfaces.Repositories;
 
 namespace TrainingTDDWithCleanArch.Application.UseCases;
 
@@ -11,6 +12,7 @@ public interface IProductUseCases
     Task<Validation<Error, Product>> GetProductById(Guid productId, CancellationToken cancellation);
     Task<Validation<Error, Product>> GetProductByName(string productName, CancellationToken cancellation);
     Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation);
+    Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation);
 }
 
 public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRepository productRepository, ICategoryUseCases categoryUseCases) : IProductUseCases
@@ -42,21 +44,44 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(CreateProduct), productInput);
 
         var categoryResult = await _categoryUseCases.GetOrCreateCategory(productInput, cancellation);
-        if (categoryResult.IsFail) return (Seq<Error>)categoryResult;
+        return await categoryResult.MatchAsync(async category => 
+            await CreateProduct(productInput, category, cancellation), 
+            error => error);
 
-        var category = categoryResult.SuccessToSeq().First();
-        var productResult = productInput.ToProduct();
-        if (productResult.IsFail)
-            return productResult;
+        Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, Category category, CancellationToken cancellation)
+        {
+            return productInput.ToProduct().MatchAsync<Validation<Error, Product>>(async product =>
+            {
+                product.SetCategory(category);
+                var repoResult = await _productRepository.Insert(product, cancellation);
 
-        var product = productResult.SuccessToArray().First();
-        product.SetCategory(category);
-        var repoResult = await _productRepository.Insert(product, cancellation);
+                if (repoResult != ValidationResult.Success)
+                    return Error.New(repoResult.ErrorMessage!);
+                return product.WithCategory(category);
+            }, error => error);
+        }
+    }
 
-        if (repoResult != ValidationResult.Success)
-            return Error.New(repoResult.ErrorMessage!);
+    public async Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
+    {
+        _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(UpdateProduct), productInput);
 
-        product.SetCategory(category);
-        return product;
+        var categoryResult = await _categoryUseCases.GetOrCreateCategory(new CreateProductInput(productInput), cancellation);
+        return await categoryResult.MatchAsync(async category =>
+            await UpdateProduct(productInput, category, cancellation),
+            error => error);
+
+        Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, Category category, CancellationToken cancellation)
+        {
+            productInput.SetCategory(category);
+            var result = productInput.ToProduct();
+            return result.MatchAsync<Validation<Error, Product>>(async product =>
+            {
+                var repoResult = await _productRepository.Update(product, cancellation);
+                if (repoResult != ValidationResult.Success)
+                    return Error.New(repoResult.ErrorMessage!);
+                return product.WithCategory(category);
+            }, error => error);
+        }
     }
 }

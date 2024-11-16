@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj" />
     <ProjectReference Include="..\..\Presentations\TrainingTDDWithCleanArch.Presentation.MinimalAPI\TrainingTDDWithCleanArch.Presentation.MinimalAPI.csproj" />
-    <ProjectReference Include="..\..\Presentations\TrainingTDDWithCleanArch.Presentation.API\TrainingTDDWithCleanArch.Presentation.API.csproj" />
   </ItemGroup>  
 
 </Project>
