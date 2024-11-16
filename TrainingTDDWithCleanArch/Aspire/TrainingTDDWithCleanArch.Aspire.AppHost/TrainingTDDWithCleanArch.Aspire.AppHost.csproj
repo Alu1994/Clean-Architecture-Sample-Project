@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Presentations\TrainingTDDWithCleanArch.Presentation.MinimalAPI\TrainingTDDWithCleanArch.Presentation.MinimalAPI.csproj" />
-    <ProjectReference Include="..\..\Presentations\TrainingTDDWithCleanArch.Presentation.API\TrainingTDDWithCleanArch.Presentation.API.csproj" />
   </ItemGroup>  
 
 </Project>
