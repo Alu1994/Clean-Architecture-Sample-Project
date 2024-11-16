@@ -76,6 +76,15 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
 
     public async Task<ValidationResult> Update(Product product, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _products.RemoveAll(p => p.Id == product.Id);
+            _products.Add(product);
+            return await Task.FromResult(ValidationResult.Success!);
+        }
+        catch (Exception ex)
+        {
+            return new ValidationResult($"Error while Inserting Product '{product.Name}': {ex.Message}");
+        }
     }
 }

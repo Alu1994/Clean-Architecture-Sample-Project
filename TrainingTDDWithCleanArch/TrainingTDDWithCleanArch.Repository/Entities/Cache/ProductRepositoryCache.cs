@@ -113,6 +113,27 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
 
     public async Task<ValidationResult> Update(Product product, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        try
+        {
+            string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
+            if (cachedData is null)
+                return new ValidationResult($"Error while Updating Product Id: '{product.Id}', there are no products on Database.");
+
+            var previousCache = JsonConvert.DeserializeObject<List<Product>>(cachedData)!;
+            if (previousCache is not { Count: >= 0 })
+                return new ValidationResult($"Error while Updating Product, Id: '{product.Id}' was not found on Database.");
+
+            previousCache.RemoveAll(prd => prd.Id == product.Id);
+            previousCache.Add(product);
+            await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(previousCache), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
+            });
+            return ValidationResult.Success!;
+        }
+        catch (Exception ex)
+        {
+            return new ValidationResult($"Error while Updating Product '{product.Name}': {ex.Message}");
+        }
     }
 }

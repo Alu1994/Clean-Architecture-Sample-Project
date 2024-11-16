@@ -12,6 +12,7 @@ public interface IProductUseCases
     Task<Validation<Error, Product>> GetProductById(Guid productId, CancellationToken cancellation);
     Task<Validation<Error, Product>> GetProductByName(string productName, CancellationToken cancellation);
     Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation);
+    Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation);
 }
 
 public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRepository productRepository, ICategoryUseCases categoryUseCases) : IProductUseCases
@@ -54,6 +55,29 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
                 product.SetCategory(category);
                 var repoResult = await _productRepository.Insert(product, cancellation);
 
+                if (repoResult != ValidationResult.Success)
+                    return Error.New(repoResult.ErrorMessage!);
+                return product.WithCategory(category);
+            }, error => error);
+        }
+    }
+
+    public async Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
+    {
+        _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(UpdateProduct), productInput);
+
+        var categoryResult = await _categoryUseCases.GetOrCreateCategory(new CreateProductInput(productInput), cancellation);
+        return await categoryResult.MatchAsync(async category =>
+            await UpdateProduct(productInput, category, cancellation),
+            error => error);
+
+        Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, Category category, CancellationToken cancellation)
+        {
+            productInput.SetCategory(category);
+            var result = productInput.ToProduct();
+            return result.MatchAsync<Validation<Error, Product>>(async product =>
+            {
+                var repoResult = await _productRepository.Update(product, cancellation);
                 if (repoResult != ValidationResult.Success)
                     return Error.New(repoResult.ErrorMessage!);
                 return product.WithCategory(category);

@@ -1,13 +1,10 @@
 ﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using LanguageExt;
-using LanguageExt.Common;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Frozen;
 using System.Net;
 using TrainingTDDWithCleanArch.Application.Inputs;
 using TrainingTDDWithCleanArch.Application.UseCases;
 using TrainingTDDWithCleanArch.Domain.AggregateRoots.Products;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TrainingTDDWithCleanArch.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -54,6 +51,15 @@ public static class ProductsEndpoints
         .Produces<Product>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Create Product", TagName);
+
+        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, IProductUseCases productUseCases, UpdateProductInput product, CancellationToken cancellation) =>
+        {
+            return await UpdateProduct(logger, productUseCases, product, cancellation);
+        })
+        .Accepts<CreateProductInput>(ContentType)
+        .Produces<Product>(Success, ContentType)
+        .Produces<ProblemDetails>(BadRequest, ContentType)
+        .WithConfigSummaryInfo("Update Product", TagName);
 
         return app;
     }
@@ -118,6 +124,25 @@ public static class ProductsEndpoints
         const string errorTitle = "Error while creating new product.";
 
         var result = await productUseCases.CreateProduct(product, cancellation);
+        return result.Match(success => Results.Ok(success),
+            error =>
+            {
+                var errorMessage = logger.LogSeqError(error);
+                return Results.Problem(
+                    type: HttpStatusCode.BadRequest.ToString(),
+                    title: errorTitle,
+                    detail: errorMessage,
+                    statusCode: StatusCodes.Status400BadRequest
+                );
+            }
+        );
+    }
+
+    public static async Task<IResult> UpdateProduct(ILogger<Logging> logger, IProductUseCases productUseCases, UpdateProductInput product, CancellationToken cancellation)
+    {
+        const string errorTitle = "Error while updating new product.";
+
+        var result = await productUseCases.UpdateProduct(product, cancellation);
         return result.Match(success => Results.Ok(success),
             error =>
             {
