@@ -3,8 +3,7 @@ using CleanArchitectureSampleProject.Application;
 using CleanArchitectureSampleProject.Domain;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using CleanArchitectureSampleProject.Repository;
-//using CleanArchitectureSampleProject.Aspire.Configurations;
-using CleanArchitectureSampleProject.Repository.Entities;
+using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 
@@ -13,7 +12,7 @@ public static class PresentationDI
     public static WebApplicationBuilder BuildPresentation(this WebApplicationBuilder builder)
     {
         // =========== Add Redis Cache - Aspire ===========
-        builder.AddRedisDistributedCache("cache");
+        builder.AddRedisDistributedCache(Services.RedisCacheName);
         // =========== Add Redis Cache - Aspire ===========
                 
         // =========== Add NLog ===========

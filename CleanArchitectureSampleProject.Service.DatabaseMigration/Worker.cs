@@ -1,6 +1,5 @@
 using CleanArchitectureSampleProject.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Trace;
 using System.Diagnostics;
 
 namespace CleanArchitectureSampleProject.Service.DatabaseMigration;
@@ -26,21 +25,17 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var activity = _activitySource.StartActivity("Migrating database", ActivityKind.Client);
-
         try
         {
             using var scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ProductDataContext>();
-
             await dbContext.Database.MigrateAsync(stoppingToken);
-
         }
         catch (Exception ex)
         {
             activity?.AddException(ex);
             throw;
         }
-
         hostApplicationLifetime.StopApplication();
     }
 }

@@ -1,4 +1,4 @@
-//using CleanArchitectureSampleProject.Aspire.Configurations;
+using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
 using CleanArchitectureSampleProject.Presentation.Web;
 using CleanArchitectureSampleProject.Presentation.Web.Components;
 
@@ -16,7 +16,7 @@ builder.Services.AddHttpClient<ProductApiClient>(client =>
     {
         // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
         // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-        client.BaseAddress = new("https+http://minimalapi");
+        client.BaseAddress = new($"https+http://{ProjectNames.MinimalApi}");
     });
 
 var app = builder.Build();

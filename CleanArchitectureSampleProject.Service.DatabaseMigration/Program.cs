@@ -1,8 +1,5 @@
 using CleanArchitectureSampleProject.Repository;
-using CleanArchitectureSampleProject.Repository.Entities;
 using CleanArchitectureSampleProject.Service.DatabaseMigration;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 

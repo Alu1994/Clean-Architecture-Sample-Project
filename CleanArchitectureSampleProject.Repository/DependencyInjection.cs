@@ -4,8 +4,8 @@ using CleanArchitectureSampleProject.Repository.Entities.Cache;
 using CleanArchitectureSampleProject.Repository.Entities.Memory;
 using CleanArchitectureSampleProject.Repository.Entities.Postgres;
 using CleanArchitectureSampleProject.Repository.Entities;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using CleanArchitectureSampleProject.Aspire.Configurations;
 
 namespace CleanArchitectureSampleProject.Repository;
 
@@ -14,7 +14,7 @@ public static class DependencyInjection
     public static IServiceCollection AddRepositoryLayer(this IServiceCollection services, IHostApplicationBuilder builder)
     {
         // =========== Add EF PostgresDB - Aspire ===========
-        builder.AddNpgsqlDbContext<ProductDataContext>("dbproducts");
+        builder.AddNpgsqlDbContext<ProductDataContext>(AspireConfigurations.Services.PostgresDatabaseName);
         // =========== Add EF PostgresDB - Aspire ===========
 
         //services

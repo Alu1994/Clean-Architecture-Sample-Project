@@ -22,7 +22,7 @@
     <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.ControllerAPI\CleanArchitectureSampleProject.Presentation.ControllerAPI.csproj" />
     <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj" />
     <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj" />
-    <!--<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" IsAspireProjectResource="false" />-->
+    <ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" IsAspireProjectResource="false" />
   </ItemGroup>  
 
 </Project>
