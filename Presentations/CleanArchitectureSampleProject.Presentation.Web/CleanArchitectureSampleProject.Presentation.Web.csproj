@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />-->
     <ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj" />
   </ItemGroup>

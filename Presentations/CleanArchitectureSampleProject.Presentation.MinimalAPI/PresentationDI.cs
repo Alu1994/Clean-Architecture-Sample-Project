@@ -3,6 +3,8 @@ using CleanArchitectureSampleProject.Application;
 using CleanArchitectureSampleProject.Domain;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using CleanArchitectureSampleProject.Repository;
+//using CleanArchitectureSampleProject.Aspire.Configurations;
+using CleanArchitectureSampleProject.Repository.Entities;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 
@@ -10,10 +12,10 @@ public static class PresentationDI
 {
     public static WebApplicationBuilder BuildPresentation(this WebApplicationBuilder builder)
     {
-        // =========== Add Redis Cache ===========
+        // =========== Add Redis Cache - Aspire ===========
         builder.AddRedisDistributedCache("cache");
-        // =========== Add Redis Cache ===========
-
+        // =========== Add Redis Cache - Aspire ===========
+                
         // =========== Add NLog ===========
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
@@ -28,7 +30,7 @@ public static class PresentationDI
         return builder;
     }
 
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static IServiceCollection AddPresentation(this IServiceCollection services, WebApplicationBuilder builder)
     {
         // Problem Details
         services.AddProblemDetails();
@@ -39,11 +41,11 @@ public static class PresentationDI
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-
+                
         // =========== Add Layers Dependency Injection ===========
         services.AddDomainLayer();
         services.AddApplicationLayer();
-        services.AddRepositoryLayer();
+        services.AddRepositoryLayer(builder);
         // =========== Add Layers Dependency Injection ===========
 
         return services;

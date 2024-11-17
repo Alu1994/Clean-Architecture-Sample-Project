@@ -1,5 +1,6 @@
 ﻿using System.Collections.Frozen;
 using CleanArchitectureSampleProject.Application.Inputs;
+using CleanArchitectureSampleProject.Application.Outputs;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Repositories;
@@ -11,8 +12,8 @@ public interface IProductUseCases
     Task<Validation<Error, FrozenSet<Product>>> GetProducts(CancellationToken cancellation);
     Task<Validation<Error, Product>> GetProductById(Guid productId, CancellationToken cancellation);
     Task<Validation<Error, Product>> GetProductByName(string productName, CancellationToken cancellation);
-    Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation);
-    Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation);
+    Task<Validation<Error, CreateProductOutput>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation);
+    Task<Validation<Error, UpdateProductOutput>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation);
 }
 
 public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRepository productRepository, ICategoryUseCases categoryUseCases) : IProductUseCases
@@ -39,7 +40,7 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
         return await _productRepository.GetByName(productName, cancellation);
     }
 
-    public async Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation)
+    public async Task<Validation<Error, CreateProductOutput>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(CreateProduct), productInput);
 
@@ -48,21 +49,25 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
             await CreateProduct(productInput, category, cancellation), 
             error => error);
 
-        Task<Validation<Error, Product>> CreateProduct(CreateProductInput productInput, Category category, CancellationToken cancellation)
+        Task<Validation<Error, CreateProductOutput>> CreateProduct(CreateProductInput productInput, Category category, CancellationToken cancellation)
         {
-            return productInput.ToProduct().MatchAsync<Validation<Error, Product>>(async product =>
+            return productInput.ToProduct().MatchAsync<Validation<Error, CreateProductOutput>>(async product =>
             {
                 product.SetCategory(category);
                 var repoResult = await _productRepository.Insert(product, cancellation);
 
                 if (repoResult != ValidationResult.Success)
                     return Error.New(repoResult.ErrorMessage!);
-                return product.WithCategory(category);
+                product.WithCategory(category);
+
+                CreateProductOutput ret = product;
+                return ret;
+
             }, error => error);
         }
     }
 
-    public async Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
+    public async Task<Validation<Error, UpdateProductOutput>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(UpdateProduct), productInput);
 
@@ -71,16 +76,20 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
             await UpdateProduct(productInput, category, cancellation),
             error => error);
 
-        Task<Validation<Error, Product>> UpdateProduct(UpdateProductInput productInput, Category category, CancellationToken cancellation)
+        Task<Validation<Error, UpdateProductOutput>> UpdateProduct(UpdateProductInput productInput, Category category, CancellationToken cancellation)
         {
             productInput.SetCategory(category);
             var result = productInput.ToProduct();
-            return result.MatchAsync<Validation<Error, Product>>(async product =>
+            return result.MatchAsync<Validation<Error, UpdateProductOutput>>(async product =>
             {
+                product.SetCategory(category);
                 var repoResult = await _productRepository.Update(product, cancellation);
                 if (repoResult != ValidationResult.Success)
                     return Error.New(repoResult.ErrorMessage!);
-                return product.WithCategory(category);
+                product.WithCategory(category);
+
+                UpdateProductOutput ret = product;
+                return ret;
             }, error => error);
         }
     }
