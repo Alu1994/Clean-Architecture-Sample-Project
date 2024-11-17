@@ -18,8 +18,11 @@ var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Servic
     .WaitFor(db);
 
 var controllerApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_ControllerAPI>(ProjectNames.ControllerApi)
+    .WithReference(db)
+    .WaitFor(db)
     .WithReference(redis)
-    .WaitFor(redis);
+    .WaitFor(redis)
+    .WaitFor(dbMigrator);
 
 var minimalApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_MinimalAPI>(ProjectNames.MinimalApi)
     .WithReference(db)

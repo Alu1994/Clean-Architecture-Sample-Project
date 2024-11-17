@@ -1,22 +1,35 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using CleanArchitectureSampleProject.Domain.Interfaces.Repositories;
-using CleanArchitectureSampleProject.Repository.Entities.Cache;
-using CleanArchitectureSampleProject.Repository.Entities.Memory;
 using CleanArchitectureSampleProject.Repository.Entities.Postgres;
 using CleanArchitectureSampleProject.Repository.Entities;
 using Microsoft.Extensions.Hosting;
-using CleanArchitectureSampleProject.Aspire.Configurations;
+using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
 
 namespace CleanArchitectureSampleProject.Repository;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddRepositoryLayer(this IServiceCollection services, IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder BuildRepository(this IHostApplicationBuilder builder)
     {
-        // =========== Add EF PostgresDB - Aspire ===========
-        builder.AddNpgsqlDbContext<ProductDataContext>(AspireConfigurations.Services.PostgresDatabaseName);
-        // =========== Add EF PostgresDB - Aspire ===========
+        if (builder.Environment.IsDevelopment())
+        {
+            // =========== Add Redis Cache - Aspire ===========
+            builder.AddRedisDistributedCache(Services.RedisCacheName);
+            // =========== Add Redis Cache - Aspire ===========
 
+            // =========== Add EF PostgresDB - Aspire ===========
+            builder.AddNpgsqlDbContext<ProductDataContext>(Services.PostgresDatabaseName);
+            // =========== Add EF PostgresDB - Aspire ===========
+        }
+        else
+        {
+            // Is not local env (Not .NET Aspire)
+        }
+        return builder;
+    }
+
+    public static IServiceCollection AddRepositoryLayer(this IServiceCollection services)
+    {
         //services
         //    .AddSingleton<ICategoryRepository, CategoryRepositoryMemory>()
         //    .AddSingleton<IProductRepository, ProductRepositoryMemory>();
@@ -24,8 +37,6 @@ public static class DependencyInjection
         //services
         //    .AddSingleton<ICategoryRepository, CategoryRepositoryCache>()
         //    .AddSingleton<IProductRepository, ProductRepositoryCache>();
-
-
 
         services
             .AddScoped<ICategoryRepository, CategoryRepositoryPostgres>()
