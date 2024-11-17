@@ -16,7 +16,7 @@ public class ProductApiClient(HttpClient httpClient)
             Description = $"Meu Produto Description{rand}",
             Quantity = 10,
             Value = 20,
-            Category = new CreateCategoryInput
+            Category = new CategoryInput
             {
                 CategoryName = $"CategoryName{rand}"
             }

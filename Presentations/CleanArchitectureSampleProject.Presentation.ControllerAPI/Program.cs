@@ -1,7 +1,4 @@
-using CleanArchitectureSampleProject.Application;
-using CleanArchitectureSampleProject.Domain;
 using CleanArchitectureSampleProject.Presentation.ControllerAPI;
-using CleanArchitectureSampleProject.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +17,6 @@ builder.Services.AddSwaggerGen();
 
 // =========== Add Layer Dependency Injection ===========
 builder.Services.AddPresentation();
-builder.Services.AddDomainLayer();
-builder.Services.AddApplicationLayer();
-builder.Services.AddRepositoryLayer(builder);
 // =========== Add Layer Dependency Injection ===========
 
 var app = builder.Build();

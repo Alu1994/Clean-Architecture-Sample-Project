@@ -2,12 +2,12 @@
 
 namespace CleanArchitectureSampleProject.Application.Inputs;
 
-public sealed class CreateCategoryInput
+public sealed class CategoryInput
 {
     public Guid? Id { get; set; }
     public string? CategoryName { get; set; }
 
-    public CreateCategoryInput()
+    public CategoryInput()
     {
 
     }

@@ -9,7 +9,7 @@ public sealed class CreateProductInput
     public string Description { get; set; }
     public decimal Value { get; set; }
     public int Quantity { get; set; }
-    public CreateCategoryInput Category { get; set; }
+    public CategoryInput Category { get; set; }
 
     public CreateProductInput()
     {
@@ -27,7 +27,7 @@ public sealed class CreateProductInput
 
     public void SetCategory(Category category)
     {
-        if(Category is null) Category = new CreateCategoryInput();
+        if(Category is null) Category = new CategoryInput();
         Category.SetCategory(category);
     }
 

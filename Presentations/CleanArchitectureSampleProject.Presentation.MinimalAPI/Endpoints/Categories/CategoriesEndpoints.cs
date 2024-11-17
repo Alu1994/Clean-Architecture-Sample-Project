@@ -43,20 +43,20 @@ public static class CategoriesEndpoints
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Get {Controller} By Name", TagName);
 
-        app.MapPost($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation) =>
+        app.MapPost($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CategoryInput category, CancellationToken cancellation) =>
         {
             return await CreateCategory(logger, categoryUseCases, category, cancellation);
         })
-        .Accepts<CreateCategoryInput>(ContentType)
+        .Accepts<CategoryInput>(ContentType)
         .Produces<Category>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Create {Controller}", TagName);
 
-        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation) =>
+        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CategoryInput category, CancellationToken cancellation) =>
         {
             return await UpdateCategory(logger, categoryUseCases, category, cancellation);
         })
-        .Accepts<CreateCategoryInput>(ContentType)
+        .Accepts<CategoryInput>(ContentType)
         .Produces<Category>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Update {Controller}", TagName);
@@ -121,7 +121,7 @@ public static class CategoriesEndpoints
         );
     }
 
-    public static async Task<IResult> CreateCategory(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation)
+    public static async Task<IResult> CreateCategory(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CategoryInput category, CancellationToken cancellation)
     {
         const string errorTitle = "Error while creating new category.";
 
@@ -140,7 +140,7 @@ public static class CategoriesEndpoints
         );
     }
 
-    public static async Task<IResult> UpdateCategory(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation)
+    public static async Task<IResult> UpdateCategory(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CategoryInput category, CancellationToken cancellation)
     {
         const string errorTitle = "Error while updating category.";
 

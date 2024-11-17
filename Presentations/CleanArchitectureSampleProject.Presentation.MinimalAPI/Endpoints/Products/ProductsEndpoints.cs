@@ -1,10 +1,10 @@
-﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+﻿using CleanArchitectureSampleProject.Application.Inputs;
+using CleanArchitectureSampleProject.Application.Outputs;
+using CleanArchitectureSampleProject.Application.UseCases;
+using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Frozen;
 using System.Net;
-using CleanArchitectureSampleProject.Application.Inputs;
-using CleanArchitectureSampleProject.Application.UseCases;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -23,7 +23,7 @@ public static class ProductsEndpoints
         {
             return await GetAllProducts(logger, productUseCases, cancellation);
         })
-        .Produces<FrozenSet<Product>>(Success, ContentType)
+        .Produces<FrozenSet<GetProductOutput>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get All Products", TagName);
 
@@ -31,7 +31,7 @@ public static class ProductsEndpoints
         {
             return await GetById(logger, productUseCases, productId, cancellation);
         })
-        .Produces<Product>(Success, ContentType)
+        .Produces<GetProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get Product By Id", TagName);
 
@@ -39,7 +39,7 @@ public static class ProductsEndpoints
         {
             return await GetByName(logger, productUseCases, productName, cancellation);
         })
-        .Produces<Product>(Success, ContentType)
+        .Produces<GetProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get Product By Name", TagName);
 
@@ -48,7 +48,7 @@ public static class ProductsEndpoints
             return await CreateProduct(logger, productUseCases, product, cancellation);
         })
         .Accepts<CreateProductInput>(ContentType)
-        .Produces<Product>(Success, ContentType)
+        .Produces<CreateProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Create Product", TagName);
 
@@ -56,8 +56,8 @@ public static class ProductsEndpoints
         {
             return await UpdateProduct(logger, productUseCases, product, cancellation);
         })
-        .Accepts<CreateProductInput>(ContentType)
-        .Produces<Product>(Success, ContentType)
+        .Accepts<UpdateProductInput>(ContentType)
+        .Produces<UpdateProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Update Product", TagName);
 

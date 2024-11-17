@@ -10,8 +10,8 @@ public interface ICategoryUseCases
     Task<Validation<Error, FrozenSet<Category>>> GetCategories(CancellationToken cancellation);
     Task<Validation<Error, Category>> GetCategoryById(Guid categoryId, CancellationToken cancellation);
     Task<Validation<Error, Category>> GetCategoryByName(string categoryName, CancellationToken cancellation);
-    Task<Validation<Error, Category>> CreateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation);
-    Task<Validation<Error, Category>> UpdateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation);
+    Task<Validation<Error, Category>> CreateCategory(CategoryInput categoryInput, CancellationToken cancellation);
+    Task<Validation<Error, Category>> UpdateCategory(CategoryInput categoryInput, CancellationToken cancellation);
     Task<Validation<Error, Category>> GetOrCreateCategory(CreateProductInput productInput, CancellationToken cancellation);
 }
 
@@ -38,7 +38,7 @@ public sealed class CategoryUseCases(ILogger<CategoryUseCases> logger, ICategory
         return await _categoryRepository.GetByName(categoryName, cancellation);
     }
 
-    public async Task<Validation<Error, Category>> CreateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation)
+    public async Task<Validation<Error, Category>> CreateCategory(CategoryInput categoryInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(CreateCategory), categoryInput);
 
@@ -50,7 +50,7 @@ public sealed class CategoryUseCases(ILogger<CategoryUseCases> logger, ICategory
         }, error => error);
     }
 
-    public async Task<Validation<Error, Category>> UpdateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation)
+    public async Task<Validation<Error, Category>> UpdateCategory(CategoryInput categoryInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(UpdateCategory), categoryInput);
 

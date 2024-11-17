@@ -3,7 +3,6 @@ using CleanArchitectureSampleProject.Application;
 using CleanArchitectureSampleProject.Domain;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using CleanArchitectureSampleProject.Repository;
-using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 
@@ -11,20 +10,25 @@ public static class PresentationDI
 {
     public static WebApplicationBuilder BuildPresentation(this WebApplicationBuilder builder)
     {
-        // =========== Add Redis Cache - Aspire ===========
-        builder.AddRedisDistributedCache(Services.RedisCacheName);
-        // =========== Add Redis Cache - Aspire ===========
-                
+        builder.BuildRepository();
+
         // =========== Add NLog ===========
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
         builder.Host.UseNLog();
         // =========== Add NLog ===========
 
-        // =========== Add service defaults & Aspire client integrations. ===========
-        // (This must be after 'builder.Logging.ClearProviders()' to re-add the LoggingProviders
-        builder.AddServiceDefaults();
-        // =========== Add service defaults & Aspire client integrations. ===========
+        if (builder.Environment.IsDevelopment())
+        {
+            // =========== Add service defaults & Aspire client integrations. ===========
+            // (This must be after 'builder.Logging.ClearProviders()' to re-add the LoggingProviders
+            builder.AddServiceDefaults();
+            // =========== Add service defaults & Aspire client integrations. ===========
+        }
+        else
+        {
+            // Is not local env (Not .NET Aspire)
+        }
 
         return builder;
     }
@@ -44,7 +48,7 @@ public static class PresentationDI
         // =========== Add Layers Dependency Injection ===========
         services.AddDomainLayer();
         services.AddApplicationLayer();
-        services.AddRepositoryLayer(builder);
+        services.AddRepositoryLayer();
         // =========== Add Layers Dependency Injection ===========
 
         return services;
@@ -56,11 +60,7 @@ public static class PresentationDI
         app.UseSwagger();
         app.UseSwaggerUI();
         app.MapOpenApi();
-        //if (app.Environment.IsDevelopment())
-        //{
-            
-        //}
-
+        
         app.UseHttpsRedirection();
 
         // =========== Map Endpoints ===========
