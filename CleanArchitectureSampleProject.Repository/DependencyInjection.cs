@@ -39,9 +39,13 @@ public static class DependencyInjection
             .AddSingleton<ICategoryRepository, CategoryRepositoryCache>()
             .AddSingleton<IProductRepository, ProductRepositoryCache>();
 
+
         //services
         //    .AddScoped<ICategoryRepository, CategoryRepositoryPostgres>()
         //    .AddScoped<IProductRepository, ProductRepositoryPostgres>();
+        //services
+        //    .AddScoped<ICategoryRepositoryCache, CategoryRepositoryCache>()
+        //    .AddScoped<IProductRepositoryCache, ProductRepositoryCache>();
 
         return services;
     }

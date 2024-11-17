@@ -37,7 +37,7 @@ public sealed class CategoryUseCases(ILogger<CategoryUseCases> logger, ICategory
         _logger.LogInformation("Logging {MethodName} with {CategoryId}", nameof(GetCategoryById), categoryId);
         var category = await _categoryRepository.GetById(categoryId, cancellation);
         return category.Match<Validation<Error, CategoryOutput>>(cat =>
-            (CategoryOutput)cat,
+            (CategoryOutput)cat, 
             err => err);
     }
 

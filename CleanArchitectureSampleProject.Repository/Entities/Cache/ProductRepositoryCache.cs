@@ -5,13 +5,17 @@ using CleanArchitectureSampleProject.Domain.Interfaces.Repositories;
 
 namespace CleanArchitectureSampleProject.Repository.Entities.Cache;
 
-public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logger, ICategoryRepository categoryRepository, IDistributedCache cache) : IProductRepository
+public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logger, ICategoryRepository categoryRepository, IDistributedCache cache) : IProductRepository, IProductRepositoryCache
 {
     private readonly ILogger<ProductRepositoryCache> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly ICategoryRepository _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
     private readonly IDistributedCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
     private const string cacheKey = "Products";
+    private readonly DistributedCacheEntryOptions _cacheTimeout = new DistributedCacheEntryOptions
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
+    };
 
     public async Task<Validation<Error, FrozenSet<Product>>> Get(CancellationToken cancellation)
     {
@@ -20,11 +24,11 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
             if (cachedData is null)
                 return Enumerable.Empty<Product>().ToFrozenSet();
-            
-            var products = JsonConvert.DeserializeObject<List<Product>>(cachedData)!.ToFrozenSet();
+
+            var products = JsonConvert.DeserializeObject<List<Product>>(cachedData, JsonSerializationOptions.RemoveInfiniteLoop)!.ToFrozenSet();
             foreach (var product in products)
             {
-                var categoryResult = await _categoryRepository.GetById(product.Category.Id, cancellation);
+                var categoryResult = await _categoryRepository.GetById(product.CategoryId, cancellation);
                 _ = categoryResult.Match<Validation<Error, Product>>(category =>
                 {
                     return product.WithCategory(category);
@@ -89,20 +93,14 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
             if (cachedData is null)
             {
-                await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(new[] { product }), new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
-                });
+                await cache.SetStringAsync(cacheKey, Json.SerializeObjectWithoutReferenceLoop(new[] { product }), _cacheTimeout);
                 return ValidationResult.Success!;
             }
 
-            var previousCache = JsonConvert.DeserializeObject<List<Product>>(cachedData)!;
+            var previousCache = JsonConvert.DeserializeObject<List<Product>>(cachedData, JsonSerializationOptions.RemoveInfiniteLoop)!;
             previousCache.Add(product);
 
-            await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(previousCache), new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
-            });
+            await cache.SetStringAsync(cacheKey, Json.SerializeObjectWithoutReferenceLoop(previousCache), _cacheTimeout);
             return ValidationResult.Success!;
         }
         catch (Exception ex)
@@ -119,16 +117,13 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             if (cachedData is null)
                 return new ValidationResult($"Error while Updating Product Id: '{product.Id}', there are no products on Database.");
 
-            var previousCache = JsonConvert.DeserializeObject<List<Product>>(cachedData)!;
+            var previousCache = JsonConvert.DeserializeObject<List<Product>>(cachedData, JsonSerializationOptions.RemoveInfiniteLoop)!;
             if (previousCache is not { Count: >= 0 })
                 return new ValidationResult($"Error while Updating Product, Id: '{product.Id}' was not found on Database.");
 
             previousCache.RemoveAll(prd => prd.Id == product.Id);
             previousCache.Add(product);
-            await cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(previousCache), new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
-            });
+            await cache.SetStringAsync(cacheKey, Json.SerializeObjectWithoutReferenceLoop(previousCache), _cacheTimeout);
             return ValidationResult.Success!;
         }
         catch (Exception ex)
@@ -136,4 +131,37 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             return new ValidationResult($"Error while Updating Product '{product.Name}': {ex.Message}");
         }
     }
+
+    // ====== IProductRepositoryCache Methods ======
+    public async Task<ValidationResult> InsertAll(FrozenSet<Product> products, CancellationToken cancellation)
+    {
+        try
+        {
+            await cache.SetStringAsync(cacheKey, Json.SerializeObjectWithoutReferenceLoop(products), _cacheTimeout);
+            return ValidationResult.Success!;
+        }
+        catch (Exception ex)
+        {
+            return new ValidationResult($"Error while Inserting All Products: {ex.Message}");
+        }
+    }
+
+    public async Task<Validation<Error, FrozenSet<Product>>> GetAllFromCacheOrInsertFrom(Func<Task<Validation<Error, FrozenSet<Product>>>> func, CancellationToken cancellation)
+    {
+        var cacheProducts = await Get(cancellation);
+        return await cacheProducts.MatchAsync(async cache =>
+        {
+            if (cache is not { Count: > 0 })
+            {
+                var products = await func();
+                return await products.MatchAsync<Validation<Error, FrozenSet<Product>>>(async s =>
+                {
+                    await InsertAll(s.ToFrozenSet(), cancellation);
+                    return s.ToFrozenSet();
+                }, er => er);
+            }
+            return cache;
+        }, e => e);
+    }
+    // ====== IProductRepositoryCache Methods ======
 }
