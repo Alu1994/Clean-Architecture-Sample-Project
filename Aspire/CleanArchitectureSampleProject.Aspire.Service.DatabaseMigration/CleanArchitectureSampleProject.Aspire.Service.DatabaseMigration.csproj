@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Repository.csproj" />
+    <ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Repository.csproj" />
   </ItemGroup>
 </Project>

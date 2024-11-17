@@ -7,10 +7,15 @@ var redis = builder.AddRedis(Services.RedisCacheName);
 // PostgresDB
 var dbServer = builder.AddPostgres(Services.PostgresServerName);
 var db = dbServer.AddDatabase(Services.PostgresDatabaseName);
-
 dbServer.WithDataVolume(Services.PostgresContainerVolume)
     .WithPgAdmin();
 // PostgresDB
+
+var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigrator)
+    .WithReference(dbServer)
+    .WithReference(db)
+    .WaitFor(dbServer)
+    .WaitFor(db);
 
 var controllerApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_ControllerAPI>(ProjectNames.ControllerApi)
     .WithReference(redis)
@@ -18,9 +23,10 @@ var controllerApi = builder.AddProject<CleanArchitectureSampleProject_Presentati
 
 var minimalApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_MinimalAPI>(ProjectNames.MinimalApi)
     .WithReference(db)
-    //.WaitFor(db)
-    .WithReference(redis);
-    //.WaitFor(redis);
+    .WaitFor(db)
+    .WithReference(redis)
+    .WaitFor(redis)
+    .WaitFor(dbMigrator);
 
 builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames.BlazorApp)
     .WithExternalHttpEndpoints()
@@ -28,10 +34,6 @@ builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames
     .WaitFor(redis)
     .WithReference(minimalApi)
     .WaitFor(minimalApi);
-
-builder.AddProject<CleanArchitectureSampleProject_Service_DatabaseMigration>(ProjectNames.DatabaseMigrator)
-    .WithReference(dbServer)
-    .WithReference(db);
 
 builder.Build().Run();
 

@@ -29,19 +29,25 @@ public class ProductApiClient(HttpClient httpClient)
     {
         List<ProductBlazor>? products = null;
 
-        await foreach (var product in httpClient.GetFromJsonAsAsyncEnumerable<ProductBlazor>("/product", cancellationToken))
+        try
         {
-            if (products?.Count >= maxItems)
+            await foreach (var product in httpClient.GetFromJsonAsAsyncEnumerable<ProductBlazor>("/product", cancellationToken))
             {
-                break;
-            }
-            if (product is not null)
-            {
-                products ??= [];
-                products.AddRange(product);
+                if (products?.Count >= maxItems)
+                {
+                    break;
+                }
+                if (product is not null)
+                {
+                    products ??= [];
+                    products.AddRange(product);
+                }
             }
         }
+        catch (Exception ex)
+        {
 
+        }
         return products?.ToArray() ?? [];
     }
 }
