@@ -1,5 +1,4 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +12,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context) : IPro
     {
         try
         {
-            var products = await _context.Products.Include(x => x.Category).ToListAsync();
+            var products = await _context.Products.Include(x => x.Category).AsNoTracking().ToListAsync();
             if (products == null)
             {
                 return Enumerable.Empty<Product>().ToFrozenSet();
@@ -30,7 +29,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context) : IPro
     {
         try
         {
-            var product = await _context.Products.Include(x => x.Category).FirstAsync(x => x.Id == id);
+            var product = await _context.Products.Include(x => x.Category).AsNoTracking().FirstAsync(x => x.Id == id);
             return product!;
         }
         catch (Exception ex)
@@ -43,7 +42,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context) : IPro
     {
         try
         {
-            var product = await _context.Products.Include(x => x.Category).FirstAsync(x => x.Name == productName);
+            var product = await _context.Products.Include(x => x.Category).AsNoTracking().FirstAsync(x => x.Name == productName);
             return product!;
         }
         catch (Exception ex)
@@ -56,6 +55,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context) : IPro
     {
         try
         {
+            product.Category = null;
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
             return ValidationResult.Success!;
@@ -70,6 +70,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context) : IPro
     {
         try
         {
+            product.Category = null;
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
             return ValidationResult.Success!;

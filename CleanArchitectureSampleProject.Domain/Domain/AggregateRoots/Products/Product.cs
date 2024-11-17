@@ -28,7 +28,7 @@ public sealed class Product
         SetCategory(category);
     }
 
-    public static Validation<Error, Product> CreateExistent(Guid id, string name, string description, decimal? value, int? quantity, Category category)
+    public static Validation<Error, Product> CreateExistent(Guid id, string name, string description, decimal? value, int? quantity, Category category, DateTime? creationDate = null)
     {
         return new Product(category)
         {
@@ -36,7 +36,16 @@ public sealed class Product
             Description = description,
             Value = value.Value,
             Quantity = quantity.Value
-        }.WithId(id);
+        }
+        .WithId(id)
+        .WithCreationDate(creationDate);
+    }
+
+    private Product WithCreationDate(DateTime? creationDate)
+    {
+        if (creationDate is not null)
+            CreationDate = creationDate.Value;
+        return this;
     }
 
     public static Validation<Error, Product> CreateNew(string name, string description, decimal? value, int? quantity, Category category)

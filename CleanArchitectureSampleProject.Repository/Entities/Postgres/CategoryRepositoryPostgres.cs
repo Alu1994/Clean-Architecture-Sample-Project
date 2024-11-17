@@ -1,5 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Repositories;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureSampleProject.Repository.Entities.Postgres;
@@ -12,7 +13,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context) : ICa
     {
         try
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _context.Categories.AsNoTracking().ToListAsync();
             if (categories == null) {
                 return Enumerable.Empty<Category>().ToFrozenSet();
             }
@@ -28,7 +29,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context) : ICa
     {
         try
         {
-            var category = await _context.Categories.FirstAsync(x => x.Id == id);
+            var category = await _context.Categories.AsNoTracking().FirstAsync(x => x.Id == id);
             return category!;
         }
         catch (Exception ex)
@@ -41,7 +42,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context) : ICa
     {
         try
         {
-            var category = await _context.Categories.FirstAsync(x => x.Name == categoryName);
+            var category = await _context.Categories.AsNoTracking().FirstAsync(x => x.Name == categoryName);
             return category!;
         }
         catch (Exception ex)
@@ -54,8 +55,11 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context) : ICa
     {
         try
         {
-            await _context.Categories.AddAsync(category);
-            await _context.SaveChangesAsync();
+            await _context.Categories.AddAsync(category, cancellation);
+            _context.SaveChanges(true);
+
+            //context.Entry(category).State = EntityState.Detached;
+
             return ValidationResult.Success!;
         }
         catch (Exception ex)

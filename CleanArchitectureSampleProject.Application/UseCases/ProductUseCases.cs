@@ -57,10 +57,14 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(CreateProduct), productInput);
 
-        var categoryResult = await _categoryUseCases.GetOrCreateCategory(productInput, cancellation);
-        return await categoryResult.MatchAsync(async category =>
-            await CreateProduct(productInput, category, cancellation),
-            error => error);
+        var getOrCreateCategoryResult = await _categoryUseCases.GetOrCreateCategory(productInput, cancellation);
+        return await getOrCreateCategoryResult.MatchAsync(async getOrCreateCategory =>
+        {
+            var category = getOrCreateCategory.ToCategory();
+            return await category.MatchAsync(
+                async cat => await CreateProduct(productInput, cat, cancellation)
+                , er => er);
+        }, error => error);
 
         Task<Validation<Error, CreateProductOutput>> CreateProduct(CreateProductInput productInput, Category category, CancellationToken cancellation)
         {
@@ -79,25 +83,41 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
     public async Task<Validation<Error, UpdateProductOutput>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(UpdateProduct), productInput);
+        var getResult = await _categoryUseCases.GetOrCreateCategoryInternal(productInput.Category, cancellation);
+        return await getResult.MatchAsync(async getOrCreateCategory => await ConvertCategoryAndUpdateProduct(productInput, getOrCreateCategory, cancellation), e => e);
 
-        var categoryResult = await _categoryUseCases.GetOrCreateCategory(new CreateProductInput(productInput), cancellation);
-        return await categoryResult.MatchAsync(async category =>
-            await UpdateProduct(productInput, category, cancellation),
-            error => error);
+        async Task<Validation<Error, UpdateProductOutput>> ConvertCategoryAndUpdateProduct(UpdateProductInput productInput, CategoryOutput existentCategoryOutput, CancellationToken cancellation)
+        {
+            var categoryResult = existentCategoryOutput.ToCategory();
+            return await categoryResult.MatchAsync(async category => await UpdateProductWithCategory(productInput, category, cancellation), toCategoryError => toCategoryError);
+        }
+    }
 
-        Task<Validation<Error, UpdateProductOutput>> UpdateProduct(UpdateProductInput productInput, Category category, CancellationToken cancellation)
+    private async Task<Validation<Error, UpdateProductOutput>> UpdateProductWithCategory(UpdateProductInput productInput, Category category, CancellationToken cancellation)
+    {
+        var getProductByIdResult = await GetProductById(productInput.Id, cancellation);
+        return await getProductByIdResult.MatchAsync(async getProductById => await ConvertAndUpdateProduct(productInput, category, getProductById, cancellation), error => error);
+
+        async Task<Validation<Error, UpdateProductOutput>> ConvertAndUpdateProduct(UpdateProductInput productInput, Category category, GetProductOutput getProductById, CancellationToken cancellation)
         {
             productInput.SetCategory(category);
-            var result = productInput.ToProduct();
-            return result.MatchAsync<Validation<Error, UpdateProductOutput>>(async product =>
-            {
-                product.SetCategory(category);
-                var repoResult = await _productRepository.Update(product, cancellation);
-                if (repoResult != ValidationResult.Success)
-                    return Error.New(repoResult.ErrorMessage!);
-                product.WithCategory(category);
-                return (UpdateProductOutput)product;
-            }, error => error);
+            var productResult = productInput.ToProduct(getProductById.CreationDate);
+            return await UpdateProduct(category, productResult, cancellation);
+        }
+    }
+
+    private async Task<Validation<Error, UpdateProductOutput>> UpdateProduct(Category category, Validation<Error, Product> productResult, CancellationToken cancellation)
+    {
+        return await productResult.MatchAsync(async product => await Update(category, product, cancellation), er => er);
+
+        async Task<Validation<Error, UpdateProductOutput>> Update(Category category, Product product, CancellationToken cancellation)
+        {
+            product.SetCategory(category);
+            var repoResult = await _productRepository.Update(product, cancellation);
+            if (repoResult != ValidationResult.Success)
+                return Error.New(repoResult.ErrorMessage!);
+            product.WithCategory(category);
+            return (UpdateProductOutput)product;
         }
     }
 }

@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.2.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
@@ -17,6 +20,7 @@
 		<PackageReference Include="NLog" Version="5.3.4" />
 		<PackageReference Include="NLog.Schema" Version="5.3.4" />
 		<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.14" />
+		<PackageReference Include="Scalar.AspNetCore" Version="1.2.39" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
 	</ItemGroup>
 
@@ -34,5 +38,4 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
-
 </Project>

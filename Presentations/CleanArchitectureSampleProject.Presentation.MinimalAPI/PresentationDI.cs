@@ -3,6 +3,7 @@ using CleanArchitectureSampleProject.Application;
 using CleanArchitectureSampleProject.Domain;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using CleanArchitectureSampleProject.Repository;
+using Scalar.AspNetCore;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 
@@ -39,11 +40,9 @@ public static class PresentationDI
         services.AddProblemDetails();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        services.AddOpenApi();
-
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        services.AddEndpointsApiExplorer();
+        services.AddOpenApi(ScalarOpenApi.Configure);
         services.AddSwaggerGen();
+        services.AddEndpointsApiExplorer();
                 
         // =========== Add Layers Dependency Injection ===========
         services.AddDomainLayer();
@@ -57,16 +56,24 @@ public static class PresentationDI
     public static WebApplication UsePresentation(this WebApplication app)
     {
         // Configure the HTTP request pipeline.
-        app.UseSwagger();
-        app.UseSwaggerUI();
         app.MapOpenApi();
-        
-        app.UseHttpsRedirection();
+
+        // ======== Add Scalar UI ========
+        app.MapScalarApiReference(ScalarOpenApi.SetupOptions);
+        // ======== Add Scalar UI ========
+
+        // ======== Add Swagger UI ========
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        //app.UseSwagger();
+        app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Test"));
+        // ======== Add Swagger UI ========
 
         // =========== Map Endpoints ===========
+        app.UseHttpsRedirection();
         app.MapDefaultEndpoints();
         app.MapEndpoints();
         // =========== Map Endpoints ===========
+
         return app;
     }
 }

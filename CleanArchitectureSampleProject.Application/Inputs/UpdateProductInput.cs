@@ -23,12 +23,12 @@ public sealed class UpdateProductInput
         Category.SetCategory(category);
     }
 
-    public Validation<Error, Product> ToProduct()
+    public Validation<Error, Product> ToProduct(DateTime? creationDate = null)
     {
         var category = Category.ToCategory();
         return category.Match(cat =>
         {
-            return Product.CreateExistent(Id, Name, Description, Value, Quantity, cat);
+            return Product.CreateExistent(Id, Name, Description, Value, Quantity, cat, creationDate);
         }, err => err);
     }
 }
