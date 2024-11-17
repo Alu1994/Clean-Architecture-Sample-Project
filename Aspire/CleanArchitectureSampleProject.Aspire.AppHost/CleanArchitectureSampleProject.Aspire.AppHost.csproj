@@ -1,28 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
 
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsAspireHost>true</IsAspireHost>
+		<UserSecretsId>79d27ee1-683f-4a00-beb5-10ff2cd6d969</UserSecretsId>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <IsAspireHost>true</IsAspireHost>
-    <UserSecretsId>79d27ee1-683f-4a00-beb5-10ff2cd6d969</UserSecretsId>
-  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
+		<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.2" />
+		<PackageReference Include="Aspire.Hosting.Redis" Version="9.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-	<PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
-	<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.2" />
-	<PackageReference Include="Aspire.Hosting.Redis" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.ControllerAPI\CleanArchitectureSampleProject.Presentation.ControllerAPI.csproj" />
-    <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj" />
-    <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj" />
-	<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration.csproj" />
-    <ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" IsAspireProjectResource="false" />
-  </ItemGroup>  
-
+	<ItemGroup>
+		<ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.ControllerAPI\CleanArchitectureSampleProject.Presentation.ControllerAPI.csproj" />
+		<ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj" />
+		<ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj" />
+		<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration.csproj" />
+		<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" IsAspireProjectResource="false" />
+	</ItemGroup>
 </Project>
