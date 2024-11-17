@@ -4,6 +4,7 @@ using CleanArchitectureSampleProject.Repository.Entities.Postgres;
 using CleanArchitectureSampleProject.Repository.Entities;
 using Microsoft.Extensions.Hosting;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
+using CleanArchitectureSampleProject.Repository.Entities.Cache;
 
 namespace CleanArchitectureSampleProject.Repository;
 
@@ -34,13 +35,17 @@ public static class DependencyInjection
         //    .AddSingleton<ICategoryRepository, CategoryRepositoryMemory>()
         //    .AddSingleton<IProductRepository, ProductRepositoryMemory>();
 
-        //services
-        //    .AddSingleton<ICategoryRepository, CategoryRepositoryCache>()
-        //    .AddSingleton<IProductRepository, ProductRepositoryCache>();
-
         services
-            .AddScoped<ICategoryRepository, CategoryRepositoryPostgres>()
-            .AddScoped<IProductRepository, ProductRepositoryPostgres>();
+            .AddSingleton<ICategoryRepository, CategoryRepositoryCache>()
+            .AddSingleton<IProductRepository, ProductRepositoryCache>();
+
+
+        //services
+        //    .AddScoped<ICategoryRepository, CategoryRepositoryPostgres>()
+        //    .AddScoped<IProductRepository, ProductRepositoryPostgres>();
+        //services
+        //    .AddScoped<ICategoryRepositoryCache, CategoryRepositoryCache>()
+        //    .AddScoped<IProductRepositoryCache, ProductRepositoryCache>();
 
         return services;
     }

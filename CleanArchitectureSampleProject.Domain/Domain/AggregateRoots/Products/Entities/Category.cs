@@ -26,7 +26,7 @@ public sealed class Category
         };
     }
 
-    public static Validation<Error, Category> Create(Guid? id, string categoryName)
+    public static Validation<Error, Category> Create(Guid? id, string categoryName, DateTime? creationDate = null)
     {
         if (id is null)
             return Error.New($"{nameof(Category)}.{nameof(Id)} must not be null.");
@@ -37,7 +37,14 @@ public sealed class Category
         return new Category
         {
             Id = id.Value,
-            Name = categoryName
+            Name = categoryName,
+            CreationDate = creationDate ?? DateTime.MinValue
         };
+    }
+
+    public Category Update(Category category)
+    {
+        Name = category.Name;
+        return this;
     }
 }

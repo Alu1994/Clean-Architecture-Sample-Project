@@ -4,7 +4,7 @@ using System.Collections.Frozen;
 using System.Net;
 using CleanArchitectureSampleProject.Application.Inputs;
 using CleanArchitectureSampleProject.Application.UseCases;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Application.Outputs;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
@@ -23,7 +23,7 @@ public static class CategoriesEndpoints
         {
             return await GetAllCategories(logger, categoryUseCases, cancellation);
         })
-        .Produces<FrozenSet<Category>>(Success, ContentType)
+        .Produces<FrozenSet<CategoryOutput>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get All Categories", TagName);
 
@@ -31,7 +31,7 @@ public static class CategoriesEndpoints
         {
             return await GetById(logger, categoryUseCases, categoryId, cancellation);
         })
-        .Produces<Category>(Success, ContentType)
+        .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Get {Controller} By Id", TagName);
 
@@ -39,7 +39,7 @@ public static class CategoriesEndpoints
         {
             return await GetByName(logger, categoryUseCases, categoryName, cancellation);
         })
-        .Produces<Category>(Success, ContentType)
+        .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Get {Controller} By Name", TagName);
 
@@ -48,7 +48,7 @@ public static class CategoriesEndpoints
             return await CreateCategory(logger, categoryUseCases, category, cancellation);
         })
         .Accepts<CategoryInput>(ContentType)
-        .Produces<Category>(Success, ContentType)
+        .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Create {Controller}", TagName);
 
@@ -57,7 +57,7 @@ public static class CategoriesEndpoints
             return await UpdateCategory(logger, categoryUseCases, category, cancellation);
         })
         .Accepts<CategoryInput>(ContentType)
-        .Produces<Category>(Success, ContentType)
+        .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Update {Controller}", TagName);
 

@@ -13,6 +13,11 @@ public sealed class CategoryOutput
 
     }
 
+    public Validation<Error, Category> ToCategory()
+    {
+        return Category.Create(Id, CategoryName!, CreationDate);
+    }
+
     public static implicit operator CategoryOutput(Category category)
     {
         return new CategoryOutput

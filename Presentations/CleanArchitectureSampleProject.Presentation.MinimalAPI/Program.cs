@@ -5,8 +5,6 @@ builder.BuildPresentation();
 
 builder.Services.AddPresentation(builder);
 
-var app = builder.Build();
-
-app.UsePresentation();
-
-app.Run();
+builder.Build()
+    .UsePresentation()
+    .Run();
