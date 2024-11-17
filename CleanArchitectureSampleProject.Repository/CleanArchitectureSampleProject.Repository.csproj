@@ -1,20 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-	<PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.0.0" />
-	<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
-    <ProjectReference Include="..\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj" />
-  </ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.2.2" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
+		<ProjectReference Include="..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
+		<ProjectReference Include="..\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj" />
+	</ItemGroup>
 
 </Project>

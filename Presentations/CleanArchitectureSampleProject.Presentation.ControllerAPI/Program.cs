@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPresentation();
 builder.Services.AddDomainLayer();
 builder.Services.AddApplicationLayer();
-builder.Services.AddRepositoryLayer();
+builder.Services.AddRepositoryLayer(builder);
 // =========== Add Layer Dependency Injection ===========
 
 var app = builder.Build();

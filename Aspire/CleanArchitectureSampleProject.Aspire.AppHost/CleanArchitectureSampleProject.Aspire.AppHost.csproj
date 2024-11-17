@@ -13,6 +13,7 @@
 
   <ItemGroup>
 	<PackageReference Include="Aspire.Hosting.AppHost" Version="9.0.0" />
+	<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="8.2.2" />
 	<PackageReference Include="Aspire.Hosting.Redis" Version="9.0.0" />
   </ItemGroup>
 
@@ -20,6 +21,8 @@
     <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.ControllerAPI\CleanArchitectureSampleProject.Presentation.ControllerAPI.csproj" />
     <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj" />
     <ProjectReference Include="..\..\Presentations\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj" />
+	<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration.csproj" />
+    <ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" IsAspireProjectResource="false" />
   </ItemGroup>  
 
 </Project>

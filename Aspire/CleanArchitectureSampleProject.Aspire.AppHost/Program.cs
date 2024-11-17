@@ -1,16 +1,34 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var redis = builder.AddRedis("cache");
+// Redis Cache
+var redis = builder.AddRedis(Services.RedisCacheName);
+// Redis Cache
 
-var controllerApi = builder.AddProject<Projects.CleanArchitectureSampleProject_Presentation_ControllerAPI>("controllerapi")
+// PostgresDB
+var dbServer = builder.AddPostgres(Services.PostgresServerName);
+var db = dbServer.AddDatabase(Services.PostgresDatabaseName);
+dbServer.WithDataVolume(Services.PostgresContainerVolume)
+    .WithPgAdmin();
+// PostgresDB
+
+var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigrator)
+    .WithReference(dbServer)
+    .WithReference(db)
+    .WaitFor(dbServer)
+    .WaitFor(db);
+
+var controllerApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_ControllerAPI>(ProjectNames.ControllerApi)
     .WithReference(redis)
     .WaitFor(redis);
 
-var minimalApi = builder.AddProject<Projects.CleanArchitectureSampleProject_Presentation_MinimalAPI>("minimalapi")
+var minimalApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_MinimalAPI>(ProjectNames.MinimalApi)
+    .WithReference(db)
+    .WaitFor(db)
     .WithReference(redis)
-    .WaitFor(redis);
+    .WaitFor(redis)
+    .WaitFor(dbMigrator);
 
-builder.AddProject<Projects.CleanArchitectureSampleProject_Presentation_Web>("webfrontend")
+builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames.BlazorApp)
     .WithExternalHttpEndpoints()
     .WithReference(redis)
     .WaitFor(redis)

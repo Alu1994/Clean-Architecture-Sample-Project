@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.2.2" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  
 	<PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
     <PackageReference Include="NLog" Version="5.3.4" />
@@ -16,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
     <ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
     <ProjectReference Include="..\..\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj" />

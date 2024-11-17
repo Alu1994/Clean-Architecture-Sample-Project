@@ -1,4 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+using LanguageExt.ClassInstances;
 
 namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 
@@ -12,6 +13,9 @@ public sealed class Product
     public int Quantity { get; set; }
     public Category Category { get; set; }
 
+    // Foreign Key
+    public Guid CategoryId { get; set; }
+
     public Product()
     {
         Id = Guid.NewGuid();
@@ -20,7 +24,8 @@ public sealed class Product
 
     private Product(Category category) : this()
     {
-        Category = category ?? throw new ArgumentNullException(nameof(category));
+        ArgumentNullException.ThrowIfNull(category);
+        SetCategory(category);
     }
 
     public static Validation<Error, Product> CreateExistent(Guid id, string name, string description, decimal? value, int? quantity, Category category)
@@ -60,13 +65,19 @@ public sealed class Product
         };
     }
 
+    public void SetCategory(Category category)
+    {
+        Category = category;
+        CategoryId = category.Id;
+    }
+
     public ValidationResult ChangeCategory(Category category)
     {
         if (category is null)
         {
             return new ValidationResult($"{nameof(Category)} must not be null.");
         }
-        Category = category;
+        SetCategory(category);
         return ValidationResult.Success!;
     }
 
@@ -98,11 +109,6 @@ public sealed class Product
         }
         Quantity -= quantity.Value;
         return ValidationResult.Success!;
-    }
-
-    public void SetCategory(Category category)
-    {
-        Category = category;
     }
 
     public Product WithCategory(Category category)
