@@ -1,8 +1,19 @@
+using Microsoft.Extensions.Hosting;
+using Microsoft.Identity.Client.Extensions.Msal;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 // Redis Cache
 var redis = builder.AddRedis(Services.RedisCacheName);
 // Redis Cache
+
+var value = builder.AddParameter("value");
+
+// Azure Queue
+var storage = builder.AddAzureStorage(Services.AzureStorageName)
+            .RunAsEmulator();
+var queues = storage.AddQueues(Services.AzureQueueName);
+// Azure Queue
 
 // PostgresDB
 var dbServer = builder.AddPostgres(Services.PostgresServerName);
@@ -37,6 +48,18 @@ builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames
     .WaitFor(redis)
     .WithReference(minimalApi)
     .WaitFor(minimalApi);
+
+
+
+
+
+builder.AddProject<ConsoleApp1>(ProjectNames.ConsoleApp1)
+    .WithReference(queues)
+    .WaitFor(queues);
+
+
+
+
 
 builder.Build().Run();
 

@@ -8,6 +8,9 @@ public static class AspireConfigurations
         public static string ControllerApi => "controllerapi";
         public static string BlazorApp => "blazorapp";
         public static string DatabaseMigrator => "cleanarchitecturesampleproject-service-databasemigration";
+
+
+        public static string ConsoleApp1 => "consoleapp1";
     }
 
     public static class Services
@@ -16,5 +19,7 @@ public static class AspireConfigurations
         public static string PostgresServerName => "dbserver";
         public static string PostgresDatabaseName => "dbproducts";
         public static string PostgresContainerVolume => "cleanarchitecturesampleproject-db-volume";
+        public static string AzureStorageName => "storage";
+        public static string AzureQueueName => "queues";
     }
 }
