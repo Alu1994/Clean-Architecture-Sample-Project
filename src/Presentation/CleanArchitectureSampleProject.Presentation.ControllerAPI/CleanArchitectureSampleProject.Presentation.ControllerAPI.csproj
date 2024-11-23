@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>20d5339a-e472-4b73-94b8-d8100499e0d8</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj" />
+		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Repository.csproj" />
+	</ItemGroup>
+</Project>

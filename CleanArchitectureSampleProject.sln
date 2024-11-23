@@ -3,37 +3,43 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Repository", "CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Repository.csproj", "{B981EB20-7BD5-45DA-BBD9-6567479D924D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Repository", "src\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Repository.csproj", "{B981EB20-7BD5-45DA-BBD9-6567479D924D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Domain", "CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj", "{A308BED9-5145-42D2-B195-833378170212}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Domain", "src\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj", "{A308BED9-5145-42D2-B195-833378170212}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Application", "CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj", "{B7986893-D52D-4B73-B222-1840DE0F2C6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Application", "src\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj", "{B7986893-D52D-4B73-B222-1840DE0F2C6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.MinimalAPI", "Presentations\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj", "{50385108-CE46-479D-A38F-0BA68A3D0390}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.MinimalAPI", "src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj", "{50385108-CE46-479D-A38F-0BA68A3D0390}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{E003A979-3FE9-47BA-BA66-31C824F5F2F2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AllSolutionItems", "AllSolutionItems", "{E003A979-3FE9-47BA-BA66-31C824F5F2F2}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		Presentations\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config = Presentations\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config
+		src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config = src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.AppHost", "Aspire\CleanArchitectureSampleProject.Aspire.AppHost\CleanArchitectureSampleProject.Aspire.AppHost.csproj", "{6BB2CDD5-5D4B-4D71-B600-36757E955448}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.AppHost", "src\Aspire\CleanArchitectureSampleProject.Aspire.AppHost\CleanArchitectureSampleProject.Aspire.AppHost.csproj", "{6BB2CDD5-5D4B-4D71-B600-36757E955448}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.ServiceDefaults", "Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj", "{0C3CD584-8FA7-47BB-B120-BB7123360457}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.ServiceDefaults", "src\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj", "{0C3CD584-8FA7-47BB-B120-BB7123360457}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{40FB24A5-B349-4F56-A058-C7A8E755415A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{86058926-AC8A-4E50-875F-CBD5C775377C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.CrossCuttingConcerns", "CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj", "{520A5703-E9A5-47D6-B0B9-9E96E474616B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.CrossCuttingConcerns", "src\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj", "{520A5703-E9A5-47D6-B0B9-9E96E474616B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.Web", "Presentations\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj", "{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.Web", "src\Presentation\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj", "{A9A6612B-7E4D-4E3E-A66F-DFC84C0EBB5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.ControllerAPI", "Presentations\CleanArchitectureSampleProject.Presentation.ControllerAPI\CleanArchitectureSampleProject.Presentation.ControllerAPI.csproj", "{12E2AA11-8E2F-41C1-9B67-3D83A399F897}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.ControllerAPI", "src\Presentation\CleanArchitectureSampleProject.Presentation.ControllerAPI\CleanArchitectureSampleProject.Presentation.ControllerAPI.csproj", "{12E2AA11-8E2F-41C1-9B67-3D83A399F897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.Configurations", "Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj", "{7962E6C8-CC15-4544-8271-0AFE89F69A84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.Configurations", "src\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj", "{7962E6C8-CC15-4544-8271-0AFE89F69A84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Service.DatabaseMigration", "Aspire\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration.csproj", "{118D9290-B5F7-4629-A675-F477A0AD39F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration", "src\Aspire\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration.csproj", "{118D9290-B5F7-4629-A675-F477A0AD39F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{71E5B485-30A1-4C17-A8E8-B519A6480792}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{18188F3D-6A0C-40E7-B7DE-939436B50716}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Infrastructure.Messaging", "src\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Messaging\CleanArchitectureSampleProject.Infrastructure.Messaging.csproj", "{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,11 +91,18 @@ Global
 		{118D9290-B5F7-4629-A675-F477A0AD39F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{118D9290-B5F7-4629-A675-F477A0AD39F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{118D9290-B5F7-4629-A675-F477A0AD39F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{B981EB20-7BD5-45DA-BBD9-6567479D924D} = {18188F3D-6A0C-40E7-B7DE-939436B50716}
+		{A308BED9-5145-42D2-B195-833378170212} = {71E5B485-30A1-4C17-A8E8-B519A6480792}
+		{B7986893-D52D-4B73-B222-1840DE0F2C6E} = {71E5B485-30A1-4C17-A8E8-B519A6480792}
 		{50385108-CE46-479D-A38F-0BA68A3D0390} = {86058926-AC8A-4E50-875F-CBD5C775377C}
 		{6BB2CDD5-5D4B-4D71-B600-36757E955448} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
 		{0C3CD584-8FA7-47BB-B120-BB7123360457} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
@@ -97,6 +110,7 @@ Global
 		{12E2AA11-8E2F-41C1-9B67-3D83A399F897} = {86058926-AC8A-4E50-875F-CBD5C775377C}
 		{7962E6C8-CC15-4544-8271-0AFE89F69A84} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
 		{118D9290-B5F7-4629-A675-F477A0AD39F2} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
+		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638} = {18188F3D-6A0C-40E7-B7DE-939436B50716}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B6EF806-3606-4DA6-9B36-307FFC99EE82}
