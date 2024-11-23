@@ -1,4 +1,4 @@
-using CleanArchitectureSampleProject.Repository.Entities;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 

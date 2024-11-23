@@ -31,7 +31,7 @@
 		<ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
 		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj" />
 		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj" />
-		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Repository.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

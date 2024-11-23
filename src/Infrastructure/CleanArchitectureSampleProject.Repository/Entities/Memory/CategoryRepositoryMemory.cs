@@ -1,7 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Repository.Entities.Memory;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Memory;
 
 public sealed class CategoryRepositoryMemory : ICategoryRepository
 {

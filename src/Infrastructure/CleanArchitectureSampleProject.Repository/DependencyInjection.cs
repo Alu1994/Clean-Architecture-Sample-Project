@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using CleanArchitectureSampleProject.Repository.Entities.Postgres;
-using CleanArchitectureSampleProject.Repository.Entities;
 using Microsoft.Extensions.Hosting;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
-using CleanArchitectureSampleProject.Repository.Entities.Cache;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 using CleanArchitectureSampleProject.Infrastructure.Messaging;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
 
-namespace CleanArchitectureSampleProject.Repository;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository;
 
 public static class DependencyInjection
 {

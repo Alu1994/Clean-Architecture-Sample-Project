@@ -2,7 +2,7 @@
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Repository.Entities.Memory;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Memory;
 
 public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> logger, ICategoryRepository categoryRepository) : IProductRepository
 {

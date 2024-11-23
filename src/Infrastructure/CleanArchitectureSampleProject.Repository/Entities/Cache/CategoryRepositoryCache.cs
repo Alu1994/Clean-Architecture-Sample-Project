@@ -3,7 +3,7 @@ using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Repository.Entities.Cache;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 
 public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategoryRepository, ICategoryRepositoryCache
 {

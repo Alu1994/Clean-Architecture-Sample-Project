@@ -2,8 +2,8 @@
 using CleanArchitectureSampleProject.Application;
 using CleanArchitectureSampleProject.Domain;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
-using CleanArchitectureSampleProject.Repository;
 using Scalar.AspNetCore;
+using CleanArchitectureSampleProject.Infrastructure.Repository;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 

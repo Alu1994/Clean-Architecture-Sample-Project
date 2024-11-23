@@ -5,7 +5,7 @@ using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitectureSampleProject.Repository.Entities;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 
 public class ProductDataContext : DbContext
 {

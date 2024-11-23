@@ -1,4 +1,4 @@
-using CleanArchitectureSampleProject.Repository;
+using CleanArchitectureSampleProject.Infrastructure.Repository;
 using CleanArchitectureSampleProject.Service.DatabaseMigration;
 
 var builder = Host.CreateApplicationBuilder(args);

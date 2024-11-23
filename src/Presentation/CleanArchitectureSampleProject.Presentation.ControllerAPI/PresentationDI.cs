@@ -1,6 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Application;
 using CleanArchitectureSampleProject.Domain;
-using CleanArchitectureSampleProject.Repository;
+using CleanArchitectureSampleProject.Infrastructure.Repository;
 
 namespace CleanArchitectureSampleProject.Presentation.ControllerAPI;
 

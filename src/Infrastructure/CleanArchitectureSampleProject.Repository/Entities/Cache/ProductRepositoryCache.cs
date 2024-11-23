@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Repository.Entities.Cache;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 
 public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logger, ICategoryRepository categoryRepository, IDistributedCache cache) : IProductRepository, IProductRepositoryCache
 {
