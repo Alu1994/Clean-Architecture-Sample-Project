@@ -9,24 +9,11 @@ public interface IMessagingHandler
     Task<RemoveResult> RemoveMessage(CreateResult message, CancellationToken cancellationToken);
 }
 
-public interface IMessage
-{
+public interface IMessage;
 
-}
+public readonly record struct CreateResult(string MessageId, string PopReceipt, DateTimeOffset DispatchedDate);
 
-public readonly struct CreateResult(string messageId, string popReceipt, DateTimeOffset dispatchedDate)
-{
-    public string MessageId { get; init; } = messageId;
-    public string PopReceipt { get; init; } = popReceipt;
-    public DateTimeOffset DispatchedDate { get; init; }
-}
-
-
-public readonly struct RemoveResult(bool isRemoved, int statusCode)
-{
-    public bool IsRemoved { get; init; } = isRemoved;
-    public int StatusCode { get; init; } = statusCode;
-}
+public readonly record struct RemoveResult(bool IsRemoved, int StatusCode);
 
 
 
