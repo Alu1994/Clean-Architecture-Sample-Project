@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 using CleanArchitectureSampleProject.Infrastructure.Messaging;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository;
 
@@ -47,10 +47,20 @@ public static class DependencyInjection
         services
             .AddScoped<ICategoryRepository, CategoryRepositoryPostgres>()
             .AddScoped<IProductRepository, ProductRepositoryPostgres>();
+
+        services
+            .AddScoped<ICategoryRepositoryDatabase, CategoryRepositoryPostgres>()
+            .AddScoped<IProductRepositoryDatabase, ProductRepositoryPostgres>();
+
         services
             .AddScoped<ICategoryRepositoryCache, CategoryRepositoryCache>()
             .AddScoped<IProductRepositoryCache, ProductRepositoryCache>();
 
         return services;
+    }
+
+    public static IServiceCollection AddCacheAutoRefresh(this IServiceCollection services)
+    {
+        return services.AddHostedService<LoadCacheBackgroundService>();
     }
 }

@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddKeyedSingleton<IMessagingHandler, ProductCreatedMessageHandler>("ProductCreatedMessage");
         services.AddSingleton<List<IMessagingHandler>>(x =>
         {
+            Thread.Sleep(10000);
             var productMessageHandler = x.GetKeyedService<IMessagingHandler>("ProductCreatedMessage");
             return [productMessageHandler];
         });

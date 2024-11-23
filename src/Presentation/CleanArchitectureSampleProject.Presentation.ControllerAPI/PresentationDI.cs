@@ -17,6 +17,7 @@ public static class PresentationDI
         services.AddDomainLayer();
         services.AddApplicationLayer();
         services.AddRepositoryLayer();
+        //services.AddCacheAutoRefresh();
         return services;
     }
 

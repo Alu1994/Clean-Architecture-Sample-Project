@@ -7,7 +7,7 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
 {
     private List<Category> _categories = [];
 
-    public async Task<Validation<Error, FrozenSet<Category>>> Get(CancellationToken cancellation)
+    public async Task<Validation<Error, FrozenSet<Category>>> Get(CancellationToken cancellation = default)
     {
         try
         {
@@ -19,7 +19,7 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
         }
     }
 
-    public async Task<Validation<Error, Category>> GetById(Guid id, CancellationToken cancellation)
+    public async Task<Validation<Error, Category>> GetById(Guid id, CancellationToken cancellation = default)
     {
         try
         {
@@ -31,7 +31,7 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
         }
     }
 
-    public async Task<Validation<Error, Category>> GetByName(string categoryName, CancellationToken cancellation)
+    public async Task<Validation<Error, Category>> GetByName(string categoryName, CancellationToken cancellation = default)
     {
         try
         {
@@ -60,7 +60,7 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
     {
         try
         {
-            var memoryCategory = await GetById(category.Id, cancellation);
+            var memoryCategory = await GetById(category.Id, cancellation: cancellation);
             memoryCategory.Match(cat => cat.Name = category.Name, _ => { });
             return await Task.FromResult(ValidationResult.Success!);
         }

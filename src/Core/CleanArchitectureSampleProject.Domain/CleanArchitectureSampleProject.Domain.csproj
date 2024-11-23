@@ -4,6 +4,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Domain\AggregateRoots\Sells\Entities\**" />
+	  <EmbeddedResource Remove="Domain\AggregateRoots\Sells\Entities\**" />
+	  <None Remove="Domain\AggregateRoots\Sells\Entities\**" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="LanguageExt.Core" Version="4.4.9" />
@@ -11,6 +16,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Domain\AggregateRoots\Sells\Entities\" />
+	  <ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
 	</ItemGroup>
 </Project>

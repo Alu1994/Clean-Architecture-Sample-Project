@@ -19,7 +19,7 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
             var products = await Task.FromResult(_products.ToFrozenSet());
             foreach (var product in products)
             {
-                var categoryResult = await _categoryRepository.GetById(product.Category.Id, cancellation);
+                var categoryResult = await _categoryRepository.GetById(product.Category.Id, cancellation: cancellation);
                 _ = categoryResult.Match<Validation<Error, Product>>(category =>
                 {
                     return product.WithCategory(category);
@@ -42,6 +42,18 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
         try
         {
             return await Task.FromResult(_products.First(x => x.Id == id));
+        }
+        catch (Exception ex)
+        {
+            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+        }
+    }
+
+    public async Task<Validation<Error, Product?>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
+    {
+        try
+        {
+            return await Task.FromResult(_products.FirstOrDefault(x => x.Id == id));
         }
         catch (Exception ex)
         {

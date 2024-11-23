@@ -2,6 +2,7 @@
 using CleanArchitectureSampleProject.Domain.Domain.Events;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 
@@ -50,6 +51,23 @@ public sealed class Product : HasDomainEventsBase
         return this;
     }
 
+
+    public static Product MapToProduct(string name, string description, decimal? value, int? quantity, Guid? categoryId)
+    {
+        var product = new Product
+        {
+            Name = name,
+            Description = description,
+            Value = value.Value,
+            Quantity = quantity.Value
+        };
+
+        if(categoryId is not null) product.CategoryId = categoryId.Value;
+
+        return product;
+    }
+
+
     public static Validation<Error, Product> CreateNew(string name, string description, decimal? value, int? quantity, Category category)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -66,7 +84,7 @@ public sealed class Product : HasDomainEventsBase
 
         if (category is null)
             return Error.New($"{nameof(Category)} must not be null.");
-                
+
         var product = new Product(category)
         {
             Name = name,
@@ -141,6 +159,26 @@ public sealed class Product : HasDomainEventsBase
         Id = id;
 
         RegisterDomainEvent(new UpdateProductEvent(this));
+        return this;
+    }
+
+    internal Validation<Error, Product> Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+            return Error.New($"{nameof(Name)} must not be null.");
+
+        if (string.IsNullOrWhiteSpace(Description))
+            return Error.New($"{nameof(Description)} must not be null.");
+
+        if (Value == 0M)
+            return Error.New($"{nameof(Value)} must not be null.");
+
+        if (Quantity < 0)
+            return Error.New($"{nameof(Quantity)} must not be null.");
+
+        if (CategoryId == Guid.Empty)
+            return Error.New($"{nameof(Category)} must not be null.");
+
         return this;
     }
 }

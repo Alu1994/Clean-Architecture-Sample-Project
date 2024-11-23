@@ -28,7 +28,7 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             var products = JsonConvert.DeserializeObject<List<Product>>(cachedData, JsonSerializationOptions.RemoveInfiniteLoop)!.ToFrozenSet();
             foreach (var product in products)
             {
-                var categoryResult = await _categoryRepository.GetById(product.CategoryId, cancellation);
+                var categoryResult = await _categoryRepository.GetById(product.CategoryId, cancellation: cancellation);
                 _ = categoryResult.Match<Validation<Error, Product>>(category =>
                 {
                     return product.WithCategory(category);
@@ -54,6 +54,26 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             return products.Match<Validation<Error, Product>>(products =>
             {
                 return products.First(x => x.Id == id);
+            }, erCat =>
+            {
+                _logger.LogSeqError(erCat);
+                return erCat;
+            });
+        }
+        catch (Exception ex)
+        {
+            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+        }
+    }
+
+    public async Task<Validation<Error, Product?>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
+    {
+        try
+        {
+            var products = await Get(cancellation);
+            return products.Match<Validation<Error, Product?>>(products =>
+            {
+                return products.FirstOrDefault(x => x.Id == id);
             }, erCat =>
             {
                 _logger.LogSeqError(erCat);
@@ -146,20 +166,20 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
         }
     }
 
-    public async Task<Validation<Error, FrozenSet<Product>>> GetAllFromCacheOrInsertFrom(Func<Task<Validation<Error, FrozenSet<Product>>>> func, CancellationToken cancellation)
+    public async Task<Validation<Error, FrozenSet<Product>>> GetAllFromCache(CancellationToken cancellation)
     {
         var cacheProducts = await Get(cancellation);
-        return await cacheProducts.MatchAsync(async cache =>
+        return cacheProducts.Match<Validation<Error, FrozenSet<Product>>>(cache =>
         {
-            if (cache is not { Count: > 0 })
-            {
-                var products = await func();
-                return await products.MatchAsync<Validation<Error, FrozenSet<Product>>>(async s =>
-                {
-                    await InsertAll(s.ToFrozenSet(), cancellation);
-                    return s.ToFrozenSet();
-                }, er => er);
-            }
+            //if (cache is not { Count: > 0 })
+            //{
+            //    var products = await func();
+            //    return await products.MatchAsync<Validation<Error, FrozenSet<Product>>>(async s =>
+            //    {
+            //        await InsertAll(s.ToFrozenSet(), cancellation);
+            //        return s.ToFrozenSet();
+            //    }, er => er);
+            //}
             return cache;
         }, e => e);
     }

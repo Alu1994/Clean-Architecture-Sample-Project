@@ -24,4 +24,9 @@ public sealed class CategoryInput
             return Category.CreateNew(CategoryName);
         return Category.Create(Id, CategoryName);
     }
+
+    internal Category ToCategory2()
+    {
+        return Category.MapToCategory(Id, CategoryName);
+    }
 }

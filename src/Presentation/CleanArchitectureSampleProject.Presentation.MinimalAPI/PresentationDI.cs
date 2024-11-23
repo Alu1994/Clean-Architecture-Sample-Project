@@ -48,6 +48,7 @@ public static class PresentationDI
         services.AddDomainLayer();
         services.AddApplicationLayer();
         services.AddRepositoryLayer();
+        services.AddCacheAutoRefresh();
         // =========== Add Layers Dependency Injection ===========
 
         return services;

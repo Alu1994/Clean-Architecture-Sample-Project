@@ -15,7 +15,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
     };
 
-    public async Task<Validation<Error, FrozenSet<Category>>> Get(CancellationToken cancellation)
+    public async Task<Validation<Error, FrozenSet<Category>>> Get(CancellationToken cancellation = default)
     {
         try
         {
@@ -30,7 +30,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
     }
 
-    public async Task<Validation<Error, Category>> GetById(Guid id, CancellationToken cancellation)
+    public async Task<Validation<Error, Category>> GetById(Guid id, CancellationToken cancellation = default)
     {
         try
         {
@@ -47,7 +47,24 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
     }
 
-    public async Task<Validation<Error, Category>> GetByName(string categoryName, CancellationToken cancellation)
+    public async Task<Validation<Error, Category?>> GetByIdOrDefault(Guid id, CancellationToken cancellation = default)
+    {
+        try
+        {
+            string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
+            if (cachedData is null)
+                return Error.New($"Error while retrieving Category with id '{id}'.");
+
+            var categories = JsonConvert.DeserializeObject<List<Category>>(cachedData);
+            return categories.FirstOrDefault(x => x.Id == id);
+        }
+        catch (Exception ex)
+        {
+            return Error.New($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
+        }
+    }
+
+    public async Task<Validation<Error, Category>> GetByName(string categoryName, CancellationToken cancellation = default)
     {
         try
         {
@@ -123,20 +140,20 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
     }
 
-    public async Task<Validation<Error, FrozenSet<Category>>> GetAllFromCacheOrInsertFrom(Func<Task<Validation<Error, FrozenSet<Category>>>> func, CancellationToken cancellation)
+    public async Task<Validation<Error, FrozenSet<Category>>> GetAllFromCache(CancellationToken cancellation)
     {
-        var cacheCategories = await Get(cancellation);
-        return await cacheCategories.MatchAsync(async cache =>
+        var cacheCategories = await Get(cancellation: cancellation);
+        return cacheCategories.Match<Validation<Error, FrozenSet<Category>>>(cache =>
         {
-            if (cache is not { Count: > 0 })
-            {
-                var categories = await func();
-                return await categories.MatchAsync<Validation<Error, FrozenSet<Category>>>(async s =>
-                {
-                    await InsertAll(s.ToFrozenSet(), cancellation);
-                    return s.ToFrozenSet();
-                }, er => er);
-            }
+            //if (cache is not { Count: > 0 })
+            //{
+            //    var categories = await func();
+            //    return await categories.MatchAsync<Validation<Error, FrozenSet<Category>>>(async s =>
+            //    {
+            //        await InsertAll(s.ToFrozenSet(), cancellation);
+            //        return s.ToFrozenSet();
+            //    }, er => er);
+            //}
             return cache;
         }, e => e);
     }

@@ -31,13 +31,8 @@ public sealed class CreateProductInput
         Category.SetCategory(category);
     }
 
-    public Validation<Error, Product> ToProduct()
+    public Product ToProduct()
     {
-        var category = Category.ToCategory();
-
-        if (category.IsFail)
-            return (Seq<Error>)category;
-
-        return Product.CreateNew(Name, Description, Value, Quantity, category.SuccessToArray().First());
+        return Product.MapToProduct(Name, Description, Value, Quantity, Category.Id);
     }
 }
