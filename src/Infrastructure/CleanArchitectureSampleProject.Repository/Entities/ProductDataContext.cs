@@ -2,6 +2,7 @@
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Domain.Events;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureSampleProject.Repository.Entities;
@@ -39,6 +40,7 @@ public class ProductDataContext : DbContext
                 if (messaging is not null)
                     await messaging.SendMessage(@event.Message!, cancellationToken);
             }
+            entity.ClearDomainEvents();
         }
     }
 

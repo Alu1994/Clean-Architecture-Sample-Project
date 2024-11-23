@@ -11,7 +11,7 @@ public abstract class HasDomainEventsBase
 
     protected void RegisterDomainEvent(DomainEventBase domainEvent) => _domainEvents.Add(domainEvent);
 
-    internal void ClearDomainEvents() => _domainEvents.Clear();
+    public void ClearDomainEvents() => _domainEvents.Clear();
 }
 
 public abstract class DomainEventBase
