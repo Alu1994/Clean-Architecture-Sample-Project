@@ -1,6 +1,4 @@
 ﻿global using CleanArchitectureSampleProject.CrossCuttingConcerns;
-global using LanguageExt;
-global using LanguageExt.Common;
 global using Microsoft.Extensions.Logging;
 global using System;
 global using System.Collections.Generic;
