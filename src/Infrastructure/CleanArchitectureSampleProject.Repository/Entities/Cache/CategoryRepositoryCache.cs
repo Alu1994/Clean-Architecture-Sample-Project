@@ -5,7 +5,7 @@ using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositori
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 
-public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategoryRepository, ICategoryRepositoryCache
+public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategoryRepositoryCache
 {
     private readonly IDistributedCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
@@ -47,7 +47,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
     }
 
-    public async Task<Validation<Error, Category?>> GetByIdOrDefault(Guid id, CancellationToken cancellation = default)
+    public async Task<Validation<Error, Category>> GetByIdOrDefault(Guid id, CancellationToken cancellation = default)
     {
         try
         {
@@ -64,20 +64,24 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         }
     }
 
-    public async Task<Validation<Error, Category>> GetByName(string categoryName, CancellationToken cancellation = default)
+    public async Task<Results<Category, Error>> GetByName(string categoryName, CancellationToken cancellation = default)
     {
         try
         {
             string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
             if (cachedData is null)
-                return Error.New($"Error while retrieving Category with name '{categoryName}'.");
+                return new Results<Category, Error>(Error.New($"Error while retrieving Category with name '{categoryName}'."));
 
-            var categories = JsonConvert.DeserializeObject<List<Category>>(cachedData);
-            return categories.First(x => x.Name == categoryName);
+            var categories = JsonConvert.DeserializeObject<List<Category>>(cachedData)!;
+            var result = categories.FirstOrDefault(x => x.Name == categoryName);
+
+            if (result is null)
+                return new Results<Category, Error>(ResultStates.NotFound);
+            return result;
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex);
+            return new Results<Category, Error>(Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex));
         }
     }
 

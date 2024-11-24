@@ -1,4 +1,5 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Memory;
@@ -31,11 +32,13 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
         }
     }
 
-    public async Task<Validation<Error, Category>> GetByName(string categoryName, CancellationToken cancellation = default)
+    public async Task<Results<Category, Error>> GetByName(string categoryName, CancellationToken cancellation = default)
     {
         try
         {
-            return await Task.FromResult(_categories.First(x => x.Name == categoryName));
+            var result = _categories.FirstOrDefault(x => x.Name == categoryName);
+            if(result is null) return await Task.FromResult(ResultStates.NotFound);
+            return await Task.FromResult(result);
         }
         catch (Exception ex)
         {

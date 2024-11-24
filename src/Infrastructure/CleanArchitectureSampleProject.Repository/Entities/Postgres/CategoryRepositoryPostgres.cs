@@ -1,5 +1,7 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
@@ -50,34 +52,35 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
 
         Task<Category> GetFromDatabase()
         {
-            var category = _context.Categories.AsNoTracking().FirstAsync(x => x.Id == id);
+            var category = _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             return category!;
         }
     }
 
-    public async Task<Validation<Error, Category>> GetByName(string categoryName, CancellationToken cancellation = default)
+    public async Task<Results<Category, Error>> GetByName(string categoryName, CancellationToken cancellation = default)
     {
         try
         {
             var cacheResult = await _cache.GetByName(categoryName, cancellation);
-            return await cacheResult.MatchAsync<Validation<Error, Category>>(async categoryCache =>
+            if (cacheResult.IsSuccess)
             {
-                if (categoryCache is not null) return categoryCache;
+                var cacheContent = cacheResult;
+                if (cacheContent is not null) return cacheContent!;
                 return await GetFromDatabase();
-            }, async e =>
-            {
-                return await GetFromDatabase();
-            });
+            }
+            return await GetFromDatabase();
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex);
+            return new Results<Category, Error>(Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex));
         }
 
-        Task<Category> GetFromDatabase()
+        async Task<Results<Category, Error>> GetFromDatabase()
         {
-            var category = _context.Categories.AsNoTracking().FirstAsync(x => x.Name == categoryName);
-            return category!;
+            var result = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name == categoryName);
+            if (result is null)
+                return new Results<Category, Error>(ResultStates.NotFound, Error.New($"Category '{categoryName}' not found."));
+            return result!;
         }
     }
 

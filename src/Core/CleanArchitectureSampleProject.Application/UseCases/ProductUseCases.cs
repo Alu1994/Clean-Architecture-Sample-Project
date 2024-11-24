@@ -6,6 +6,7 @@ using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+using LanguageExt.ClassInstances;
 
 namespace CleanArchitectureSampleProject.Application.UseCases;
 
@@ -18,12 +19,16 @@ public interface IProductUseCases
     Task<Validation<Error, UpdateProductOutput>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation);
 }
 
-public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRepository productRepository, ICategoryUseCases categoryUseCases, ICreateProductService createProductService) : IProductUseCases
+public sealed class ProductUseCases(
+    ILogger<ProductUseCases> logger, 
+    IProductRepository productRepository, 
+    ICreateProductService createProductService, 
+    IUpdateProductService updateProductService) : IProductUseCases
 {
     private readonly ILogger<ProductUseCases> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly IProductRepository _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
-    private readonly ICategoryUseCases _categoryUseCases = categoryUseCases ?? throw new ArgumentNullException(nameof(categoryUseCases));
     private readonly ICreateProductService _createProductService = createProductService ?? throw new ArgumentNullException(nameof(createProductService));
+    private readonly IUpdateProductService _updateProductService = updateProductService ?? throw new ArgumentNullException(nameof(updateProductService));
 
     public async Task<Validation<Error, FrozenSet<GetProductOutput>>> GetProducts(CancellationToken cancellation)
     {
@@ -48,9 +53,11 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
     {
         _logger.LogInformation("Logging {MethodName} with {ProductName}", nameof(GetProductByName), productName);
         var result = await _productRepository.GetByName(productName, cancellation);
-        return result.Match<Validation<Error, GetProductOutput>>(
-            product => (GetProductOutput)product,
-            error => error);
+        if (result.IsSuccess)
+        {
+            return (GetProductOutput)result.Result!;
+        }
+        return result.Error!;
     }
 
     public async Task<Validation<Error, CreateProductOutput>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation)
@@ -60,37 +67,18 @@ public sealed class ProductUseCases(ILogger<ProductUseCases> logger, IProductRep
         var product = productInput.ToProduct();
         Category category = productInput.Category.ToCategory2();
         var result = await _createProductService.Execute(product, category, cancellation);
-
         if(result.IsFail) return result.ToError();
-
         return (CreateProductOutput)result.ToSuccess()!;
     }
 
     public async Task<Validation<Error, UpdateProductOutput>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(UpdateProduct), productInput);
-        
-        var getCategoryResult = await _categoryUseCases.GetOrCreateCategoryInternal(productInput.Category, cancellation);        
-        if (getCategoryResult.IsFail) return getCategoryResult.ToError();
 
-        var categoryResult = getCategoryResult.ToSuccess().ToCategory()!;
-        if (categoryResult.IsFail) return categoryResult.ToError();
-
-        var category = categoryResult.ToSuccess();
-        var getProductByIdResult = await GetProductById(productInput.Id, cancellation);
-        if (getProductByIdResult.IsFail) return getProductByIdResult.ToError();
-
-        var productOutputResult = getProductByIdResult.ToSuccess();
-        productInput.SetCategory(category);
-        var productResult = productInput.ToProduct(productOutputResult.CreationDate);
-        if (productResult.IsFail) return productResult.ToError();
-        
-        var product = productResult.ToSuccess();
-        product.SetCategory(category);
-        var repoResult = await _productRepository.Update(product, cancellation);
-        if (repoResult != ValidationResult.Success) return Error.New(repoResult.ErrorMessage!);
-
-        product.WithCategory(category);
-        return (UpdateProductOutput)product;
+        var product = productInput.ToProduct();
+        Category category = productInput.Category.ToCategory2();
+        var result = await _updateProductService.Execute(product, category, cancellation);
+        if (result.IsFail) return result.ToError();
+        return (UpdateProductOutput)result.ToSuccess()!;
     }
 }

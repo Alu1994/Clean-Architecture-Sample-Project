@@ -78,4 +78,9 @@ public sealed class Category
             Name = categoryName
         };
     }
+
+    internal void Create()
+    {
+        Id = Guid.NewGuid();
+    }
 }

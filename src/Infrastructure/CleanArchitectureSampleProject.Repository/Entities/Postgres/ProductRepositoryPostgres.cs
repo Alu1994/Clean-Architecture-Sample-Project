@@ -1,4 +1,5 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -81,29 +82,28 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         }
     }
 
-    public async Task<Validation<Error, Product>> GetByName(string productName, CancellationToken cancellation)
+    public async Task<Results<Product, Error>> GetByName(string productName, CancellationToken cancellation)
     {
         try
         {
             var cacheResult = await _cache.GetByName(productName, cancellation);
-            return await cacheResult.MatchAsync<Validation<Error, Product>>(async productCache =>
+            if (cacheResult.IsSuccess)
             {
-                if (productCache is not null) return productCache;
+                if (cacheResult.Result is not null) return cacheResult.Result!;
                 return await GetFromDatabase();
-            }, async e =>
-            {
-                return await GetFromDatabase();
-            });
+            }
+            return await GetFromDatabase();
         }
         catch (Exception ex)
         {
             return Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
         }
 
-        Task<Product> GetFromDatabase()
+        async Task<Results<Product, Error>> GetFromDatabase()
         {
-            var product = _context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Name == productName, cancellation);
-            return product!;
+            var product = await _context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Name == productName, cancellation);
+            if (product is null) return new Results<Product, Error>(ResultStates.NotFound, Error.New($"Product '{productName}' not found"));
+            return product;
         }
     }
 

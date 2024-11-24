@@ -61,11 +61,13 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
         }
     }
 
-    public async Task<Validation<Error, Product>> GetByName(string productName, CancellationToken cancellation)
+    public async Task<Results<Product, Error>> GetByName(string productName, CancellationToken cancellation)
     {
         try
         {
-            return await Task.FromResult(_products.First(x => x.Name == productName));
+            var result = _products.FirstOrDefault(x => x.Name == productName);
+            if(result is null) return await Task.FromResult(ResultStates.NotFound);
+            return await Task.FromResult(result);
         }
         catch (Exception ex)
         {

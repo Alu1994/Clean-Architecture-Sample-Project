@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+using LanguageExt.Common;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 
@@ -86,23 +87,27 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
         }
     }
 
-    public async Task<Validation<Error, Product>> GetByName(string productName, CancellationToken cancellation)
+    public async Task<Results<Product, Error>> GetByName(string productName, CancellationToken cancellation)
     {
         try
         {
             var products = await Get(cancellation);
-            return products.Match<Validation<Error, Product>>(products =>
+            if (products.IsSuccess)
             {
-                return products.First(x => x.Name == productName);
-            }, erCat =>
+                var result = products.ToSuccess().FirstOrDefault(x => x.Name == productName);
+                if (result is null)
+                    return new Results<Product, Error>(ResultStates.NotFound);
+                return result;
+            }
+            else
             {
-                _logger.LogSeqError(erCat);
-                return erCat;
-            });
+                _logger.LogSeqError(products.ToError());
+                return products.ToError();
+            }
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
+            return new Results<Product, Error>(Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}", ex));
         }
     }
 

@@ -52,7 +52,7 @@ public sealed class Product : HasDomainEventsBase
     }
 
 
-    public static Product MapToProduct(string name, string description, decimal? value, int? quantity, Guid? categoryId)
+    public static Product MapToProduct(string name, string description, decimal? value, int? quantity, Guid? categoryId, Guid? id = null)
     {
         var product = new Product
         {
@@ -62,7 +62,8 @@ public sealed class Product : HasDomainEventsBase
             Quantity = quantity.Value
         };
 
-        if(categoryId is not null) product.CategoryId = categoryId.Value;
+        if (id is not null && id != Guid.Empty) product.Id = id.Value;
+        if (categoryId is not null && id != Guid.Empty) product.CategoryId = categoryId.Value;
 
         return product;
     }
@@ -112,12 +113,6 @@ public sealed class Product : HasDomainEventsBase
         return ValidationResult.Success!;
     }
 
-    private Product Create()
-    {
-        RegisterDomainEvent(new CreateProductEvent(this));
-        return this;
-    }
-
     public ValidationResult UpdateValue(decimal? value)
     {
         if (value is null)
@@ -126,6 +121,19 @@ public sealed class Product : HasDomainEventsBase
         }
         Value = value.Value;
         return ValidationResult.Success!;
+    }
+
+    public Product Create()
+    {
+        RegisterDomainEvent(new CreateProductEvent(this));
+        return this;
+    }
+
+    public Product Update(Guid id)
+    {
+        Id = id;
+        RegisterDomainEvent(new UpdateProductEvent(this));
+        return this;
     }
 
     public ValidationResult AddQuantity(int? quantity)
