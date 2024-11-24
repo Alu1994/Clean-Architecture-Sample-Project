@@ -49,7 +49,7 @@ public sealed class LoadCacheBackgroundService : BackgroundService
         var categoryRepository = scope.ServiceProvider.GetService<ICategoryRepositoryDatabase>()!;
         var categoryRepositoryCache = scope.ServiceProvider.GetService<ICategoryRepositoryCache>()!;
         var categoriesResult = await categoryRepository.Get(true, stoppingToken);
-        await categoriesResult.MatchAsync<Validation<Error, FrozenSet<Category>>>(async categories =>
+        await categoriesResult.MatchAsync<Results<FrozenSet<Category>, BaseError>>(async categories =>
         {
             await categoryRepositoryCache.InsertAll(categories, stoppingToken);
             return categories;
@@ -61,7 +61,7 @@ public sealed class LoadCacheBackgroundService : BackgroundService
         var productRepository = scope.ServiceProvider.GetService<IProductRepositoryDatabase>()!;
         var productRepositoryCache = scope.ServiceProvider.GetService<IProductRepositoryCache>()!;
         var productsResult = await productRepository.Get(true, stoppingToken);
-        await productsResult.MatchAsync<Validation<Error, FrozenSet<Product>>>(async products =>
+        await productsResult.MatchAsync<Results<FrozenSet<Product>, BaseError>>(async products =>
         {
             await productRepositoryCache.InsertAll(products, stoppingToken);
             return products;

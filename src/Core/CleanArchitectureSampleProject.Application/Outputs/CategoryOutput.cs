@@ -1,4 +1,5 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 
 namespace CleanArchitectureSampleProject.Application.Outputs;
 
@@ -13,7 +14,7 @@ public sealed class CategoryOutput
 
     }
 
-    public Validation<Error, Category> ToCategory()
+    public Results<Category, BaseError> ToCategory()
     {
         return Category.Create(Id, CategoryName!, CreationDate);
     }

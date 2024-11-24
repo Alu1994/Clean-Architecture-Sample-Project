@@ -1,5 +1,4 @@
-﻿global using LanguageExt;
-global using LanguageExt.Common;
+﻿global using CleanArchitectureSampleProject.CrossCuttingConcerns;
 global using Microsoft.Extensions.Logging;
 global using Newtonsoft.Json;
 global using System;

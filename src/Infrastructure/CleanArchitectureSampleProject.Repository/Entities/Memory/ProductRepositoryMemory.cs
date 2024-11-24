@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Memory;
@@ -12,7 +11,7 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
     //private List<Product> _products = [ Product.Create("Product", "Product", 0, 0, Domain.AggregateRoots.Products.Entities.Category.Create(Guid.NewGuid(), "Category").SuccessToSeq().First()).SuccessToSeq().First() ];
     private List<Product> _products = [];
 
-    public async Task<Validation<Error, FrozenSet<Product>>> Get(CancellationToken cancellation)
+    public async Task<Results<FrozenSet<Product>, BaseError>> Get(CancellationToken cancellation)
     {
         try
         {
@@ -20,12 +19,12 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
             foreach (var product in products)
             {
                 var categoryResult = await _categoryRepository.GetById(product.Category.Id, cancellation: cancellation);
-                _ = categoryResult.Match<Validation<Error, Product>>(category =>
+                _ = categoryResult.Match<Results<Product, BaseError>>(category =>
                 {
                     return product.WithCategory(category);
                 }, erCat =>
                 {
-                    _logger.LogSeqError(erCat);
+                    _logger.LogBaseError(erCat);
                     return erCat;
                 });
             }
@@ -33,11 +32,11 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Products: {ex.Message}", ex);
+            return new BaseError($"Error while retrieving all Products: {ex.Message}", ex);
         }
     }
 
-    public async Task<Validation<Error, Product>> GetById(Guid id, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetById(Guid id, CancellationToken cancellation)
     {
         try
         {
@@ -45,11 +44,11 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
     }
 
-    public async Task<Validation<Error, Product?>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
     {
         try
         {
@@ -57,21 +56,21 @@ public sealed class ProductRepositoryMemory(ILogger<ProductRepositoryMemory> log
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
     }
 
-    public async Task<Results<Product, Error>> GetByName(string productName, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetByName(string productName, CancellationToken cancellation)
     {
         try
         {
             var result = _products.FirstOrDefault(x => x.Name == productName);
-            if(result is null) return await Task.FromResult(ResultStates.NotFound);
+            if(result is null) return await Task.FromResult((ResultStates.NotFound, new BaseError($"Product '{productName}' not found.")));
             return await Task.FromResult(result);
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
         }
     }
 

@@ -1,7 +1,6 @@
 ﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
-using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
@@ -11,14 +10,14 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
     private readonly ProductDataContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private readonly ICategoryRepositoryCache _cache = categoryRepositoryCache ?? throw new ArgumentNullException(nameof(categoryRepositoryCache));
 
-    public async Task<Validation<Error, FrozenSet<Category>>> Get(bool byPassCache = false, CancellationToken cancellation = default)
+    public async Task<Results<FrozenSet<Category>, BaseError>> Get(bool byPassCache = false, CancellationToken cancellation = default)
     {
         if (byPassCache)
             return await GetAllDatabase();
         return await _cache.GetAllFromCache(cancellation);
     }
 
-    public async Task<Validation<Error, FrozenSet<Category>>> Get(CancellationToken cancellation = default)
+    public async Task<Results<FrozenSet<Category>, BaseError>> Get(CancellationToken cancellation = default)
     {
         var result = await _cache.GetAllFromCache(cancellation);
         return await result.MatchAsync(async cache =>
@@ -31,12 +30,12 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
         });
     }
 
-    public async Task<Validation<Error, Category>> GetById(Guid id, CancellationToken cancellation = default)
+    public async Task<Results<Category, BaseError>> GetById(Guid id, CancellationToken cancellation = default)
     {
         try
         {
             var cacheResult = await _cache.GetById(id, cancellation);
-            return await cacheResult.MatchAsync<Validation<Error, Category>>(async categoryCache =>
+            return await cacheResult.MatchAsync<Results<Category, BaseError>>(async categoryCache =>
             {
                 if (categoryCache is not null) return categoryCache;
                 return await GetFromDatabase();
@@ -47,7 +46,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
         }
 
         Task<Category> GetFromDatabase()
@@ -57,7 +56,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
         }
     }
 
-    public async Task<Results<Category, Error>> GetByName(string categoryName, CancellationToken cancellation = default)
+    public async Task<Results<Category, BaseError>> GetByName(string categoryName, CancellationToken cancellation = default)
     {
         try
         {
@@ -72,14 +71,14 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
         }
         catch (Exception ex)
         {
-            return new Results<Category, Error>(Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex));
+            return new BaseError($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex);
         }
 
-        async Task<Results<Category, Error>> GetFromDatabase()
+        async Task<Results<Category, BaseError>> GetFromDatabase()
         {
             var result = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name == categoryName);
             if (result is null)
-                return new Results<Category, Error>(ResultStates.NotFound, Error.New($"Category '{categoryName}' not found."));
+                return (ResultStates.NotFound, new BaseError($"Category '{categoryName}' not found."));
             return result!;
         }
     }
@@ -124,7 +123,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
         }
     }
 
-    private async Task<Validation<Error, FrozenSet<Category>>> GetAllDatabase(CancellationToken cancellation = default)
+    private async Task<Results<FrozenSet<Category>, BaseError>> GetAllDatabase(CancellationToken cancellation = default)
     {
         try
         {
@@ -137,7 +136,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Categories: {ex.Message}", ex);
+            return new BaseError($"Error while retrieving all Categories: {ex.Message}", ex);
         }
     }
 }

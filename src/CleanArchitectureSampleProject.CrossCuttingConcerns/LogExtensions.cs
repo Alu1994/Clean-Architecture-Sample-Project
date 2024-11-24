@@ -17,10 +17,24 @@ public static class LogExtensions
     {
         var errorMessage = error.ToSeq().Head.Message;
         var exceptions = error.ToSeq().Head.Exception;
-        exceptions.Match(exp => 
-            logger.LogError(exp, errorMessage), 
+        exceptions.Match(exp =>
+            logger.LogError(exp, errorMessage),
             () => logger.LogError(errorMessage));
 
+        return errorMessage;
+    }
+
+    public static string LogBaseError<TLogger, TError>(this ILogger<TLogger> logger, TError error) where TError : BaseError
+    {
+        var errorMessage = error.Message;
+        var exception = error.Exception;
+
+        if (exception is not null)
+        {
+            logger.LogError(exception, errorMessage);
+            return errorMessage;
+        }
+        logger.LogError(errorMessage);
         return errorMessage;
     }
 }

@@ -1,10 +1,4 @@
-﻿using CleanArchitectureSampleProject.Application.Outputs;
-using CleanArchitectureSampleProject.Application.UseCases;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static partial class CategoriesEndpoints
 {
@@ -28,7 +22,7 @@ public static partial class CategoriesEndpoints
         return result.Match(success => Results.Ok(success),
             error =>
             {
-                var errorMessage = logger.LogSeqError(error);
+                var errorMessage = logger.LogBaseError(error);
                 return Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
                     title: errorTitle,

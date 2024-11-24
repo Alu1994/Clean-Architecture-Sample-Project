@@ -19,5 +19,4 @@ public static partial class ProductsEndpoints
         app.MapUpdate();
         return app;
     }
-
 }

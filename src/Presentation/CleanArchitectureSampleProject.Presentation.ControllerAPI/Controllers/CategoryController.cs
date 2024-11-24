@@ -13,16 +13,16 @@ namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
         [HttpGet(Name = "GetAllCategories")]
         public async Task<IResult> GetAll(CancellationToken cancellation)
         {
-            const string errorMessage = "Error while getting all categories.";
+            const string errorTitleMessage = "Error while getting all categories.";
 
             var result = await _categoryUseCases.GetCategories(cancellation);
             
-            return result.Match(x =>
-                Results.Ok(x),
-                x => Results.Problem(
+            return result.Match(success =>
+                Results.Ok(success),
+                error => Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorMessage,
-                    detail: x.ToSeq().Head.Message,
+                    title: errorTitleMessage,
+                    detail: error.Message,
                     statusCode: StatusCodes.Status400BadRequest
                 )
             );
@@ -31,16 +31,16 @@ namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
         [HttpGet("{categoryId:Guid}", Name = "GetCategoryById")]
         public async Task<IResult> Get(Guid categoryId, CancellationToken cancellation)
         {
-            const string errorMessage = "Error while getting category by id.";
+            const string errorTitleMessage = "Error while getting category by id.";
 
             var result = await _categoryUseCases.GetCategoryById(categoryId, cancellation);
 
-            return result.Match(x => 
-                Results.Ok(x),
-                x => Results.Problem(
+            return result.Match(success => 
+                Results.Ok(success),
+                error => Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorMessage,
-                    detail: x.ToSeq().Head.Message,
+                    title: errorTitleMessage,
+                    detail: error.Message,
                     statusCode: StatusCodes.Status400BadRequest
                 )
             );
@@ -49,16 +49,16 @@ namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
         [HttpGet("by-name/{categoryName}", Name = "GetCategoryByName")]
         public async Task<IResult> Get(string categoryName, CancellationToken cancellation)
         {
-            const string errorMessage = "Error while getting category by name.";
+            const string errorTitleMessage = "Error while getting category by name.";
 
             var result = await _categoryUseCases.GetCategoryByName(categoryName, cancellation);
 
-            return result.Match(x =>
-                Results.Ok(x),
-                x => Results.Problem(
+            return result.Match(success =>
+                Results.Ok(success),
+                error => Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorMessage,
-                    detail: x.ToSeq().Head.Message,
+                    title: errorTitleMessage,
+                    detail: error.Message,
                     statusCode: StatusCodes.Status400BadRequest
                 )
             );
@@ -67,16 +67,16 @@ namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
         [HttpPost(Name = "CreateCategory")]
         public async Task<IResult> Post(CategoryInput category, CancellationToken cancellation)
         {
-            const string errorMessage = "Error while creating new category.";
+            const string errorTitleMessage = "Error while creating new category.";
 
             var result = await _categoryUseCases.CreateCategory(category, cancellation);
 
-            return result.Match(x =>
-                Results.Ok(x),
-                x => Results.Problem(
+            return result.Match(success =>
+                Results.Ok(success),
+                error => Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorMessage,
-                    detail: x.ToSeq().Head.Message,
+                    title: errorTitleMessage,
+                    detail: error.Message,
                     statusCode: StatusCodes.Status400BadRequest
                 )
             );

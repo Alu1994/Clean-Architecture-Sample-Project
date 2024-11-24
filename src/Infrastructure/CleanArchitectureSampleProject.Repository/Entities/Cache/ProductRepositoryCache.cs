@@ -1,12 +1,10 @@
-﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
-using LanguageExt.Common;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 
-public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logger, ICategoryRepository categoryRepository, IDistributedCache cache) : IProductRepository, IProductRepositoryCache
+public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logger, ICategoryRepository categoryRepository, IDistributedCache cache) : IProductRepositoryCache
 {
     private readonly ILogger<ProductRepositoryCache> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly ICategoryRepository _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
@@ -18,7 +16,7 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) // Set cache expiry
     };
 
-    public async Task<Validation<Error, FrozenSet<Product>>> Get(CancellationToken cancellation)
+    public async Task<Results<FrozenSet<Product>, BaseError>> Get(CancellationToken cancellation)
     {
         try
         {
@@ -30,12 +28,12 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             foreach (var product in products)
             {
                 var categoryResult = await _categoryRepository.GetById(product.CategoryId, cancellation: cancellation);
-                _ = categoryResult.Match<Validation<Error, Product>>(category =>
+                _ = categoryResult.Match<Results<Product, BaseError>>(category =>
                 {
                     return product.WithCategory(category);
                 }, erCat =>
                 {
-                    _logger.LogSeqError(erCat);
+                    _logger.LogBaseError(erCat);
                     return erCat;
                 });
             }
@@ -43,71 +41,68 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Products: {ex.Message}", ex);
+            return new BaseError($"Error while retrieving all Products: {ex.Message}", ex);
         }
     }
 
-    public async Task<Validation<Error, Product>> GetById(Guid id, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetById(Guid id, CancellationToken cancellation)
     {
         try
         {
             var products = await Get(cancellation);
-            return products.Match<Validation<Error, Product>>(products =>
+            return products.Match<Results<Product, BaseError>>(products =>
             {
                 return products.First(x => x.Id == id);
             }, erCat =>
             {
-                _logger.LogSeqError(erCat);
+                _logger.LogBaseError(erCat);
                 return erCat;
             });
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
     }
 
-    public async Task<Validation<Error, Product?>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
     {
         try
         {
             var products = await Get(cancellation);
-            return products.Match<Validation<Error, Product?>>(products =>
+            return products.Match<Results<Product, BaseError>>(products =>
             {
                 return products.FirstOrDefault(x => x.Id == id);
             }, erCat =>
             {
-                _logger.LogSeqError(erCat);
+                _logger.LogBaseError(erCat);
                 return erCat;
             });
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
     }
 
-    public async Task<Results<Product, Error>> GetByName(string productName, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetByName(string productName, CancellationToken cancellation)
     {
         try
         {
             var products = await Get(cancellation);
-            if (products.IsSuccess)
+            if (!products.IsSuccess)
             {
-                var result = products.ToSuccess().FirstOrDefault(x => x.Name == productName);
-                if (result is null)
-                    return new Results<Product, Error>(ResultStates.NotFound);
-                return result;
+                _logger.LogBaseError(products.Error);
+                return products.Error;
             }
-            else
-            {
-                _logger.LogSeqError(products.ToError());
-                return products.ToError();
-            }
+
+            var result = products.ToSuccess().FirstOrDefault(x => x.Name == productName);
+            if (result is not null) return result;
+            return (ResultStates.NotFound, new BaseError($"Product '{productName}' not found."));
         }
         catch (Exception ex)
         {
-            return new Results<Product, Error>(Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}", ex));
+            return new BaseError($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
         }
     }
 
@@ -171,22 +166,10 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
         }
     }
 
-    public async Task<Validation<Error, FrozenSet<Product>>> GetAllFromCache(CancellationToken cancellation)
+    public async Task<Results<FrozenSet<Product>, BaseError>> GetAllFromCache(CancellationToken cancellation)
     {
         var cacheProducts = await Get(cancellation);
-        return cacheProducts.Match<Validation<Error, FrozenSet<Product>>>(cache =>
-        {
-            //if (cache is not { Count: > 0 })
-            //{
-            //    var products = await func();
-            //    return await products.MatchAsync<Validation<Error, FrozenSet<Product>>>(async s =>
-            //    {
-            //        await InsertAll(s.ToFrozenSet(), cancellation);
-            //        return s.ToFrozenSet();
-            //    }, er => er);
-            //}
-            return cache;
-        }, e => e);
+        return cacheProducts.Match<Results<FrozenSet<Product>, BaseError>>(cache => cache, e => e);
     }
     // ====== IProductRepositoryCache Methods ======
 }

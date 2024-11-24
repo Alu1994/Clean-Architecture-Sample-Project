@@ -1,8 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Domain.Events;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using System.Xml.Linq;
 
 namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 
@@ -31,7 +28,7 @@ public sealed class Product : HasDomainEventsBase
         SetCategory(category);
     }
 
-    public static Validation<Error, Product> CreateExistent(Guid id, string name, string description, decimal? value, int? quantity, Category category, DateTime? creationDate = null)
+    public static Results<Product, BaseError> CreateExistent(Guid id, string name, string description, decimal? value, int? quantity, Category category, DateTime? creationDate = null)
     {
         return new Product(category)
         {
@@ -69,22 +66,22 @@ public sealed class Product : HasDomainEventsBase
     }
 
 
-    public static Validation<Error, Product> CreateNew(string name, string description, decimal? value, int? quantity, Category category)
+    public static Results<Product, BaseError> CreateNew(string name, string description, decimal? value, int? quantity, Category category)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Error.New($"{nameof(Name)} must not be null.");
+            return new BaseError($"{nameof(Name)} must not be null.");
 
         if (string.IsNullOrWhiteSpace(description))
-            return Error.New($"{nameof(Description)} must not be null.");
+            return new BaseError($"{nameof(Description)} must not be null.");
 
         if (value is null)
-            return Error.New($"{nameof(Value)} must not be null.");
+            return new BaseError($"{nameof(Value)} must not be null.");
 
         if (quantity is null)
-            return Error.New($"{nameof(Quantity)} must not be null.");
+            return new BaseError($"{nameof(Quantity)} must not be null.");
 
         if (category is null)
-            return Error.New($"{nameof(Category)} must not be null.");
+            return new BaseError($"{nameof(Category)} must not be null.");
 
         var product = new Product(category)
         {
@@ -170,22 +167,22 @@ public sealed class Product : HasDomainEventsBase
         return this;
     }
 
-    internal Validation<Error, Product> Validate()
+    internal Results<Product, BaseError> Validate()
     {
         if (string.IsNullOrWhiteSpace(Name))
-            return Error.New($"{nameof(Name)} must not be null.");
+            return new BaseError($"{nameof(Name)} must not be null.");
 
         if (string.IsNullOrWhiteSpace(Description))
-            return Error.New($"{nameof(Description)} must not be null.");
+            return new BaseError($"{nameof(Description)} must not be null.");
 
         if (Value == 0M)
-            return Error.New($"{nameof(Value)} must not be null.");
+            return new BaseError($"{nameof(Value)} must not be null.");
 
         if (Quantity < 0)
-            return Error.New($"{nameof(Quantity)} must not be null.");
+            return new BaseError($"{nameof(Quantity)} must not be null.");
 
         if (CategoryId == Guid.Empty)
-            return Error.New($"{nameof(Category)} must not be null.");
+            return new BaseError($"{nameof(Category)} must not be null.");
 
         return this;
     }

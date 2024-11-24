@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,14 +9,14 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
     private readonly ProductDataContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private readonly IProductRepositoryCache _cache = productRepositoryCache ?? throw new ArgumentNullException(nameof(productRepositoryCache));
 
-    public async Task<Validation<Error, FrozenSet<Product>>> Get(bool byPassCache = false, CancellationToken cancellation = default)
+    public async Task<Results<FrozenSet<Product>, BaseError>> Get(bool byPassCache = false, CancellationToken cancellation = default)
     {
         if (byPassCache)
             return await GetAllDatabase();
         return await _cache.GetAllFromCache(cancellation);
     }
 
-    public async Task<Validation<Error, FrozenSet<Product>>> Get(CancellationToken cancellation = default)
+    public async Task<Results<FrozenSet<Product>, BaseError>> Get(CancellationToken cancellation = default)
     {
         var result = await _cache.GetAllFromCache(cancellation);
         return await result.MatchAsync(async cache =>
@@ -30,12 +29,12 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         });
     }
 
-    public async Task<Validation<Error, Product>> GetById(Guid id, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetById(Guid id, CancellationToken cancellation)
     {
         try
         {
             var cacheResult = await _cache.GetById(id, cancellation);
-            return await cacheResult.MatchAsync<Validation<Error, Product>>(async productCache =>
+            return await cacheResult.MatchAsync<Results<Product, BaseError>>(async productCache =>
             {
                 if (productCache is not null) return productCache;
                 return await GetFromDatabase();
@@ -46,7 +45,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
 
         Task<Product> GetFromDatabase()
@@ -56,12 +55,12 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         }
     }
 
-    public async Task<Validation<Error, Product?>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetByIdOrDefault(Guid id, CancellationToken cancellation)
     {
         try
         {
             var cacheResult = await _cache.GetById(id, cancellation);
-            return await cacheResult.MatchAsync<Validation<Error, Product?>>(async productCache =>
+            return await cacheResult.MatchAsync<Results<Product, BaseError>>(async productCache =>
             {
                 if (productCache is not null) return productCache;
                 return await GetFromDatabase();
@@ -72,7 +71,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
 
         Task<Product?> GetFromDatabase()
@@ -82,27 +81,27 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         }
     }
 
-    public async Task<Results<Product, Error>> GetByName(string productName, CancellationToken cancellation)
+    public async Task<Results<Product, BaseError>> GetByName(string productName, CancellationToken cancellation)
     {
         try
         {
             var cacheResult = await _cache.GetByName(productName, cancellation);
             if (cacheResult.IsSuccess)
             {
-                if (cacheResult.Result is not null) return cacheResult.Result!;
+                if (cacheResult.Success is not null) return cacheResult.Success!;
                 return await GetFromDatabase();
             }
             return await GetFromDatabase();
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Product with name '{productName}': {ex.Message}", ex);
         }
 
-        async Task<Results<Product, Error>> GetFromDatabase()
+        async Task<Results<Product, BaseError>> GetFromDatabase()
         {
             var product = await _context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Name == productName, cancellation);
-            if (product is null) return new Results<Product, Error>(ResultStates.NotFound, Error.New($"Product '{productName}' not found"));
+            if (product is null) return new Results<Product, BaseError>(ResultStates.NotFound, new BaseError($"Product '{productName}' not found"));
             return product;
         }
     }
@@ -152,7 +151,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         }
     }
 
-    private async Task<Validation<Error, FrozenSet<Product>>> GetAllDatabase(CancellationToken cancellation = default)
+    private async Task<Results<FrozenSet<Product>, BaseError>> GetAllDatabase(CancellationToken cancellation = default)
     {
         try
         {
@@ -165,7 +164,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Products: {ex.Message}", ex);
+            return new BaseError($"Error while retrieving all Products: {ex.Message}", ex);
         }
     }
 }

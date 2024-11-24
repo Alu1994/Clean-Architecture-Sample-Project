@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Memory;
@@ -8,19 +7,19 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
 {
     private List<Category> _categories = [];
 
-    public async Task<Validation<Error, FrozenSet<Category>>> Get(CancellationToken cancellation = default)
+    public async Task<Results<FrozenSet<Category>, BaseError>> Get(CancellationToken cancellation = default)
     {
-        try
+        try 
         {
             return await Task.FromResult(_categories.ToFrozenSet());
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving all Categories: {ex.Message}", ex);
+            return new BaseError($"Error while retrieving all Categories: {ex.Message}", ex);
         }
     }
 
-    public async Task<Validation<Error, Category>> GetById(Guid id, CancellationToken cancellation = default)
+    public async Task<Results<Category, BaseError>> GetById(Guid id, CancellationToken cancellation = default)
     {
         try
         {
@@ -28,11 +27,11 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
         }
     }
 
-    public async Task<Results<Category, Error>> GetByName(string categoryName, CancellationToken cancellation = default)
+    public async Task<Results<Category, BaseError>> GetByName(string categoryName, CancellationToken cancellation = default)
     {
         try
         {
@@ -42,7 +41,7 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
         }
         catch (Exception ex)
         {
-            return Error.New($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex);
+            return new BaseError($"Error while retrieving Category with name '{categoryName}': {ex.Message}", ex);
         }
     }
 
@@ -64,7 +63,7 @@ public sealed class CategoryRepositoryMemory : ICategoryRepository
         try
         {
             var memoryCategory = await GetById(category.Id, cancellation: cancellation);
-            memoryCategory.Match(cat => cat.Name = category.Name, _ => { });
+            memoryCategory.Match<Results<Category, BaseError>>(cat => { cat.Name = category.Name; return cat; }, _ => _);
             return await Task.FromResult(ValidationResult.Success!);
         }
         catch (Exception ex)

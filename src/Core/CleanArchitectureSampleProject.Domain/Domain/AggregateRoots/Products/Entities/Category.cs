@@ -1,4 +1,6 @@
-﻿namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+
+namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 
 public sealed class Category
 {
@@ -15,10 +17,10 @@ public sealed class Category
         CreationDate = DateTime.UtcNow;
     }
 
-    public static Validation<Error, Category> CreateNew(string categoryName)
+    public static Results<Category, BaseError> CreateNew(string categoryName)
     {
         if (string.IsNullOrWhiteSpace(categoryName))
-            return Error.New($"{nameof(Category)}.{nameof(Name)} must not be null.");
+            return new BaseError($"{nameof(Category)}.{nameof(Name)} must not be null.");
         
         return new Category
         {
@@ -26,13 +28,13 @@ public sealed class Category
         };
     }
 
-    public static Validation<Error, Category> Create(Guid? id, string categoryName, DateTime? creationDate = null)
+    public static Results<Category, BaseError> Create(Guid? id, string categoryName, DateTime? creationDate = null)
     {
         if (id is null)
-            return Error.New($"{nameof(Category)}.{nameof(Id)} must not be null.");
+            return new BaseError($"{nameof(Category)}.{nameof(Id)} must not be null.");
 
         if (string.IsNullOrWhiteSpace(categoryName))
-            return Error.New($"{nameof(Category)}.{nameof(Name)} must not be null.");
+            return new BaseError($"{nameof(Category)}.{nameof(Name)} must not be null.");
 
         return new Category
         {
@@ -48,17 +50,17 @@ public sealed class Category
         return this;
     }
 
-    internal Validation<Error, Category> Validate()
+    internal Results<Category, BaseError> Validate()
     {
         if (string.IsNullOrWhiteSpace(Name))
-            return Error.New($"{nameof(Category)}.{nameof(Name)} must not be null.");
+            return new BaseError($"{nameof(Category)}.{nameof(Name)} must not be null.");
         return this;
     }
 
-    internal Validation<Error, Category> ValidateGetOrCreate()
+    internal Results<Category, BaseError> ValidateGetOrCreate()
     {
         if (string.IsNullOrWhiteSpace(Name) && Id == Guid.Empty)
-            return Error.New($"{nameof(Category)}.{nameof(Id)} or {nameof(Category)}.{nameof(Name)} must not be null.");
+            return new BaseError($"{nameof(Category)}.{nameof(Id)} or {nameof(Category)}.{nameof(Name)} must not be null.");
         return this;
     }
 
