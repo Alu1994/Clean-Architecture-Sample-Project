@@ -29,6 +29,13 @@ public sealed class CategoryGetOrCreateService : ICategoryGetOrCreateService
             return categoryGetResult;
         }
 
+        if (string.IsNullOrWhiteSpace(categoryInput.Name) is false)
+        {
+            var categoryGetResult = await _categoryRepository.GetByName(categoryInput.Name);
+            if(categoryGetResult.State is ResultStates.Error) return categoryGetResult;
+            if (categoryGetResult.State is ResultStates.Success) return new BaseError($"Category '{categoryInput.Name}' already exists.");
+        }
+
         var creationResult = await _categoryRepository.Insert(categoryInput, cancellationToken);
         if (creationResult != ValidationResult.Success) return new BaseError(creationResult.ErrorMessage!);
 

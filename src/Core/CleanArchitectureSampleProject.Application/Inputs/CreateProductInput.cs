@@ -31,8 +31,8 @@ public sealed class CreateProductInput
         Category.SetCategory(category);
     }
 
-    public Product ToProduct()
+    public Product ToProduct(Category? category)
     {
-        return Product.MapToProduct(Name, Description, Value, Quantity, Category.Id);
+        return Product.MapToProduct(Name, Description, Value, Quantity, category);
     }
 }

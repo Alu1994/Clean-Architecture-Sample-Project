@@ -1,7 +1,4 @@
-﻿using CleanArchitectureSampleProject.Application.Inputs;
-using CleanArchitectureSampleProject.Application.Outputs;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 using System.Collections.Frozen;
@@ -22,37 +19,39 @@ public interface ICategoryUseCases
 public sealed class CategoryUseCases(
     ILogger<CategoryUseCases> logger, 
     ICategoryRepository categoryRepository,
-    ICreateCategoryService createCategoryService) : ICategoryUseCases
+    ICreateCategoryService createCategoryService,
+    IUpdateCategoryService updateCategoryService) : ICategoryUseCases
 {
     private readonly ILogger<CategoryUseCases> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly ICategoryRepository _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
     private readonly ICreateCategoryService _createCategoryService = createCategoryService ?? throw new ArgumentNullException(nameof(createCategoryService));
-
+    private readonly IUpdateCategoryService _updateCategoryService = updateCategoryService ?? throw new ArgumentNullException(nameof(updateCategoryService));
+    
     public async Task<Results<FrozenSet<CategoryOutput>, BaseError>> GetCategories(CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName}", nameof(GetCategories));
+
         var categories = await _categoryRepository.Get(cancellation: cancellation);
         return categories.Match<Results<FrozenSet<CategoryOutput>, BaseError>>(
             categories =>
                 categories.Select<Category, CategoryOutput>(cat => cat).ToFrozenSet(),
-            err => 
-                err);
+            err => err);
     }
 
     public async Task<Results<CategoryOutput, BaseError>> GetCategoryById(Guid categoryId, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryId}", nameof(GetCategoryById), categoryId);
+
         var category = await _categoryRepository.GetById(categoryId, cancellation: cancellation);
         return category.Match<Results<CategoryOutput, BaseError>>(
-            cat =>
-                (CategoryOutput)cat, 
-            err => 
-                err);
+            cat => (CategoryOutput)cat, 
+            err => err);
     }
 
     public async Task<Results<CategoryOutput, BaseError>> GetCategoryByName(string categoryName, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryName}", nameof(GetCategoryByName), categoryName);
+
         var category = await _categoryRepository.GetByName(categoryName, cancellation: cancellation);
         if(category.IsSuccess)
             return (CategoryOutput)category.Success!;
@@ -62,6 +61,7 @@ public sealed class CategoryUseCases(
     public Task<Results<CategoryOutput, BaseError>> GetOrCreateCategory(CreateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(GetOrCreateCategory), productInput);
+
         if (productInput?.Category is null)
         {
             var error = new BaseError($"Category {nameof(Category.Id)} or {nameof(Category.Name)} must be informed!");
@@ -76,6 +76,7 @@ public sealed class CategoryUseCases(
     public Task<Results<CategoryOutput, BaseError>> GetOrCreateCategoryInternal(CategoryInput category, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(GetOrCreateCategoryInternal), category);
+
         if (category.Id is null)
             return CreateCategory(category, cancellation);
         return GetCategoryById(category.Id.Value, cancellation);
@@ -85,11 +86,9 @@ public sealed class CategoryUseCases(
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(CreateCategory), categoryInput);
 
-        var category = categoryInput.ToCategory2();
+        var category = categoryInput.ToCategory();
         var result = await _createCategoryService.Execute(category, cancellation);
-
         if (result.IsFail) return (result.State, result.Error!);
-
         return (CategoryOutput)result.Success!;
     }
 
@@ -97,42 +96,9 @@ public sealed class CategoryUseCases(
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(UpdateCategory), categoryInput);
 
-        if (categoryInput.Id is null || string.IsNullOrWhiteSpace(categoryInput.CategoryName))
-        {
-            var error = new BaseError($"Category {nameof(Category.Id)} and {nameof(Category.Name)} must be informed!");
-            return error;
-        }
-
-        var result = await GetCategoryById(categoryInput.Id.Value, cancellation);
-        return await result.MatchAsync(
-            async oldCategory =>
-                await UpdateCatetory(categoryInput, oldCategory, cancellation), 
-            error => 
-                error);
-    }
-
-    private Task<Results<CategoryOutput, BaseError>> UpdateCatetory(CategoryInput categoryInput, CategoryOutput categoryOutput, CancellationToken cancellation)
-    {
-        var categoryResult = categoryOutput.ToCategory();
-        return categoryResult.MatchAsync(
-            async oldCategory => 
-                await Update(categoryInput, oldCategory, cancellation), 
-            error => 
-                error);
-
-        async Task<Results<CategoryOutput, BaseError>> Update(CategoryInput categoryInput, Category oldCategory, CancellationToken cancellation)
-        {
-            var validationResult = categoryInput.ToCategory();
-            var updateCategoryResult = validationResult.Match<Results<CategoryOutput, BaseError>>(
-                newCategory =>
-                    (CategoryOutput)oldCategory.Update(newCategory),
-                updateError =>
-                    updateError);
-
-            if (updateCategoryResult.IsFail) return updateCategoryResult;
-            var result = await _categoryRepository.Update(oldCategory, cancellation);
-            if (result != ValidationResult.Success) return new BaseError(result.ErrorMessage!);
-            return (CategoryOutput)oldCategory;
-        }
+        var category = categoryInput.ToCategory();
+        var result = await _updateCategoryService.Execute(category, cancellation);
+        if(result.IsFail) return result.Error;
+        return (CategoryOutput)result.Success;
     }
 }

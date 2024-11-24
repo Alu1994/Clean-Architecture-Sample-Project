@@ -1,11 +1,8 @@
-﻿using System.Collections.Frozen;
-using CleanArchitectureSampleProject.Application.Inputs;
-using CleanArchitectureSampleProject.Application.Outputs;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Application.UseCases;
 
@@ -32,6 +29,7 @@ public sealed class ProductUseCases(
     public async Task<Results<FrozenSet<GetProductOutput>, BaseError>> GetProducts(CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName}", nameof(GetProducts));
+
         var result = await _productRepository.Get(cancellation);
         return result.Match<Results<FrozenSet<GetProductOutput>, BaseError>>(
             products =>
@@ -42,6 +40,7 @@ public sealed class ProductUseCases(
     public async Task<Results<GetProductOutput, BaseError>> GetProductById(Guid productId, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductId}", nameof(GetProductById), productId);
+
         var result = await _productRepository.GetById(productId, cancellation);
         return result.Match<Results<GetProductOutput, BaseError>>(
             product => (GetProductOutput)product,
@@ -51,6 +50,7 @@ public sealed class ProductUseCases(
     public async Task<Results<GetProductOutput, BaseError>> GetProductByName(string productName, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductName}", nameof(GetProductByName), productName);
+
         var result = await _productRepository.GetByName(productName, cancellation);
         if (result.IsSuccess)
             return (GetProductOutput)result.Success!;
@@ -61,9 +61,9 @@ public sealed class ProductUseCases(
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(CreateProduct), productInput);
 
-        var product = productInput.ToProduct();
-        Category category = productInput.Category.ToCategory2();
-        var result = await _createProductService.Execute(product, category, cancellation);
+        Category category = productInput.Category.ToCategory();
+        var product = productInput.ToProduct(category);
+        var result = await _createProductService.Execute(product, cancellation);
         if(result.IsFail) return result.ToError();
         return (CreateProductOutput)result.ToSuccess()!;
     }
@@ -72,9 +72,9 @@ public sealed class ProductUseCases(
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(UpdateProduct), productInput);
 
-        var product = productInput.ToProduct();
-        Category category = productInput.Category.ToCategory2();
-        var result = await _updateProductService.Execute(product, category, cancellation);
+        Category category = productInput.Category.ToCategory();
+        var product = productInput.ToProduct(category);
+        var result = await _updateProductService.Execute(product, cancellation);
         if (result.IsFail) return result.ToError();
         return (UpdateProductOutput)result.ToSuccess()!;
     }

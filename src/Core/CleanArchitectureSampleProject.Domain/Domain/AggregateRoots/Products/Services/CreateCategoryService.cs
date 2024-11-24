@@ -25,8 +25,8 @@ public sealed class CreateCategoryService : ICreateCategoryService
         if (categoryResult.IsFail) return categoryResult;
 
         var categoryGetResult = await _categoryRepository.GetByName(categoryInput.Name);
-        if (categoryGetResult.IsSuccess is false) return categoryGetResult.Error!;
-        if (categoryGetResult.Success is not null) return new BaseError($"Category '{categoryInput.Name}' already exists.");
+        if (categoryGetResult.State is ResultStates.Error) return categoryGetResult.Error!;
+        if (categoryGetResult.IsSuccess) return new BaseError($"Category '{categoryInput.Name}' already exists.");
 
         categoryInput.Create();
         var creationResult = await _categoryRepository.Insert(categoryInput, cancellationToken);

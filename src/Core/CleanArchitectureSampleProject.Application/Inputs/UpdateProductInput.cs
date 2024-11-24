@@ -23,8 +23,8 @@ public sealed class UpdateProductInput
         Category.SetCategory(category);
     }
 
-    public Product ToProduct()
+    public Product ToProduct(Category category)
     {
-        return Product.MapToProduct(Name, Description, Value, Quantity, Category?.Id, Id);
+        return Product.MapToProduct(Name, Description, Value, Quantity, category, Id);
     }
 }

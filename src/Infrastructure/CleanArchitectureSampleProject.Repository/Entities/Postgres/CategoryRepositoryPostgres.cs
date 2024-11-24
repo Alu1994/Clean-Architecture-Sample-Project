@@ -35,7 +35,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
         try
         {
             var cacheResult = await _cache.GetById(id, cancellation);
-            return await cacheResult.MatchAsync<Results<Category, BaseError>>(async categoryCache =>
+            return await cacheResult.MatchAsync(async categoryCache =>
             {
                 if (categoryCache is not null) return categoryCache;
                 return await GetFromDatabase();
@@ -49,9 +49,11 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
             return new BaseError($"Error while retrieving Category with id '{id}': {ex.Message}", ex);
         }
 
-        Task<Category> GetFromDatabase()
+        async Task<Results<Category, BaseError>> GetFromDatabase()
         {
-            var category = _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var category = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellation);
+            if (category is null)
+                return (ResultStates.NotFound, new BaseError($"Category '{id}' not found."));
             return category!;
         }
     }
@@ -76,7 +78,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
 
         async Task<Results<Category, BaseError>> GetFromDatabase()
         {
-            var result = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name == categoryName);
+            var result = await _context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name == categoryName, cancellation);
             if (result is null)
                 return (ResultStates.NotFound, new BaseError($"Category '{categoryName}' not found."));
             return result!;
@@ -114,7 +116,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
             }
 
             _context.Categories.Update(category);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellation);
             return ValidationResult.Success!;
         }
         catch (Exception ex)
@@ -127,7 +129,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
     {
         try
         {
-            var categories = await _context.Categories.AsNoTracking().ToListAsync();
+            var categories = await _context.Categories.AsNoTracking().ToListAsync(cancellation);
             if (categories is null)
             {
                 return Enumerable.Empty<Category>().ToFrozenSet();

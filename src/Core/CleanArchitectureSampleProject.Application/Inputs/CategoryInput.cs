@@ -1,6 +1,4 @@
-﻿using CleanArchitectureSampleProject.Application.Outputs;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 
 namespace CleanArchitectureSampleProject.Application.Inputs;
 
@@ -20,14 +18,7 @@ public sealed class CategoryInput
         CategoryName = category.Name;
     }
 
-    public Results<Category, BaseError> ToCategory()
-    {
-        if(Id is null)
-            return Category.CreateNew(CategoryName);
-        return Category.Create(Id, CategoryName);
-    }
-
-    internal Category ToCategory2()
+    internal Category ToCategory()
     {
         return Category.MapToCategory(Id, CategoryName);
     }

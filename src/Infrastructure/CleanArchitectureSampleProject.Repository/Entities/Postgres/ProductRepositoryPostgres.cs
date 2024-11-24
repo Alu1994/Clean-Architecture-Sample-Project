@@ -34,7 +34,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         try
         {
             var cacheResult = await _cache.GetById(id, cancellation);
-            return await cacheResult.MatchAsync<Results<Product, BaseError>>(async productCache =>
+            return await cacheResult.MatchAsync(async productCache =>
             {
                 if (productCache is not null) return productCache;
                 return await GetFromDatabase();
@@ -48,10 +48,11 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
             return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
 
-        Task<Product> GetFromDatabase()
+        async Task<Results<Product, BaseError>> GetFromDatabase()
         {
-            var product = _context.Products.Include(x => x.Category).AsNoTracking().FirstAsync(x => x.Id == id, cancellation);
-            return product!;
+            var product = await _context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellation);
+            if (product is null) return (ResultStates.NotFound, new BaseError($"Product '{id}' not found"));
+            return product;
         }
     }
 
@@ -60,7 +61,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         try
         {
             var cacheResult = await _cache.GetById(id, cancellation);
-            return await cacheResult.MatchAsync<Results<Product, BaseError>>(async productCache =>
+            return await cacheResult.MatchAsync(async productCache =>
             {
                 if (productCache is not null) return productCache;
                 return await GetFromDatabase();
@@ -74,10 +75,11 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
             return new BaseError($"Error while retrieving Product with id '{id}': {ex.Message}", ex);
         }
 
-        Task<Product?> GetFromDatabase()
+        async Task<Results<Product, BaseError>> GetFromDatabase()
         {
-            var product = _context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellation);
-            return product!;
+            var product = await _context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellation);
+            if (product is null) return (ResultStates.NotFound, new BaseError($"Product '{id}' not found"));
+            return product;
         }
     }
 
@@ -101,7 +103,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
         async Task<Results<Product, BaseError>> GetFromDatabase()
         {
             var product = await _context.Products.Include(x => x.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Name == productName, cancellation);
-            if (product is null) return new Results<Product, BaseError>(ResultStates.NotFound, new BaseError($"Product '{productName}' not found"));
+            if (product is null) return (ResultStates.NotFound, new BaseError($"Product '{productName}' not found"));
             return product;
         }
     }

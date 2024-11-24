@@ -65,6 +65,25 @@ public sealed class Product : HasDomainEventsBase
         return product;
     }
 
+    public static Product MapToProduct(string name, string description, decimal? value, int? quantity, Category? category, Guid? id = null)
+    {
+        var product = new Product
+        {
+            Name = name,
+            Description = description,
+            Value = value.Value,
+            Quantity = quantity.Value
+        };
+
+        if (id is not null && id != Guid.Empty) product.Id = id.Value;
+        if (category is not null)
+        {
+            product.SetCategory(category);
+        }
+
+        return product;
+    }
+
 
     public static Results<Product, BaseError> CreateNew(string name, string description, decimal? value, int? quantity, Category category)
     {
@@ -181,7 +200,7 @@ public sealed class Product : HasDomainEventsBase
         if (Quantity < 0)
             return new BaseError($"{nameof(Quantity)} must not be null.");
 
-        if (CategoryId == Guid.Empty)
+        if (CategoryId == Guid.Empty && string.IsNullOrWhiteSpace(Category?.Name))
             return new BaseError($"{nameof(Category)} must not be null.");
 
         return this;
