@@ -1,9 +1,9 @@
 ﻿using NLog.Web;
-using CleanArchitectureSampleProject.Application;
-using CleanArchitectureSampleProject.Domain;
 using CleanArchitectureSampleProject.Infrastructure.Repository;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using Scalar.AspNetCore;
+using CleanArchitectureSampleProject.Core.Domain;
+using CleanArchitectureSampleProject.Core.Application;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 

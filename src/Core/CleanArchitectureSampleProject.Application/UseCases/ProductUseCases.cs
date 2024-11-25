@@ -1,10 +1,9 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using System.Collections.Frozen;
 
-namespace CleanArchitectureSampleProject.Application.UseCases;
+namespace CleanArchitectureSampleProject.Core.Application.UseCases;
 
 public interface IProductUseCases
 {
@@ -16,9 +15,9 @@ public interface IProductUseCases
 }
 
 public sealed class ProductUseCases(
-    ILogger<ProductUseCases> logger, 
-    IProductRepository productRepository, 
-    ICreateProductService createProductService, 
+    ILogger<ProductUseCases> logger,
+    IProductRepository productRepository,
+    ICreateProductService createProductService,
     IUpdateProductService updateProductService) : IProductUseCases
 {
     private readonly ILogger<ProductUseCases> _logger = logger ?? throw new ArgumentNullException(nameof(logger));

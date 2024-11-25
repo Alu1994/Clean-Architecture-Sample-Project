@@ -1,8 +1,8 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CleanArchitectureSampleProject.Domain;
+namespace CleanArchitectureSampleProject.Core.Domain;
 
 public static class DependencyInjection
 {

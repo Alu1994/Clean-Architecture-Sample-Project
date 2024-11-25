@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
+﻿using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;

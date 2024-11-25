@@ -1,6 +1,6 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 
-namespace CleanArchitectureSampleProject.Application.Inputs;
+namespace CleanArchitectureSampleProject.Core.Application.Inputs;
 
 public class CategoryInput
 {

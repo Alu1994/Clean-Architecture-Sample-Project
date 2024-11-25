@@ -1,4 +1,4 @@
-﻿namespace CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿namespace CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
 public interface ISellRepository
 {

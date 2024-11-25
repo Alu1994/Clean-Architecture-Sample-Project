@@ -1,4 +1,4 @@
-using CleanArchitectureSampleProject.Application.Inputs;
+using CleanArchitectureSampleProject.Core.Application.Inputs;
 
 namespace CleanArchitectureSampleProject.Presentation.Web;
 

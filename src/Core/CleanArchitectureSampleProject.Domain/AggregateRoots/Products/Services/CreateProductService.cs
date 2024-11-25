@@ -1,7 +1,8 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 
 public interface ICreateProductService
 {
@@ -39,7 +40,7 @@ public sealed class CreateProductService : ICreateProductService
         product.Create();
         var creationResult = await _productRepository.Insert(product, cancellationToken);
         if (creationResult != ValidationResult.Success) return new ErrorList(creationResult.ErrorMessage!);
-                
+
         product.SetCategory(category);
         return product;
     }

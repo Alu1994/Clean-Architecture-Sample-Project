@@ -1,8 +1,8 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 
 public interface ICategoryGetOrCreateService
 {
@@ -32,7 +32,7 @@ public sealed class CategoryGetOrCreateService : ICategoryGetOrCreateService
         if (categoryInput.Id != Guid.Empty)
         {
             var categoryGetResult = await _categoryRepository.GetById(categoryInput.Id);
-            if(categoryGetResult.IsFail) return new ErrorList(categoryGetResult.Error);
+            if (categoryGetResult.IsFail) return new ErrorList(categoryGetResult.Error);
             return categoryGetResult.ToSuccess();
         }
 

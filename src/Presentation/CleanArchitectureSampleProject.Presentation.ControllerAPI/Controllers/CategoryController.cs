@@ -1,5 +1,5 @@
-using CleanArchitectureSampleProject.Application.Inputs;
-using CleanArchitectureSampleProject.Application.UseCases;
+using CleanArchitectureSampleProject.Core.Application.Inputs;
+using CleanArchitectureSampleProject.Core.Application.UseCases;
 
 namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
 {

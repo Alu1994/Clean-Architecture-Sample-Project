@@ -1,7 +1,8 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 
 public interface IUpdateProductService
 {
@@ -15,8 +16,8 @@ public sealed class UpdateProductService : IUpdateProductService
     private readonly IValidator<Product> _validator;
 
     public UpdateProductService(
-        ICategoryGetOrCreateService categoryGetOrCreateService, 
-        IProductRepository productRepository, 
+        ICategoryGetOrCreateService categoryGetOrCreateService,
+        IProductRepository productRepository,
         IValidator<Product> validator)
     {
         _categoryGetOrCreateService = categoryGetOrCreateService;

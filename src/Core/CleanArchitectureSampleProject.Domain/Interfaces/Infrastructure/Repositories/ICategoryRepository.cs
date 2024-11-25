@@ -1,8 +1,8 @@
 ﻿using System.Collections.Frozen;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 
-namespace CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+namespace CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
 public interface ICategoryRepository
 {

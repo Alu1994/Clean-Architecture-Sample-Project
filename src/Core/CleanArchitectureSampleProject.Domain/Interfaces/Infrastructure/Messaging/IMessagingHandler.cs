@@ -1,4 +1,4 @@
-﻿namespace CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
+﻿namespace CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Messaging;
 
 public interface IMessagingHandler
 {

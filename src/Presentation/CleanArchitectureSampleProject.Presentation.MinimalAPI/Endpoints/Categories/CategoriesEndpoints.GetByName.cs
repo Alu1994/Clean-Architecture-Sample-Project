@@ -1,4 +1,7 @@
-﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
+using CleanArchitectureSampleProject.Core.Application.UseCases;
+
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static partial class CategoriesEndpoints
 {

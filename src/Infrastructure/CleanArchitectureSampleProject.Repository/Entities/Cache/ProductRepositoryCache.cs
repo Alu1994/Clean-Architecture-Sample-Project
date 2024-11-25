@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 

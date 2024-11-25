@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 

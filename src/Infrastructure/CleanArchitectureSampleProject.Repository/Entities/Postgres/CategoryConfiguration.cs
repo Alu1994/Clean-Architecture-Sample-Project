@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
 

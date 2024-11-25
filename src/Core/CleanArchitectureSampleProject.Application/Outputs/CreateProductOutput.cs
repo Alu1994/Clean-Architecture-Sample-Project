@@ -1,6 +1,6 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 
-namespace CleanArchitectureSampleProject.Application.Outputs;
+namespace CleanArchitectureSampleProject.Core.Application.Outputs;
 
 public sealed class CreateProductOutput
 {

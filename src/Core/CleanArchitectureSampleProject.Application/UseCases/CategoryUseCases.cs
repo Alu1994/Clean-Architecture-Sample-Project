@@ -1,9 +1,11 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Core.Application.Inputs;
+using CleanArchitectureSampleProject.Core.Application.Outputs;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using System.Collections.Frozen;
 
-namespace CleanArchitectureSampleProject.Application.UseCases;
+namespace CleanArchitectureSampleProject.Core.Application.UseCases;
 
 public interface ICategoryUseCases
 {
@@ -17,7 +19,7 @@ public interface ICategoryUseCases
 }
 
 public sealed class CategoryUseCases(
-    ILogger<CategoryUseCases> logger, 
+    ILogger<CategoryUseCases> logger,
     ICategoryRepository categoryRepository,
     ICreateCategoryService createCategoryService,
     IUpdateCategoryService updateCategoryService) : ICategoryUseCases
@@ -26,7 +28,7 @@ public sealed class CategoryUseCases(
     private readonly ICategoryRepository _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
     private readonly ICreateCategoryService _createCategoryService = createCategoryService ?? throw new ArgumentNullException(nameof(createCategoryService));
     private readonly IUpdateCategoryService _updateCategoryService = updateCategoryService ?? throw new ArgumentNullException(nameof(updateCategoryService));
-    
+
     public async Task<Results<FrozenSet<CategoryOutput>, BaseError>> GetCategories(CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName}", nameof(GetCategories));
@@ -44,7 +46,7 @@ public sealed class CategoryUseCases(
 
         var category = await _categoryRepository.GetById(categoryId, cancellation: cancellation);
         return category.Match<Results<CategoryOutput, BaseError>>(
-            cat => (CategoryOutput)cat, 
+            cat => (CategoryOutput)cat,
             err => err);
     }
 
@@ -53,7 +55,7 @@ public sealed class CategoryUseCases(
         _logger.LogInformation("Logging {MethodName} with {CategoryName}", nameof(GetCategoryByName), categoryName);
 
         var category = await _categoryRepository.GetByName(categoryName, cancellation: cancellation);
-        if(category.IsSuccess)
+        if (category.IsSuccess)
             return (CategoryOutput)category.Success!;
         return category.Error!;
     }
@@ -98,7 +100,7 @@ public sealed class CategoryUseCases(
 
         var category = categoryInput.ToCategory();
         var result = await _updateCategoryService.Execute(category, cancellation);
-        if(result.IsFail) return result.Error;
+        if (result.IsFail) return result.Error;
         return (CategoryOutput)result.Success;
     }
 }

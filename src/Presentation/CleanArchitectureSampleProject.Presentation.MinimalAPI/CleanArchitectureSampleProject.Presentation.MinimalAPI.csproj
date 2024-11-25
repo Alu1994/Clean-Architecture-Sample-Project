@@ -33,8 +33,8 @@
 		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
 		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
-		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Application.csproj" />
-		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Domain.csproj" />
+		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Core.Application.csproj" />
+		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Core.Domain.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj" />
 	</ItemGroup>
 

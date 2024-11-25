@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 

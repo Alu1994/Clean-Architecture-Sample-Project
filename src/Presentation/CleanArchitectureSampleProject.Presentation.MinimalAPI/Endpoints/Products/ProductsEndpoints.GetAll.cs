@@ -1,4 +1,6 @@
-﻿using System.Collections.Frozen;
+﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
+using CleanArchitectureSampleProject.Core.Application.UseCases;
+using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 

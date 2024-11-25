@@ -1,8 +1,8 @@
 ﻿using System.Collections.Frozen;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 
-namespace CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+namespace CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
 public interface IProductRepository
 {

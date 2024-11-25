@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using CleanArchitectureSampleProject.Application.UseCases;
+using CleanArchitectureSampleProject.Core.Application.UseCases;
 
-namespace CleanArchitectureSampleProject.Application;
+namespace CleanArchitectureSampleProject.Core.Application;
 
 public static class DependencyInjection
 {

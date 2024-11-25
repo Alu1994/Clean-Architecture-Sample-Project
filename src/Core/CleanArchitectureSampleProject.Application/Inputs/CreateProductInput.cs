@@ -1,7 +1,7 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 
-namespace CleanArchitectureSampleProject.Application.Inputs;
+namespace CleanArchitectureSampleProject.Core.Application.Inputs;
 
 public sealed class CreateProductInput
 {
@@ -27,7 +27,7 @@ public sealed class CreateProductInput
 
     public void SetCategory(Category category)
     {
-        if(Category is null) Category = new CategoryInput();
+        if (Category is null) Category = new CategoryInput();
         Category.SetCategory(category);
     }
 

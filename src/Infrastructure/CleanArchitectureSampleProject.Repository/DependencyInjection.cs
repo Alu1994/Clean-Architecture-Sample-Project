@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using CleanArchitectureSampleProject.Infrastructure.Messaging;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;

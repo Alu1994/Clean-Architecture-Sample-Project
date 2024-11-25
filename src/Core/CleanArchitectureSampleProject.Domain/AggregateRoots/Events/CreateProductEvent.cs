@@ -1,8 +1,8 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Messaging;
 using System.Text.Json;
 
-namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Events;
+namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
 
 public sealed class CreateProductEvent : DomainEventBase
 {

@@ -1,5 +1,5 @@
-﻿global using CleanArchitectureSampleProject.Application.Inputs;
-global using CleanArchitectureSampleProject.Application.Outputs;
+﻿global using CleanArchitectureSampleProject.Core.Application.Inputs;
+global using CleanArchitectureSampleProject.Core.Application.Outputs;
 global using CleanArchitectureSampleProject.CrossCuttingConcerns;
 global using Microsoft.Extensions.Logging;
 global using System;

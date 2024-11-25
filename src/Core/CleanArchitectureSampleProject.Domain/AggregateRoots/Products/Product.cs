@@ -1,8 +1,8 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Events;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 
 public sealed class Product : HasDomainEventsBase
 {

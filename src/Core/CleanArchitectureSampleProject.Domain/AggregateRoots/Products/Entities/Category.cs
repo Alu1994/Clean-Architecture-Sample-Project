@@ -1,7 +1,7 @@
-﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.CrossCuttingConcerns;
 
-namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 
 public sealed class Category
 {

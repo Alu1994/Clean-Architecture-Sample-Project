@@ -1,7 +1,7 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 
 public interface ICreateCategoryService
 {
