@@ -14,6 +14,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
-		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj" />
 	</ItemGroup>
 </Project>

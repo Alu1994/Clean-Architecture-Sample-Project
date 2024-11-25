@@ -33,9 +33,9 @@
 		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
 		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
-		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Core.Application.csproj" />
-		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Core.Domain.csproj" />
-		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj" />
+		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Core.Application\CleanArchitectureSampleProject.Core.Application.csproj" />
+		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Core.Domain\CleanArchitectureSampleProject.Core.Domain.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
