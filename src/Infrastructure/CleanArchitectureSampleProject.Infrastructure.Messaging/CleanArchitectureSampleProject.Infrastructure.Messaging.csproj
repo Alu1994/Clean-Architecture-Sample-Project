@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Azure.Storage.Queues" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
+	  <ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Core.Application.csproj" />
+	  <ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Core.Domain.csproj" />
+	</ItemGroup>
+</Project>

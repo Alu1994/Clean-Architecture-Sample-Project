@@ -1,0 +1,9 @@
+﻿global using CleanArchitectureSampleProject.Core.Application.Inputs;
+global using CleanArchitectureSampleProject.Core.Application.Outputs;
+global using CleanArchitectureSampleProject.Core.Application.UseCases;
+global using CleanArchitectureSampleProject.CrossCuttingConcerns;
+global using FluentValidation;
+global using FluentValidation.Results;
+global using Microsoft.AspNetCore.Mvc;
+global using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
+global using System.Net;
