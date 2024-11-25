@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Infrastructure.Repository", "src\Infrastructure\CleanArchitectureSampleProject.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj", "{B981EB20-7BD5-45DA-BBD9-6567479D924D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Infrastructure.Repository", "src\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj", "{B981EB20-7BD5-45DA-BBD9-6567479D924D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Core.Domain", "src\Core\CleanArchitectureSampleProject.Domain\CleanArchitectureSampleProject.Core.Domain.csproj", "{A308BED9-5145-42D2-B195-833378170212}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Core.Domain", "src\Core\CleanArchitectureSampleProject.Core.Domain\CleanArchitectureSampleProject.Core.Domain.csproj", "{A308BED9-5145-42D2-B195-833378170212}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Core.Application", "src\Core\CleanArchitectureSampleProject.Application\CleanArchitectureSampleProject.Core.Application.csproj", "{B7986893-D52D-4B73-B222-1840DE0F2C6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitectureSampleProject.Core.Application", "src\Core\CleanArchitectureSampleProject.Core.Application\CleanArchitectureSampleProject.Core.Application.csproj", "{B7986893-D52D-4B73-B222-1840DE0F2C6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.MinimalAPI", "src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj", "{50385108-CE46-479D-A38F-0BA68A3D0390}"
 EndProject
