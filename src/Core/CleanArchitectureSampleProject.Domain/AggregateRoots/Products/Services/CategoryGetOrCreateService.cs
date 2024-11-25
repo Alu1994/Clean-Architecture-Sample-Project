@@ -1,7 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
 
 public interface ICategoryGetOrCreateService
 {
@@ -21,7 +21,7 @@ public sealed class CategoryGetOrCreateService : ICategoryGetOrCreateService
     {
         if (categoryInput is null) return new BaseError("Category must not be null.");
         var categoryResult = categoryInput.ValidateGetOrCreate();
-        if(categoryResult.IsFail) return categoryResult;
+        if (categoryResult.IsFail) return categoryResult;
 
         if (categoryInput.Id != Guid.Empty)
         {
@@ -32,7 +32,7 @@ public sealed class CategoryGetOrCreateService : ICategoryGetOrCreateService
         if (string.IsNullOrWhiteSpace(categoryInput.Name) is false)
         {
             var categoryGetResult = await _categoryRepository.GetByName(categoryInput.Name);
-            if(categoryGetResult.State is ResultStates.Error) return categoryGetResult;
+            if (categoryGetResult.State is ResultStates.Error) return categoryGetResult;
             if (categoryGetResult.State is ResultStates.Success) return new BaseError($"Category '{categoryInput.Name}' already exists.");
         }
 

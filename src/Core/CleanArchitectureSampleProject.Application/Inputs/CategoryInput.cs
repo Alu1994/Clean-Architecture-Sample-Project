@@ -2,7 +2,7 @@
 
 namespace CleanArchitectureSampleProject.Application.Inputs;
 
-public sealed class CategoryInput
+public class CategoryInput
 {
     public Guid? Id { get; set; }
     public string? CategoryName { get; set; }
@@ -18,8 +18,10 @@ public sealed class CategoryInput
         CategoryName = category.Name;
     }
 
-    internal Category ToCategory()
+    public Category ToCategory()
     {
         return Category.MapToCategory(Id, CategoryName);
     }
 }
+
+public sealed class UpdateCategoryInput : CategoryInput;

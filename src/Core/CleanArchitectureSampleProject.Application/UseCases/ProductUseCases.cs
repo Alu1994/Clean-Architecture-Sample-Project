@@ -1,6 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 using System.Collections.Frozen;
 

@@ -1,7 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
 
 public interface IUpdateCategoryService
 {
@@ -41,7 +41,7 @@ internal class UpdateCategoryService : IUpdateCategoryService
             {
                 oldCategory.Update(newCategory);
                 var result = await _categoryRepository.Update(oldCategory, cancellation);
-                if (result != ValidationResult.Success) 
+                if (result != ValidationResult.Success)
                     return new BaseError(result.ErrorMessage!);
                 return oldCategory;
             },

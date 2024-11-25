@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Domain.Domain.Events;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Events;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
 using Microsoft.EntityFrameworkCore;

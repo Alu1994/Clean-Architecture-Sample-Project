@@ -2,7 +2,7 @@
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
 
 public interface ICreateProductService
 {
@@ -24,7 +24,7 @@ public sealed class CreateProductService : ICreateProductService
     {
         var productResult = productInput.Validate();
         if (productResult.IsFail) return productResult;
-        
+
         Product product = productResult.ToSuccess();
         var getProductByIdResult = await _productRepository.GetByName(product.Name, cancellationToken);
         if (getProductByIdResult.State is ResultStates.Error) return getProductByIdResult.Error!;
@@ -39,7 +39,7 @@ public sealed class CreateProductService : ICreateProductService
         //// If product already exists, return error.
         Category category = categoryResult.ToSuccess();
         productInput.SetCategory(category);
-        
+
         // If product does not exists try to create it.
         //// If error while creating product, return error.
         product.Create();

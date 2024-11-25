@@ -2,7 +2,7 @@
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
 using System.Text.Json;
 
-namespace CleanArchitectureSampleProject.Domain.Domain.Events;
+namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Events;
 
 public sealed class CreateProductEvent : DomainEventBase
 {

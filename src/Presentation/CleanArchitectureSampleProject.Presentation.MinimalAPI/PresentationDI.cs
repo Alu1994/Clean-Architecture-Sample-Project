@@ -1,9 +1,9 @@
 ﻿using NLog.Web;
 using CleanArchitectureSampleProject.Application;
 using CleanArchitectureSampleProject.Domain;
+using CleanArchitectureSampleProject.Infrastructure.Repository;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using Scalar.AspNetCore;
-using CleanArchitectureSampleProject.Infrastructure.Repository;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 
@@ -50,6 +50,8 @@ public static class PresentationDI
         services.AddRepositoryLayer();
         services.AddCacheAutoRefresh();
         // =========== Add Layers Dependency Injection ===========
+
+        services.AddValidation();
 
         return services;
     }

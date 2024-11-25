@@ -1,4 +1,5 @@
 ﻿using CleanArchitectureSampleProject.CrossCuttingConcerns;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
 
 namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 
@@ -21,7 +22,7 @@ public sealed class Category
     {
         if (string.IsNullOrWhiteSpace(categoryName))
             return new BaseError($"{nameof(Category)}.{nameof(Name)} must not be null.");
-        
+
         return new Category
         {
             Name = categoryName
@@ -66,16 +67,16 @@ public sealed class Category
 
     public static Category MapToCategory(Guid? id, string? categoryName)
     {
-        if(id is null || id == Guid.Empty)
+        if (id is null || id == Guid.Empty)
         {
             var cat = new Category { Name = categoryName };
             cat.Id = Guid.Empty;
             return cat;
         }
-            
 
-        return new Category 
-        { 
+
+        return new Category
+        {
             Id = id.Value,
             Name = categoryName
         };

@@ -1,4 +1,6 @@
-﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
+
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
 public static partial class ProductsEndpoints
 {
@@ -11,7 +13,8 @@ public static partial class ProductsEndpoints
         .Accepts<CreateProductInput>(ContentType)
         .Produces<CreateProductOutput>(Created, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo("Create Product", TagName);
+        .WithConfigSummaryInfo("Create Product", TagName)
+        .AddFluentValidationAutoValidation();
         return app;
     }
 
@@ -34,4 +37,13 @@ public static partial class ProductsEndpoints
         );
     }
 
+}
+
+public sealed class CreateProductValidator : AbstractValidator<CreateProductInput>
+{
+    public CreateProductValidator()
+    {
+        RuleFor(product => product.ToProduct(null))
+            .SetValidator(new ProductValidator());
+    }
 }

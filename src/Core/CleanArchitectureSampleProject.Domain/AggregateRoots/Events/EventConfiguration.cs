@@ -1,7 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CleanArchitectureSampleProject.Domain.Domain.Events;
+namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Events;
 
 public abstract class HasDomainEventsBase
 {

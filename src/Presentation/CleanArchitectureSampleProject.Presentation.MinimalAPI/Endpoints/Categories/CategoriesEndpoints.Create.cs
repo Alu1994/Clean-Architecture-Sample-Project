@@ -1,4 +1,6 @@
-﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
+
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static partial class CategoriesEndpoints
 {
@@ -11,7 +13,8 @@ public static partial class CategoriesEndpoints
         .Accepts<CategoryInput>(ContentType)
         .Produces<CategoryOutput>(Created, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo($"Create {Controller}", TagName);
+        .WithConfigSummaryInfo($"Create {Controller}", TagName)
+        .AddFluentValidationAutoValidation();
         return app;
     }
 
@@ -32,5 +35,13 @@ public static partial class CategoriesEndpoints
                 );
             }
         );
+    }
+}
+
+public sealed class CreateCategoryValidator : AbstractValidator<CategoryInput>
+{
+    public CreateCategoryValidator()
+    {
+        RuleFor(x => x.ToCategory()).SetValidator(new CategoryValidator());
     }
 }

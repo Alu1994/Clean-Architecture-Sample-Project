@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Queues;
 using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using CleanArchitectureSampleProject.Domain.Domain.Events;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Events;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Messaging;
 using System.Text.Json;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;

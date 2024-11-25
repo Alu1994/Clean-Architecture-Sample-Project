@@ -1,21 +1,24 @@
-﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
+
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static partial class CategoriesEndpoints
 {
     private static WebApplication MapUpdate(this WebApplication app)
     {
-        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CategoryInput category, CancellationToken cancellation) =>
+        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, UpdateCategoryInput category, CancellationToken cancellation) =>
         {
             return await Update(logger, categoryUseCases, category, cancellation);
         })
-        .Accepts<CategoryInput>(ContentType)
+        .Accepts<UpdateCategoryInput>(ContentType)
         .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo($"Update {Controller}", TagName);
+        .WithConfigSummaryInfo($"Update {Controller}", TagName)
+        .AddFluentValidationAutoValidation();
         return app;
     }
 
-    private static async Task<IResult> Update(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CategoryInput category, CancellationToken cancellation)
+    private static async Task<IResult> Update(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, UpdateCategoryInput category, CancellationToken cancellation)
     {
         const string errorTitle = "Error while updating category.";
 
@@ -32,5 +35,14 @@ public static partial class CategoriesEndpoints
                 );
             }
         );
+    }
+}
+
+public sealed class UpdateCategoryValidator : AbstractValidator<UpdateCategoryInput>
+{
+    public UpdateCategoryValidator()
+    {
+        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.ToCategory()).SetValidator(new CategoryValidator());
     }
 }

@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitectureSampleProject.Domain;

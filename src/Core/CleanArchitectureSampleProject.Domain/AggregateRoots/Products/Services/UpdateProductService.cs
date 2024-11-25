@@ -2,7 +2,7 @@
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
-namespace CleanArchitectureSampleProject.Domain.Domain.AggregateRoots.Products.Services;
+namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
 
 public interface IUpdateProductService
 {
@@ -24,7 +24,7 @@ public sealed class UpdateProductService : IUpdateProductService
     {
         var productResult = productInput.Validate();
         if (productResult.IsFail) return productResult;
-        
+
         var getProductByIdResult = await _productRepository.GetById(productInput.Id, cancellationToken);
         if (getProductByIdResult.IsFail) return getProductByIdResult;
         //if (getProductByIdResult.ToSuccess() is null) return new BaseError($"Product '{productInput.Id}' - '{productInput.Name}' does not exists!");

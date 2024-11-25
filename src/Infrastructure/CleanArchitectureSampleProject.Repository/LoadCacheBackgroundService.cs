@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository;
 

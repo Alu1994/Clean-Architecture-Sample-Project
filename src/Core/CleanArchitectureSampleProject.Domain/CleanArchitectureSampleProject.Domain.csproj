@@ -5,12 +5,13 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Compile Remove="Domain\AggregateRoots\Sells\Entities\**" />
-	  <EmbeddedResource Remove="Domain\AggregateRoots\Sells\Entities\**" />
-	  <None Remove="Domain\AggregateRoots\Sells\Entities\**" />
+	  <Compile Remove="AggregateRoots\Sells\Entities\**" />
+	  <EmbeddedResource Remove="AggregateRoots\Sells\Entities\**" />
+	  <None Remove="AggregateRoots\Sells\Entities\**" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
 	</ItemGroup>
 
