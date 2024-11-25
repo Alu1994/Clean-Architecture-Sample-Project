@@ -1,17 +1,20 @@
 ﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Results;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 
-public static class ValidatorMiddleware
+public static class ValidatorExtensions
 {
     public static IServiceCollection AddValidation(this IServiceCollection services)
     {
+        services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateProductValidator>();        
         services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
         services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
-        services.AddFluentValidationAutoValidation(configuration => 
+        services.AddFluentValidationAutoValidation(configuration =>
         {
             // Replace the default result factory with a custom implementation.
             configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();

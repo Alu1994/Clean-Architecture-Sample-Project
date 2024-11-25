@@ -11,24 +11,26 @@ public enum ResultStates : short
     Error
 }
 
-public record class Results<TError>(bool IsSuccess, bool IsFail, ResultStates State, TError? Error) where TError : BaseError
+public record class Results<TError>(bool IsSuccess, bool IsFail, ResultStates State, TError? Error) 
+    where TError : IError
 {
     public Results(TError error) : this(ResultStates.Error, error) { }
 
-    public Results(ResultStates state) : this(state, null) { }
+    public Results(ResultStates state) : this(state, default) { }
 
     public Results(ResultStates state, TError? error) : this(state.IsSuccessStatus(), state.IsFailStatus(), state, error) { }
 }
 
-public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool IsFail, ResultStates State, TSuccessResult? Success, TErrorResult? Error) where TErrorResult : BaseError
+public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool IsFail, ResultStates State, TSuccessResult? Success, TErrorResult? Error) 
+    where TErrorResult : IError
 {
-    public Results(ResultStates state) : this(state.IsSuccessStatus(), state.IsFailStatus(), state, default, null) { }
+    public Results(ResultStates state) : this(state.IsSuccessStatus(), state.IsFailStatus(), state, default, default) { }
 
     public Results(TSuccessResult result) : this(ResultStates.Success, result) { }
 
     public Results(TErrorResult error) : this(ResultStates.Error, error) { }
 
-    public Results(ResultStates state, TSuccessResult result) : this(true, false, state, result, null) { }
+    public Results(ResultStates state, TSuccessResult result) : this(true, false, state, result, default) { }
 
     public Results(ResultStates state, TErrorResult error) : this(false, true, state, default, error) { }
 
@@ -84,7 +86,39 @@ public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool I
     }
 }
 
-public record class BaseError(string Message, Exception? Exception)
+public interface IError
+{
+
+}
+
+public record class BaseError(string Message, Exception? Exception) : IError
 {
     public BaseError(string message) : this(message, null) { }
 }
+
+public record class ErrorList : IError
+{
+    public IEnumerable<ErrorItem> Errors { get; private set; }
+
+    public ErrorList(BaseError baseError) : this(new ErrorItem(baseError.Message, baseError.Exception)) { }
+
+    public ErrorList(string errorMessage) : this(new ErrorItem(errorMessage)) { }
+
+    public ErrorList(Exception exception) : this(new ErrorItem(exception.Message, exception)) { }
+
+    public ErrorList(ErrorItem error) : this([error]) { }
+
+    public ErrorList(FluentValidation.Results.ValidationResult validationResult) : this(GenerateList(validationResult)) { }
+
+    public ErrorList(IEnumerable<ErrorItem> errors)
+    {
+        Errors = errors;
+    }
+
+    private static IEnumerable<ErrorItem> GenerateList(FluentValidation.Results.ValidationResult validationResult)
+    {
+        return validationResult.Errors.Select(x => new ErrorItem(x.ErrorMessage));
+    }
+}
+
+public record class ErrorItem(string Message, Exception? Exception = null);

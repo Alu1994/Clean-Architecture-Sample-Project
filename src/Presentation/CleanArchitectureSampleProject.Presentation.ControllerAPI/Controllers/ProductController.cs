@@ -1,5 +1,6 @@
 using CleanArchitectureSampleProject.Application.Inputs;
 using CleanArchitectureSampleProject.Application.UseCases;
+using CleanArchitectureSampleProject.CrossCuttingConcerns;
 
 namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
 {
@@ -82,7 +83,7 @@ namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
                 error => Results.Problem(
                     type: HttpStatusCode.BadRequest.ToString(),
                     title: errorTitleMessage,
-                    detail: error.Message,
+                    detail: (error as BaseError).Message,
                     statusCode: StatusCodes.Status400BadRequest
                 )
             );

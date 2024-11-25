@@ -24,4 +24,22 @@ public static class LogExtensions
         logger.LogError(errorMessage);
         return errorMessage;
     }
+
+    public static TError LogErrorList<TLogger, TError>(this ILogger<TLogger> logger, TError error) where TError : ErrorList
+    {
+        foreach (var item in error.Errors)
+        {
+            var errorMessage = item.Message;
+            var exception = item.Exception;
+
+            if (exception is not null)
+            {
+                logger.LogError(exception, errorMessage);
+                continue;
+            }
+            logger.LogError(errorMessage);
+        }
+
+        return error;
+    }
 }

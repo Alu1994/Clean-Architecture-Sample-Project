@@ -1,53 +1,46 @@
-﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
 namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
 
 public interface ICreateProductService
 {
-    Task<Results<Product, BaseError>> Execute(Product productInput, CancellationToken cancellationToken);
+    Task<Results<Product, IError>> Execute(Product productInput, CancellationToken cancellationToken);
 }
 
 public sealed class CreateProductService : ICreateProductService
 {
     private readonly ICategoryGetOrCreateService _categoryGetOrCreateService;
     private readonly IProductRepository _productRepository;
+    private readonly IValidator<Product> _validator;
 
-    public CreateProductService(ICategoryGetOrCreateService categoryGetOrCreateService, IProductRepository productRepository)
+    public CreateProductService(ICategoryGetOrCreateService categoryGetOrCreateService, IProductRepository productRepository, IValidator<Product> validator)
     {
         _categoryGetOrCreateService = categoryGetOrCreateService;
         _productRepository = productRepository;
+        _validator = validator;
     }
 
-    public async Task<Results<Product, BaseError>> Execute(Product productInput, CancellationToken cancellationToken)
+    public async Task<Results<Product, IError>> Execute(Product product, CancellationToken cancellationToken)
     {
-        var productResult = productInput.Validate();
-        if (productResult.IsFail) return productResult;
+        var validationResult = _validator.Validate(product);
+        if (validationResult.IsValid is false) return new ErrorList(validationResult);
 
-        Product product = productResult.ToSuccess();
         var getProductByIdResult = await _productRepository.GetByName(product.Name, cancellationToken);
         if (getProductByIdResult.State is ResultStates.Error) return getProductByIdResult.Error!;
-        if (getProductByIdResult.IsSuccess) return new BaseError($"Product '{product.Id}' - '{product.Name}' already exists!");
+        if (getProductByIdResult.IsSuccess) return new ErrorList($"Product '{product.Id}' - '{product.Name}' already exists!");
 
-        // Verify is category exists.
-        //// If error while creating/getting category, return error.
-        var categoryResult = await _categoryGetOrCreateService.Execute(productInput.Category, cancellationToken);
+        var categoryResult = await _categoryGetOrCreateService.Execute(product.Category, cancellationToken);
         if (categoryResult.IsFail) return (categoryResult.State, categoryResult.Error)!;
 
-        // If category was found or created, tries to create product.
-        //// If product already exists, return error.
         Category category = categoryResult.ToSuccess();
-        productInput.SetCategory(category);
+        product.SetCategory(category);
 
-        // If product does not exists try to create it.
-        //// If error while creating product, return error.
         product.Create();
         var creationResult = await _productRepository.Insert(product, cancellationToken);
-        if (creationResult != ValidationResult.Success) return new BaseError(creationResult.ErrorMessage!);
-
-        // If SUCCESS return product.
-        productInput.SetCategory(category);
+        if (creationResult != ValidationResult.Success) return new ErrorList(creationResult.ErrorMessage!);
+                
+        product.SetCategory(category);
         return product;
     }
 }

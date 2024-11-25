@@ -11,8 +11,8 @@ public interface IProductUseCases
     Task<Results<FrozenSet<GetProductOutput>, BaseError>> GetProducts(CancellationToken cancellation);
     Task<Results<GetProductOutput, BaseError>> GetProductById(Guid productId, CancellationToken cancellation);
     Task<Results<GetProductOutput, BaseError>> GetProductByName(string productName, CancellationToken cancellation);
-    Task<Results<CreateProductOutput, BaseError>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation);
-    Task<Results<UpdateProductOutput, BaseError>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation);
+    Task<Results<CreateProductOutput, IError>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation);
+    Task<Results<UpdateProductOutput, ErrorList>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation);
 }
 
 public sealed class ProductUseCases(
@@ -57,25 +57,28 @@ public sealed class ProductUseCases(
         return result.Error!;
     }
 
-    public async Task<Results<CreateProductOutput, BaseError>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation)
+    public async Task<Results<CreateProductOutput, IError>> CreateProduct(CreateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(CreateProduct), productInput);
 
         Category category = productInput.Category.ToCategory();
         var product = productInput.ToProduct(category);
         var result = await _createProductService.Execute(product, cancellation);
-        if(result.IsFail) return result.ToError();
+        if (result.IsFail)
+        {
+            return new (result.ToError());
+        }
         return (CreateProductOutput)result.ToSuccess()!;
     }
 
-    public async Task<Results<UpdateProductOutput, BaseError>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
+    public async Task<Results<UpdateProductOutput, ErrorList>> UpdateProduct(UpdateProductInput productInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {ProductInput}", nameof(UpdateProduct), productInput);
 
-        Category category = productInput.Category.ToCategory();
+        Category category = productInput?.Category?.ToCategory();
         var product = productInput.ToProduct(category);
         var result = await _updateProductService.Execute(product, cancellation);
-        if (result.IsFail) return result.ToError();
+        if (result.IsFail) return result.ToErrorList();
         return (UpdateProductOutput)result.ToSuccess()!;
     }
 }

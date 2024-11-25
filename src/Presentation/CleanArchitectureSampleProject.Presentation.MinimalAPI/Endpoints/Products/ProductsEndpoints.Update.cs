@@ -1,4 +1,6 @@
-﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
+﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
+
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
 public static partial class ProductsEndpoints
 {
@@ -11,7 +13,8 @@ public static partial class ProductsEndpoints
         .Accepts<UpdateProductInput>(ContentType)
         .Produces<UpdateProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo("Update Product", TagName);
+        .WithConfigSummaryInfo("Update Product", TagName)
+        .AddFluentValidationAutoValidation();
         return app;
     }
 
@@ -23,14 +26,27 @@ public static partial class ProductsEndpoints
         return result.Match(success => Results.Ok(success),
             error =>
             {
-                var errorMessage = logger.LogBaseError(error);
-                return Results.Problem(
-                    type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorTitle,
-                    detail: errorMessage,
-                    statusCode: StatusCodes.Status400BadRequest
-                );
+                var errorMessage = logger.LogErrorList(error);
+
+                return Results.BadRequest(new
+                {
+                    @Type = HttpStatusCode.BadRequest.ToString(),
+                    Title = errorTitle,
+                    Detail = errorTitle,
+                    Errors = error.Errors.Select(x => x.Message),
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
             }
         );
+    }
+}
+
+public sealed class UpdateProductValidator : AbstractValidator<UpdateProductInput>
+{
+    public UpdateProductValidator()
+    {
+        RuleFor(product => product.Id).NotEmpty();
+        RuleFor(product => product.ToProduct(null))
+            .SetValidator(new ProductValidator());
     }
 }

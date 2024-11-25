@@ -3,19 +3,31 @@
 public static class ResultsExtensions
 {
     public static TSuccessResult ToSuccess<TSuccessResult, TError>(this Results<TSuccessResult, TError> validationResult)
-        where TError : BaseError
+        where TError : IError
     {
         return validationResult.Success;
     }
 
-    public static Results<BaseError> ToErrorResult<TSuccessResult, TError>(this Results<TSuccessResult, TError> validationResult)
-        where TError : BaseError
+    public static Results<IError> ToErrorResult<TSuccessResult, TError>(this Results<TSuccessResult, TError> validationResult)
+        where TError : IError
     {
-        return new Results<BaseError>(validationResult.State, validationResult.Error);
+        return new Results<IError>(validationResult.State, validationResult.Error);
     }
 
-    public static BaseError ToError<TSuccessResult, TError>(this Results<TSuccessResult, TError> validationResult)
+    public static IError ToError<TSuccessResult, TError>(this Results<TSuccessResult, TError> validationResult)
+        where TError : IError
+    {
+        return validationResult.Error;
+    }
+
+    public static BaseError ToBaseError<TSuccessResult, TError>(this Results<TSuccessResult, TError> validationResult)
         where TError : BaseError
+    {
+        return validationResult.Error;
+    }
+
+    public static ErrorList ToErrorList<TSuccessResult, TError>(this Results<TSuccessResult, TError> validationResult)
+        where TError : ErrorList
     {
         return validationResult.Error;
     }
