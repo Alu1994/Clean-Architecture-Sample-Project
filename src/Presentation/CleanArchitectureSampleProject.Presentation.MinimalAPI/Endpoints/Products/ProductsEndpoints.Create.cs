@@ -26,23 +26,12 @@ public static partial class ProductsEndpoints
         return result.Match(success => Results.Created($"/{Controller}", success),
             error =>
             {
-                if (error.GetType() == typeof(BaseError))
-                {
-                    var errorMessage = logger.LogBaseError((BaseError)error);
-                    return Results.Problem(
-                        type: HttpStatusCode.BadRequest.ToString(),
-                        title: errorTitle,
-                        detail: errorMessage,
-                        statusCode: StatusCodes.Status400BadRequest
-                    );
-                }
-
-                ErrorList errors = (ErrorList)error;
                 return Results.BadRequest(new
                 {
                     @Type = HttpStatusCode.BadRequest.ToString(),
                     Title = errorTitle,
-                    Errors = errors.Errors.Select(x => x.Message),
+                    Detail = errorTitle,
+                    Errors = error.Errors.Select(x => x.Message),
                     StatusCode = StatusCodes.Status400BadRequest
                 });
             }

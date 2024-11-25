@@ -23,7 +23,8 @@ public static class DependencyInjection
     {
         services
             .AddValidatorsFromAssemblyContaining<ProductValidator>()
-            .AddValidatorsFromAssemblyContaining<CategoryValidator>();
+            .AddValidatorsFromAssemblyContaining<CategoryValidator>()
+            .AddScoped<IGetOrCreateCategoryValidator, GetOrCreateCategoryValidator>();
         return services;
     }
 }

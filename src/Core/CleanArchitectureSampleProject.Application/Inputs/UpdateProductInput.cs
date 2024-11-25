@@ -23,8 +23,9 @@ public sealed class UpdateProductInput
         Category.SetCategory(category);
     }
 
-    public Product ToProduct(Category category)
+    public Product ToProduct(Category? category = null)
     {
+        category ??= Category?.ToCategory();
         return Product.MapToProduct(Name, Description, Value, Quantity, category, Id);
     }
 }

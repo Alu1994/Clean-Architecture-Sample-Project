@@ -1,4 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Validators;
 using CleanArchitectureSampleProject.Domain.Interfaces.Infrastructure.Repositories;
 
 namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services;
@@ -11,9 +12,9 @@ public interface ICategoryGetOrCreateService
 public sealed class CategoryGetOrCreateService : ICategoryGetOrCreateService
 {
     private readonly ICategoryRepository _categoryRepository;
-    private readonly IValidator<Category> _validator;
+    private readonly IGetOrCreateCategoryValidator _validator;
 
-    public CategoryGetOrCreateService(ICategoryRepository categoryRepository, IValidator<Category> validator)
+    public CategoryGetOrCreateService(ICategoryRepository categoryRepository, IGetOrCreateCategoryValidator validator)
     {
         _categoryRepository = categoryRepository;
         _validator = validator;

@@ -5,7 +5,7 @@ namespace CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Services
 
 public interface ICreateProductService
 {
-    Task<Results<Product, IError>> Execute(Product productInput, CancellationToken cancellationToken);
+    Task<Results<Product, ErrorList>> Execute(Product productInput, CancellationToken cancellationToken);
 }
 
 public sealed class CreateProductService : ICreateProductService
@@ -21,13 +21,13 @@ public sealed class CreateProductService : ICreateProductService
         _validator = validator;
     }
 
-    public async Task<Results<Product, IError>> Execute(Product product, CancellationToken cancellationToken)
+    public async Task<Results<Product, ErrorList>> Execute(Product product, CancellationToken cancellationToken)
     {
         var validationResult = _validator.Validate(product);
         if (validationResult.IsValid is false) return new ErrorList(validationResult);
 
         var getProductByIdResult = await _productRepository.GetByName(product.Name, cancellationToken);
-        if (getProductByIdResult.State is ResultStates.Error) return getProductByIdResult.Error!;
+        if (getProductByIdResult.State is ResultStates.Error) return new ErrorList(getProductByIdResult.Error!);
         if (getProductByIdResult.IsSuccess) return new ErrorList($"Product '{product.Id}' - '{product.Name}' already exists!");
 
         var categoryResult = await _categoryGetOrCreateService.Execute(product.Category, cancellationToken);

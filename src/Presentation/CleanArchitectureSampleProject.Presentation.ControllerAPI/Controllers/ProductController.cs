@@ -80,12 +80,14 @@ namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
 
             return result.Match(success =>
                 Results.Ok(success),
-                error => Results.Problem(
-                    type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorTitleMessage,
-                    detail: (error as BaseError).Message,
-                    statusCode: StatusCodes.Status400BadRequest
-                )
+                error => Results.BadRequest(new
+                {
+                    @Type = HttpStatusCode.BadRequest.ToString(),
+                    Title = errorTitleMessage,
+                    Detail = errorTitleMessage,
+                    Errors = error.Errors.Select(x => x.Message),
+                    StatusCode = StatusCodes.Status400BadRequest
+                })
             );
         }
     }
