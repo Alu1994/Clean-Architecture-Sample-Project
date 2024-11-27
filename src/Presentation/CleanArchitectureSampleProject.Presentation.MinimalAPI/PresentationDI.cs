@@ -4,6 +4,13 @@ using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using Scalar.AspNetCore;
 using CleanArchitectureSampleProject.Core.Domain;
 using CleanArchitectureSampleProject.Core.Application;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.ApiDocsConfiguration.Scalar;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.ApiDocsConfiguration.Swagger;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
 
@@ -41,9 +48,18 @@ public static class PresentationDI
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         services.AddOpenApi(ScalarOpenApi.Configure);
-        services.AddSwaggerGen();
-        services.AddEndpointsApiExplorer();
-                
+
+        //services.AddSwaggerGen((x) => new ConfigureSwaggerOptions().Configure(x));
+        //services.AddEndpointsApiExplorer();
+
+        //services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+
+        
+
+        // =========== Setup Authentication & Authorization ===========
+        services.AddMyAuthentication();
+        // =========== Setup Authentication & Authorization ===========
+
         // =========== Add Layers Dependency Injection ===========
         services.AddDomainLayer();
         services.AddApplicationLayer();
@@ -71,6 +87,11 @@ public static class PresentationDI
         app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Test"));
         // ======== Add Swagger UI ========
 
+        // =========== Use Authentication & Authorization ===========
+        app.UseAuthentication();
+        app.UseAuthorization();
+        // =========== Use Authentication & Authorization ===========
+
         // =========== Map Endpoints ===========
         app.UseHttpsRedirection();
         app.MapDefaultEndpoints();
@@ -78,5 +99,36 @@ public static class PresentationDI
         // =========== Map Endpoints ===========
 
         return app;
+    }
+
+    public static string MyPolicyName = "MyPolicyName";
+    public static string myclaimname = "myclaimname";
+
+    private static IServiceCollection AddMyAuthentication(this IServiceCollection services) 
+    {
+        services.AddAuthorization();
+        //services.AddAuthorization(
+        //    //options =>
+        //    //    options.AddPolicy(MyPolicyName, p => 
+        //    //        p.RequireClaim(myclaimname, "true"))
+        //    );
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(jwtBearerOptions =>
+            {
+                jwtBearerOptions.TokenValidationParameters = 
+                    new TokenValidationParameters
+                    {
+                        IssuerSigningKey = new SymmetricSecurityKey("MyTokenNeedsToHave256BytesForItToWorkAndBeSecure"u8.ToArray()),
+                        ValidIssuer = "https://id.cleanarchsampleproject.com.br",
+                        ValidAudience = "https://cleanarchsampleproject.com.br",
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                    };
+            });
+
+        return services;
     }
 }

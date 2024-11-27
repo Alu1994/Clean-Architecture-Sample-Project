@@ -17,6 +17,8 @@ dbServer.WithDataVolume(Services.PostgresContainerVolume)
     .WithPgAdmin();
 // PostgresDB
 
+var authenticationApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_Authentication>(ProjectNames.AuthenticationApp);
+
 var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigrator)
     .WithReference(dbServer)
     .WithReference(db)
@@ -36,10 +38,12 @@ var minimalApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_
     .WithReference(db)
     .WithReference(redis)
     .WithReference(queue)
+    .WithReference(authenticationApi)
     .WaitFor(db)    
     .WaitFor(redis)
     .WaitFor(dbMigrator)
-    .WaitFor(queue);
+    .WaitFor(queue)
+    .WaitFor(authenticationApi);
 
 builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames.BlazorApp)
     .WithExternalHttpEndpoints()
