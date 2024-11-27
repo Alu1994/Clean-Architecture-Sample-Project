@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Setups;
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 public static class AuthenticationSetup
 {
@@ -24,6 +24,7 @@ public static class AuthenticationSetup
                         ValidateLifetime = true,
                         ValidateIssuer = true,
                         ValidateAudience = true,
+                        ClockSkew = TimeSpan.FromSeconds(5),
                     };
             });
 

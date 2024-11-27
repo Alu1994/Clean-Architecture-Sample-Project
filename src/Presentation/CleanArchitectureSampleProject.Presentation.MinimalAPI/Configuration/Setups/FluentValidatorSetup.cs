@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Results;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Setups;
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 public static class FluentValidatorSetup
 {

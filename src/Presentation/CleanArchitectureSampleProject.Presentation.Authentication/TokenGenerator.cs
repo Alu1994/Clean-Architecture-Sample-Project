@@ -20,6 +20,7 @@ public sealed class TokenGenerator
             Expires = DateTime.UtcNow.AddMinutes(60),
             Issuer = "https://id.cleanarchsampleproject.com.br",
             Audience = "https://cleanarchsampleproject.com.br",
+            NotBefore = DateTime.UtcNow.Add(TimeSpan.FromSeconds(60)),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key), 
                 SecurityAlgorithms.HmacSha256Signature),

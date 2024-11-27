@@ -160,7 +160,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
             var products = await _context.Products.Include(x => x.Category).AsNoTracking().ToListAsync(cancellation);
             if (products == null)
             {
-                return Enumerable.Empty<Product>().ToFrozenSet();
+                return FrozenSet<Product>.Empty;
             }
             return products.ToFrozenSet();
         }

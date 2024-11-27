@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Setups;
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 public static class HealthCheckSetup
 {

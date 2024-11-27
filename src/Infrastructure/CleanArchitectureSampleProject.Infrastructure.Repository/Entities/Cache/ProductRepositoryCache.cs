@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 
@@ -22,7 +23,7 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
         {
             string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
             if (cachedData is null)
-                return Enumerable.Empty<Product>().ToFrozenSet();
+                return FrozenSet<Product>.Empty;
 
             var products = JsonConvert.DeserializeObject<List<Product>>(cachedData, JsonSerializationOptions.RemoveInfiniteLoop)!.ToFrozenSet();
             foreach (var product in products)

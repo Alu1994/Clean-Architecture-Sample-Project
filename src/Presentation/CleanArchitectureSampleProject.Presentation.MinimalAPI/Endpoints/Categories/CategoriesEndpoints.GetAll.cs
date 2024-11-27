@@ -1,4 +1,5 @@
-﻿using System.Collections.Frozen;
+﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
+using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 

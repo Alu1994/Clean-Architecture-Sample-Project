@@ -16,6 +16,7 @@ app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/openapi/v1.json", "Test");
+    options.InjectStylesheet("/css/swagger-dark-theme.css");
 });
 
 app.UseHttpsRedirection();
@@ -27,5 +28,7 @@ app.MapPost("/login", (LoginRequest request, TokenGenerator tokenGenerator) =>
         access_token = tokenGenerator.GenerateToken(request.Email)
     };
 });
+
+app.UseStaticFiles();
 
 app.Run();

@@ -1,12 +1,13 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain;
 using CleanArchitectureSampleProject.Core.Application;
 using CleanArchitectureSampleProject.Infrastructure.Repository;
-using CleanArchitectureSampleProject.Presentation.MinimalAPI.ApiDocsConfiguration;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 using NLog.Web;
 using Scalar.AspNetCore;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Setups;
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration;
 
 public static class DependencyInjection
 {
@@ -45,7 +46,7 @@ public static class DependencyInjection
         services.AddProblemDetails();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        services.AddOpenApi(options => options.AddDocumentTransformer(new DocumentTransformer()));
+        services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
         // =========== Setup Authentication & Authorization ===========
         services.AddAuthenticationAndAuthorization();
@@ -72,15 +73,12 @@ public static class DependencyInjection
         app.MapOpenApi();
 
         // ======== Add Scalar UI ========
-        app.MapScalarApiReference(OpenApiConfiguration.SetupScalarOptions);
+        app.MapScalarApiReference(OpenApiSetup.SetupScalarOptions);
         // ======== Add Scalar UI ========
 
         // ======== Add Swagger UI ========
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        app.UseSwaggerUI(options => {
-            options.SwaggerEndpoint("/openapi/v1.json", "Test");
-            //options.InjectStylesheet("/css/swagger-dark-theme.css");
-        });
+        app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
         // ======== Add Swagger UI ========
 
         app.UseMiddleware<JwtMiddleware>();
@@ -89,8 +87,6 @@ public static class DependencyInjection
         app.UseAuthentication();
         app.UseAuthorization();
         // =========== Use Authentication & Authorization ===========
-
-        
 
         // =========== Map Endpoints ===========
         app.UseHttpsRedirection();

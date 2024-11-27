@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.ApiDocsConfiguration;
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
-public sealed class DocumentTransformer : IOpenApiDocumentTransformer
+public sealed class DocumentTransformerSetup : IOpenApiDocumentTransformer
 {
     public Task TransformAsync(
         OpenApiDocument document,
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
+        document.Info.Title = "Minimal API | v1";
+
         document.Servers =
         [
             new() { Url = "https://localhost:7435" }

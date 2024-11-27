@@ -2,7 +2,6 @@
 global using CleanArchitectureSampleProject.Core.Application.Outputs;
 global using CleanArchitectureSampleProject.Core.Application.UseCases;
 global using CleanArchitectureSampleProject.CrossCuttingConcerns;
-global using CleanArchitectureSampleProject.Presentation.MinimalAPI.Setups;
 global using FluentValidation;
 global using FluentValidation.Results;
 global using Microsoft.AspNetCore.Mvc;

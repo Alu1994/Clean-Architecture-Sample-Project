@@ -1,12 +1,14 @@
-﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Setups;
+﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
 
 public sealed class JwtMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<JwtMiddleware> _logger;
 
-    public JwtMiddleware(RequestDelegate next)
+    public JwtMiddleware(RequestDelegate next, ILogger<JwtMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -30,23 +32,6 @@ public sealed class JwtMiddleware
         }
     }
 
-    private async Task HandleUnauthorizedResponse(HttpContext context, Exception ex)
-    {
-        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-        context.Response.ContentType = "application/json";
-
-        // Mensagem de erro personalizada
-        var response = new UnauthorizedResponse
-        (
-            (short)context.Response.StatusCode,
-            context.Request.Path.Value,
-            "Unauthorized. Your token might be missing or invalid.",
-            ex.Message
-        );
-
-        await context.Response.WriteAsJsonAsync(response);
-    }
-
     private async Task WriteUnauthorizedResponse(HttpContext context)
     {
         if (!context.Response.HasStarted)
@@ -56,12 +41,32 @@ public sealed class JwtMiddleware
             var response = new UnauthorizedResponse
             (
                 (short)context.Response.StatusCode,
+                context.Request.Method,
                 context.Request.Path.Value
             );
 
+            _logger.LogError("Error while Authenticating: {response}", response);
             await context.Response.WriteAsJsonAsync(response);
         }
     }
+
+    private async Task HandleUnauthorizedResponse(HttpContext context, Exception ex)
+    {
+        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+        context.Response.ContentType = "application/json";
+
+        // Mensagem de erro personalizada
+        var response = new UnauthorizedResponse
+        (
+            (short)context.Response.StatusCode,
+            context.Request.Method,
+            context.Request.Path.Value,
+            "Unauthorized. Your token might be missing or invalid.",
+            ex.Message
+        );
+
+        await context.Response.WriteAsJsonAsync(response);
+    }
 }
 
-public record UnauthorizedResponse(short StatusCode, string? RequestedResourcePath, string Message = "You are not authorized to access this resource.", string? Details = null);
+public record UnauthorizedResponse(short StatusCode, string RequestedHttpMethod, string? RequestedResourcePath, string Message = "You are not authorized to access this resource.", string? Details = null);
