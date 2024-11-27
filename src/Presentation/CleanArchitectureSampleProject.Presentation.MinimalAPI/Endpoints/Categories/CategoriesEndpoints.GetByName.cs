@@ -1,7 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
-using CleanArchitectureSampleProject.Core.Application.UseCases;
-
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static partial class CategoriesEndpoints
 {
@@ -13,7 +10,10 @@ public static partial class CategoriesEndpoints
         })
         .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo($"Get {Controller} By Name", TagName);
+        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
+        .WithConfigSummaryInfo($"Get {Controller} By Name", TagName)
+        .RequireAuthorization();
+
         return app;
     }
 

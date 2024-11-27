@@ -13,8 +13,11 @@ public static partial class CategoriesEndpoints
         .Accepts<UpdateCategoryInput>(ContentType)
         .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
+        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
         .WithConfigSummaryInfo($"Update {Controller}", TagName)
-        .AddFluentValidationAutoValidation();
+        .AddFluentValidationAutoValidation()
+        .RequireAuthorization();
+
         return app;
     }
 

@@ -13,8 +13,11 @@ public static partial class ProductsEndpoints
         .Accepts<UpdateProductInput>(ContentType)
         .Produces<UpdateProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
+        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
         .WithConfigSummaryInfo("Update Product", TagName)
-        .AddFluentValidationAutoValidation();
+        .AddFluentValidationAutoValidation()
+        .RequireAuthorization();
+
         return app;
     }
 

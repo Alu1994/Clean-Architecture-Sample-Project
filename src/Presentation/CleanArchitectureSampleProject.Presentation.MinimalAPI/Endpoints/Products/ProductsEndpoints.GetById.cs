@@ -1,7 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
-using CleanArchitectureSampleProject.Core.Application.UseCases;
-
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
+﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
 public static partial class ProductsEndpoints
 {
@@ -13,7 +10,10 @@ public static partial class ProductsEndpoints
         })
         .Produces<GetProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo("Get Product By Id", TagName);
+        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
+        .WithConfigSummaryInfo("Get Product By Id", TagName)
+        .RequireAuthorization();
+
         return app;
     }
 

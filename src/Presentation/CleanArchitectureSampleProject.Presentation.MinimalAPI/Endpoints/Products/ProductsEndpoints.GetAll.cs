@@ -1,6 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
-using CleanArchitectureSampleProject.Core.Application.UseCases;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -14,7 +12,10 @@ public static partial class ProductsEndpoints
         })
         .Produces<FrozenSet<GetProductOutput>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo("Get All Products", TagName);
+        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
+        .WithConfigSummaryInfo("Get All Products", TagName)
+        .RequireAuthorization();
+
         return app;
     }
 
