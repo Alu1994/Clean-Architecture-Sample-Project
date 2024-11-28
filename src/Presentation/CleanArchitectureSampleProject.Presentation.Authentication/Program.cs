@@ -1,5 +1,4 @@
 using CleanArchitectureSampleProject.Infrastructure.Repository;
-using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
 using CleanArchitectureSampleProject.Presentation.Authentication.Endpoints;
 using System.Net;
 
@@ -41,11 +40,25 @@ app.MapPost("/login", async (LoginRequest request, TokenGenerator tokenGenerator
         type: HttpStatusCode.BadRequest.ToString());
 });
 
-app.MapPost("/create-user", async (User request, TokenGenerator tokenGenerator, CancellationToken cancellation) =>
+app.MapPost("/create-user", async (CreateUserRequest request, TokenGenerator tokenGenerator, CancellationToken cancellation) =>
 {
     var user = await tokenGenerator.CreateUser(request, cancellation);
 
     return user;
+});
+
+app.MapPost("/create-resource", async (CreateResourceRequest request, TokenGenerator tokenGenerator, CancellationToken cancellation) =>
+{
+    var resource = await tokenGenerator.CreateResource(request, cancellation);
+
+    return resource;
+});
+
+app.MapPost("/create-user-resource", async (CreateUserResourceRequest request, TokenGenerator tokenGenerator, CancellationToken cancellation) =>
+{
+    var userResource = await tokenGenerator.CreateUserResource(request, cancellation);
+
+    return userResource;
 });
 
 app.UseStaticFiles();

@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AllSolutionItems", "AllSolu
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config = src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.AppHost", "src\Aspire\CleanArchitectureSampleProject.Aspire.AppHost\CleanArchitectureSampleProject.Aspire.AppHost.csproj", "{6BB2CDD5-5D4B-4D71-B600-36757E955448}"

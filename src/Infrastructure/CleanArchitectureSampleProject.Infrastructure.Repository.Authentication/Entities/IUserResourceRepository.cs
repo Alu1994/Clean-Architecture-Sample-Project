@@ -6,6 +6,9 @@ public interface IUserResourceRepository
 {
     Task<Results<FrozenSet<UserResource>, BaseError>> Get(CancellationToken cancellation = default);
     Task<Results<UserResource, BaseError>> GetById(int id, CancellationToken cancellation = default);
+
+    Task<Results<IReadOnlyCollection<UserResource>, BaseError>> GetUsersResourcesBy(int userId, CancellationToken cancellation = default);
+
     Task<ValidationResult> Insert(UserResource userResource, CancellationToken cancellation);
     Task<ValidationResult> Update(UserResource userResource, CancellationToken cancellation);
 }
@@ -34,6 +37,19 @@ public sealed class UserResourceRepository : IUserResourceRepository
         catch (Exception ex)
         {
             return new BaseError($"Error while Getting UserResource '{id}': {ex.Message}");
+        }
+    }
+
+    public async Task<Results<IReadOnlyCollection<UserResource>, BaseError>> GetUsersResourcesBy(int userId, CancellationToken cancellation = default)
+    {
+        try
+        {
+            var usersResources = await _context.UsersResources.Where(x => x.UserId == userId).ToListAsync();
+            return usersResources.AsReadOnly();
+        }
+        catch (Exception ex)
+        {
+            return new BaseError($"Error while Getting UserResource with UserId '{userId}': {ex.Message}");
         }
     }
 

@@ -14,7 +14,7 @@ public static partial class CategoriesEndpoints
         .Produces<FrozenSet<CategoryOutput>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get All Categories", TagName)
-        .RequireAuthorization(AuthenticationSetup.CategoryPolicy);
+        .RequireAuthorization(AuthenticationSetup.CategoryPolicyCanRead);
 
         return app;
     }

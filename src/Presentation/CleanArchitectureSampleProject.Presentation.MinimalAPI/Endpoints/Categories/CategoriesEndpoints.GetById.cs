@@ -13,7 +13,7 @@ public static partial class CategoriesEndpoints
         .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Get {Controller} By Id", TagName)
-        .RequireAuthorization(AuthenticationSetup.CategoryPolicy);
+        .RequireAuthorization(AuthenticationSetup.CategoryPolicyCanRead);
 
         return app;
     }

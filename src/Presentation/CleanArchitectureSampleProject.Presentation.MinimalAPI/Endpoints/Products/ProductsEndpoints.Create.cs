@@ -16,7 +16,7 @@ public static partial class ProductsEndpoints
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Create Product", TagName)
         .AddFluentValidationAutoValidation()
-        .RequireAuthorization(AuthenticationSetup.ProductPolicy);
+        .RequireAuthorization(AuthenticationSetup.ProductPolicyCanWrite);
 
         return app;
     }

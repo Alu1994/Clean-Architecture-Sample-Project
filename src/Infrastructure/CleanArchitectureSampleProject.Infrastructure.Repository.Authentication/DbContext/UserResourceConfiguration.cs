@@ -9,7 +9,8 @@ public sealed class UserResourceConfiguration : IEntityTypeConfiguration<UserRes
     public void Configure(EntityTypeBuilder<UserResource> builder)
     {
         builder.HasKey(e => e.Id);
-
-        
+        builder.Property(e => e.CanRead);
+        builder.Property(e => e.CanWrite);
+        builder.Property(e => e.CanDelete);
     }
 }

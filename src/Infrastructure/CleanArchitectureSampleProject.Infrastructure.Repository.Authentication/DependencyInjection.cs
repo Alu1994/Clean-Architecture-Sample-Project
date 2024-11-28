@@ -26,7 +26,9 @@ public static class DependencyInjection
     public static IServiceCollection AddAuthRepositoryLayer(this IServiceCollection services)
     {                
         services
-            .AddScoped<IUserRepository, UserRepository>();
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IResourceRepository, ResourceRepository>()
+            .AddScoped<IUserResourceRepository, UserResourceRepository>();
 
         return services;
     }

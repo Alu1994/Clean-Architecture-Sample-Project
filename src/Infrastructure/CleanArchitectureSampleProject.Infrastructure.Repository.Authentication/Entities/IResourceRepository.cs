@@ -25,9 +25,17 @@ public sealed class ResourceRepository : IResourceRepository
         throw new NotImplementedException();
     }
 
-    public Task<Results<Resource, BaseError>> GetById(int id, CancellationToken cancellation = default)
+    public async Task<Results<Resource, BaseError>> GetById(int id, CancellationToken cancellation = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var resource = await _context.Resources.Where(x => x.Id == id).FirstAsync();
+            return resource;
+        }
+        catch (Exception ex)
+        {
+            return new BaseError($"Error while Getting Resource '{id}': {ex.Message}");
+        }
     }
 
     public async Task<Results<Resource, BaseError>> GetByName(string name, CancellationToken cancellation = default)

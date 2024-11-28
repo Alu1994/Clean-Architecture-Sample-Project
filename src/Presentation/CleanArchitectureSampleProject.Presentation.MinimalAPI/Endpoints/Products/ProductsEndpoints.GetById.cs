@@ -13,7 +13,7 @@ public static partial class ProductsEndpoints
         .Produces<GetProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get Product By Id", TagName)
-        .RequireAuthorization(AuthenticationSetup.ProductPolicy);
+        .RequireAuthorization(AuthenticationSetup.ProductPolicyCanRead);
 
         return app;
     }

@@ -5,6 +5,7 @@ public sealed class UserResource
     public int Id { get; set; }
     public bool CanRead { get; set; }
     public bool CanWrite { get; set; }
+    public bool CanDelete { get; set; }
 
     public int UserId { get; set; }
     public User User { get; set; }
