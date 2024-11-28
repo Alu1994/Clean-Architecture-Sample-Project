@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
+﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -12,9 +12,8 @@ public static partial class ProductsEndpoints
         })
         .Produces<GetProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
         .WithConfigSummaryInfo("Get Product By Id", TagName)
-        .RequireAuthorization();
+        .RequireAuthorization(AuthenticationSetup.ProductPolicy);
 
         return app;
     }

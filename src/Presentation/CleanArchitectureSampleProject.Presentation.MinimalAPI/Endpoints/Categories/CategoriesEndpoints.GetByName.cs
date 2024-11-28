@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
+﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
@@ -12,9 +12,8 @@ public static partial class CategoriesEndpoints
         })
         .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
         .WithConfigSummaryInfo($"Get {Controller} By Name", TagName)
-        .RequireAuthorization();
+        .RequireAuthorization(AuthenticationSetup.CategoryPolicy);
 
         return app;
     }

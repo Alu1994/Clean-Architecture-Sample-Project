@@ -1,72 +1,71 @@
 ﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
 
-public sealed class JwtMiddleware
+public sealed class JwtMiddleware(RequestDelegate next, ILogger<JwtMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<JwtMiddleware> _logger;
+    private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
+    private readonly ILogger<JwtMiddleware> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-    public JwtMiddleware(RequestDelegate next, ILogger<JwtMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
+    private const string ContentType = "application/json";
+    private const string ErrorLog401 = "Error while Authenticating: {response}";
+    private const string ErrorLog403 = "Error while Authorizing: {response}";
 
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            // Permite a requisição continuar para o próximo middleware
             await _next(context);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Captura exceções e trata erros de autenticação
-            //await HandleUnauthorizedResponse(context, ex);
             throw;
         }
-
-        // Verifica se o status foi configurado como 401
-        if (context.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
-        {
-            await WriteUnauthorizedResponse(context);
-        }
+        await WriteForbiddenResponse(context);
     }
 
-    private async Task WriteUnauthorizedResponse(HttpContext context)
+    private async Task WriteForbiddenResponse(HttpContext context)
     {
-        if (!context.Response.HasStarted)
-        {
-            context.Response.ContentType = "application/json";
+        if (context.Response.HasStarted) return;        
+        var response = GetResponseType(context);
+        if (response.IsFail) return;
 
-            var response = new UnauthorizedResponse
-            (
-                (short)context.Response.StatusCode,
-                context.Request.Method,
-                context.Request.Path.Value
-            );
-
-            _logger.LogError("Error while Authenticating: {response}", response);
-            await context.Response.WriteAsJsonAsync(response);
-        }
+        _logger.LogError(response.Success!.ErrorMessage, response.Success.Response);
+        context.Response.ContentType = ContentType;
+        await context.Response.WriteAsJsonAsync(response.Success.Response);
     }
 
-    private async Task HandleUnauthorizedResponse(HttpContext context, Exception ex)
+    private static Results<AuthResponseType, BaseError> GetResponseType(HttpContext context)
     {
-        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-        context.Response.ContentType = "application/json";
+        var method = context.Request.Method;
+        var path = context.Request.Path.Value ?? string.Empty;
 
-        // Mensagem de erro personalizada
-        var response = new UnauthorizedResponse
-        (
-            (short)context.Response.StatusCode,
-            context.Request.Method,
-            context.Request.Path.Value,
-            "Unauthorized. Your token might be missing or invalid.",
-            ex.Message
-        );
-
-        await context.Response.WriteAsJsonAsync(response);
+        return context.Response.StatusCode switch
+        {
+            StatusCodes.Status401Unauthorized => new AuthResponseType(ErrorLog401, new UnauthorizedResponse(method, path)),
+            StatusCodes.Status403Forbidden => new AuthResponseType(ErrorLog403, new ForbiddenResponse(method, path)),
+            _ => new BaseError("")
+        };
     }
 }
 
-public record UnauthorizedResponse(short StatusCode, string RequestedHttpMethod, string? RequestedResourcePath, string Message = "You are not authorized to access this resource.", string? Details = null);
+public record AuthResponseType(string ErrorMessage, BaseAuthenticationResponse Response);
+
+public abstract record BaseAuthenticationResponse(
+    string RequestedHttpMethod,
+    string RequestedResourcePath,
+    string Details,
+    string Message,
+    short? StatusCode);
+
+public record UnauthorizedResponse(
+    string RequestedHttpMethod = "",
+    string RequestedResourcePath = "",
+    string Details = "",
+    string Message = "You are not authorized to access this app.",
+    short? StatusCode = StatusCodes.Status401Unauthorized) : BaseAuthenticationResponse(RequestedHttpMethod, RequestedResourcePath, Details, Message, StatusCode);
+
+public record ForbiddenResponse(
+    string RequestedHttpMethod = "",
+    string RequestedResourcePath = "",
+    string Details = "",
+    string Message = "You are not authorized to access this specific resource.",
+    short? StatusCode = StatusCodes.Status403Forbidden) : BaseAuthenticationResponse(RequestedHttpMethod, RequestedResourcePath, Details, Message, StatusCode);

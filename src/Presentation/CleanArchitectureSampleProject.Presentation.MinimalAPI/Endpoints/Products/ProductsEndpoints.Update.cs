@@ -1,5 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
-using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -14,10 +14,9 @@ public static partial class ProductsEndpoints
         .Accepts<UpdateProductInput>(ContentType)
         .Produces<UpdateProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
-        .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
         .WithConfigSummaryInfo("Update Product", TagName)
         .AddFluentValidationAutoValidation()
-        .RequireAuthorization();
+        .RequireAuthorization(AuthenticationSetup.ProductPolicy);
 
         return app;
     }

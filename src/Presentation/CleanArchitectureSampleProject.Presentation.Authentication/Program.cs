@@ -30,12 +30,10 @@ app.UseHttpsRedirection();
 app.MapPost("/login", async (LoginRequest request, TokenGenerator tokenGenerator, CancellationToken cancellation) =>
 {
     var result = await tokenGenerator.GenerateToken(request, cancellation);
-    if (result.IsSuccess) 
-        return Results.Ok(new
-        {
-            access_token = result.Success
-        });
-
+    if (result.IsSuccess)
+    {
+        return Results.Ok(new { access_token = result.Success });
+    }
     return Results.Problem(
         detail: $"User '{request.Email}' not found.",
         statusCode: StatusCodes.Status400BadRequest,

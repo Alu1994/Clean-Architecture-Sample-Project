@@ -5,35 +5,39 @@ namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.S
 
 public static class AuthenticationSetup
 {
+    public static string CategoryPolicy = "CategoryPolicy";
+    private static readonly string CategoryClaim = "categoryclaim";
 
-    public static string MyPolicyName = "MyPolicyName";
-    public static string myclaimname = "myclaimname";
+    public static string ProductPolicy = "ProductPolicy";
+    private static readonly string ProductClaim = "productclaim";
+
+    private static readonly string ValidAudience = "https://cleanarchsampleproject.com.br";
+    private static readonly string ValidIssuer = "https://id.cleanarchsampleproject.com.br";
+    private static readonly byte[] SymmetricKey = "MyTokenNeedsToHave256BytesForItToWorkAndBeSecure"u8.ToArray();
 
     public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(jwtBearerOptions =>
-            {
-                jwtBearerOptions.TokenValidationParameters =
-                    new TokenValidationParameters
-                    {
-                        IssuerSigningKey = new SymmetricSecurityKey("MyTokenNeedsToHave256BytesForItToWorkAndBeSecure"u8.ToArray()),
-                        ValidIssuer = "https://id.cleanarchsampleproject.com.br",
-                        ValidAudience = "https://cleanarchsampleproject.com.br",
-                        ValidateIssuerSigningKey = true,
-                        ValidateLifetime = true,
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ClockSkew = TimeSpan.FromSeconds(5),
-                    };
-            });
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            IssuerSigningKey = new SymmetricSecurityKey(SymmetricKey),
+            ValidIssuer = ValidIssuer,
+            ValidAudience = ValidAudience,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ClockSkew = TimeSpan.FromSeconds(5),
+        };
 
-        services.AddAuthorization();
-        //services.AddAuthorization(
-        //    //options =>
-        //    //    options.AddPolicy(MyPolicyName, p => 
-        //    //        p.RequireClaim(myclaimname, "true"))
-        //    );
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(jwtBearerOptions => jwtBearerOptions.TokenValidationParameters = tokenValidationParameters);
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(CategoryPolicy, p => p.RequireClaim(CategoryClaim, "true"));
+            options.AddPolicy(ProductPolicy, p => p.RequireClaim(ProductClaim, "true"));
+        });
 
         return services;
     }
