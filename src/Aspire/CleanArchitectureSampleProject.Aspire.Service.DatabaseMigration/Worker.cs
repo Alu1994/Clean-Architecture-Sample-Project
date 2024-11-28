@@ -1,3 +1,4 @@
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -30,6 +31,9 @@ public class Worker : BackgroundService
             using var scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ProductDataContext>();
             await dbContext.Database.MigrateAsync(stoppingToken);
+
+            var dbAuthContext = scope.ServiceProvider.GetRequiredService<AuthenticationDataContext>();
+            await dbAuthContext.Database.MigrateAsync(stoppingToken);
         }
         catch (Exception ex)
         {

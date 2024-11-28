@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -7,21 +8,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.2.2" />
-		<PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>		
+		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
-		<ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
-		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Core.Domain\CleanArchitectureSampleProject.Core.Domain.csproj" />
-		<ProjectReference Include="..\CleanArchitectureSampleProject.Infrastructure.Messaging\CleanArchitectureSampleProject.Infrastructure.Messaging.csproj" />
+	  <ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
+	  <ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
 	</ItemGroup>
+
 </Project>

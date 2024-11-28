@@ -17,15 +17,31 @@ dbServer.WithDataVolume(Services.PostgresContainerVolume)
     .WithPgAdmin();
 // PostgresDB
 
-var authenticationApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_Authentication>(ProjectNames.AuthenticationApp);
+// Auth PostgresDB
+var dbAuthServer = builder.AddPostgres(Services.PostgresServerAuthenticationName);
+var dbAuth = dbAuthServer.AddDatabase(Services.PostgresDatabaseAuthenticationName);
+dbAuthServer.WithDataVolume(Services.PostgresContainerAuthenticationVolume)
+    .WithPgAdmin();
+// Auth PostgresDB
 
 var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigrator)
     .WithReference(dbServer)
+    .WithReference(dbAuthServer)
+    .WithReference(dbAuth)
     .WithReference(db)
     .WithReference(queue)
     .WaitFor(dbServer)
+    .WaitFor(dbAuthServer)
     .WaitFor(db)
+    .WaitFor(dbAuth)
     .WaitFor(queue);
+
+var authenticationApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_Authentication>(ProjectNames.AuthenticationApp)
+    .WithReference(dbAuthServer)
+    .WithReference(dbAuth)
+    .WaitFor(dbAuthServer)
+    .WaitFor(dbAuth)
+    .WaitFor(dbMigrator);
 
 var controllerApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_ControllerAPI>(ProjectNames.ControllerApi)
     .WithReference(db)

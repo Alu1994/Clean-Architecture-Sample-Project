@@ -13,6 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.csproj" />
 		<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository\CleanArchitectureSampleProject.Infrastructure.Repository.csproj" />
 	</ItemGroup>

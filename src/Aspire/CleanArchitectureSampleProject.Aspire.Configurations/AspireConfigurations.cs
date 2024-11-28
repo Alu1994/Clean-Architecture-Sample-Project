@@ -14,9 +14,15 @@ public static class AspireConfigurations
     public static class Services
     {
         public static string RedisCacheName => "cache";
+
         public static string PostgresServerName => "dbserver";
-        public static string PostgresDatabaseName => "dbproducts";
+        public static string PostgresDatabaseName => "dbproducts";        
         public static string PostgresContainerVolume => "cleanarchitecturesampleproject-db-volume";
+
+        public static string PostgresServerAuthenticationName => "dbauthserver";
+        public static string PostgresDatabaseAuthenticationName => "dbauths";
+        public static string PostgresContainerAuthenticationVolume => "db-auth-volume";
+
 
         public static string AzureStorageConnection => "storage";
         public static string AzureQueueConnection => "queues";

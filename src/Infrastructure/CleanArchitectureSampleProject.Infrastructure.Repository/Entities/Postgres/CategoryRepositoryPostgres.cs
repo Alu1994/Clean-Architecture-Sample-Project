@@ -1,7 +1,5 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;

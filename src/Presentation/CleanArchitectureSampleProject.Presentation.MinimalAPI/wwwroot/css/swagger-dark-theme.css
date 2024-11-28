@@ -4,6 +4,10 @@ body {
     color: #ffffff;
 }
 
+.swagger-ui .scheme-container form {
+    color: #000000;
+}
+
 .swagger-ui,
 .swagger-ui .info .title,
 .swagger-ui .topbar,
