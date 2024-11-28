@@ -5,4 +5,6 @@ namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authenticatio
 public partial class AuthenticationDataContext
 {
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Resource> Resources { get; set; } = null!;
+    public DbSet<UserResource> UsersResources { get; set; } = null!;
 }

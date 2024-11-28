@@ -5,7 +5,7 @@ namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authenticatio
 public interface IUserRepository
 {
     Task<Results<FrozenSet<User>, BaseError>> Get(CancellationToken cancellation = default);
-    Task<Results<User, BaseError>> GetById(Guid id, CancellationToken cancellation = default);
+    Task<Results<User, BaseError>> GetById(int id, CancellationToken cancellation = default);
     Task<Results<User, BaseError>> GetUserByEmailAndPassword(string email, string password, CancellationToken cancellation = default);
     Task<ValidationResult> Insert(User user, CancellationToken cancellation);
     Task<ValidationResult> Update(User user, CancellationToken cancellation);
@@ -25,7 +25,7 @@ public sealed class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public Task<Results<User, BaseError>> GetById(Guid id, CancellationToken cancellation = default)
+    public Task<Results<User, BaseError>> GetById(int id, CancellationToken cancellation = default)
     {
         throw new NotImplementedException();
     }

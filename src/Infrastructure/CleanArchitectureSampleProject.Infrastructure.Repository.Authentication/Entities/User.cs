@@ -13,4 +13,6 @@ public sealed class User
     public string Password { get; set; }
     public string Email { get; set; }
     public DateTime CreationDate { get; set; }
+
+    public ICollection<UserResource> UserResources { get; set; } = new List<UserResource>();
 }

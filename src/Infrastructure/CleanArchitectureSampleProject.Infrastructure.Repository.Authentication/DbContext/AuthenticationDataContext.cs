@@ -14,5 +14,7 @@ public partial class AuthenticationDataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new ResourceConfiguration());
+        modelBuilder.ApplyConfiguration(new UserResourceConfiguration());
     }
 }
