@@ -39,18 +39,29 @@ var minimalApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_
     .WithReference(redis)
     .WithReference(queue)
     .WithReference(authenticationApi)
-    .WaitFor(db)    
+    .WaitFor(db)
     .WaitFor(redis)
     .WaitFor(dbMigrator)
     .WaitFor(queue)
     .WaitFor(authenticationApi);
+
+var gRPCServer = builder.AddProject<CleanArchitectureSampleProject_Presentation_gRPC>(ProjectNames.gRPCServer)
+    .WithReference(db)
+    .WithReference(redis)
+    .WithReference(queue)
+    .WaitFor(db)
+    .WaitFor(redis)
+    .WaitFor(dbMigrator)
+    .WaitFor(queue);
 
 builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames.BlazorApp)
     .WithExternalHttpEndpoints()
     .WithReference(redis)
     .WaitFor(redis)
     .WithReference(minimalApi)
-    .WaitFor(minimalApi);
+    .WaitFor(minimalApi)
+    .WithReference(gRPCServer)
+    .WaitFor(gRPCServer);
 
 builder.Build().Run();
 

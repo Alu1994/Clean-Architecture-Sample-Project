@@ -1,0 +1,53 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "CleanArchitectureSampleProject.Presentation.gRPC2";
+
+package product;
+
+// The greeting service definition.
+service Producter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (GetProductOutput);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+message CategoryOutput {
+   string Id = 1;
+   string CategoryName = 2;
+   google.protobuf.Timestamp CreationDate = 3;
+}
+message GetProductOutput {
+   string Id = 1; // default value could not be applied: 00000000-0000-0000-0000-000000000000
+   string Name = 2;
+   string Description = 3;
+   ProtoDecimal Value = 4;
+   int32 Quantity = 5;
+   repeated CategoryOutput Category = 6;
+   google.protobuf.Timestamp CreationDate = 7;
+}
+
+message NetObjectProxy {
+  int32 existingObjectKey = 1; // for a tracked object, the key of the **first** time this object was seen
+  int32 newObjectKey = 2; // for a tracked object, a **new** key, the first time this object is seen
+  int32 existingTypeKey = 3; // for dynamic typing, the key of the **first** time this type was seen
+  int32 newTypeKey = 4; // for dynamic typing, a **new** key, the first time this type is seen
+  string typeName = 8; // for dynamic typing, the name of the type (only present along with newTypeKey)
+  bytes payload = 10; // the new string/value (only present along with newObjectKey)
+}
+
+message ProtoGuid {
+  fixed64 lo = 1; // the first 8 bytes of the guid (note:crazy-endian)
+  fixed64 hi = 2; // the second 8 bytes of the guid (note:crazy-endian)
+}
+
+message ProtoDecimal {
+    sint32 v1 = 1;
+    sint32 v2 = 2;
+    sint32 v3 = 3;
+    sint32 v4 = 4;
+}

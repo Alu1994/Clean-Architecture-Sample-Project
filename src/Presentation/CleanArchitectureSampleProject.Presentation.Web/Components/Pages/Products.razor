@@ -5,6 +5,7 @@
 @attribute [OutputCache(Duration = 5)]
 
 @inject ProductApiClient WeatherApi
+@inject ProductgRPCClient WeathergRPC
 
 <PageTitle>Products</PageTitle>
 
@@ -54,7 +55,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        products = await WeatherApi.GetProductsAsync();
+        // products = await WeatherApi.GetProductsAsync();
+        products = await WeathergRPC.GetProductsAsync();
     }
 
     private async Task CreateProduct()

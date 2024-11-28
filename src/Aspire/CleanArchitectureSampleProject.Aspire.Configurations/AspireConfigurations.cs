@@ -6,9 +6,10 @@ public static class AspireConfigurations
     {
         public static string AuthenticationApp => "authenticationapi";
         public static string MinimalApi => "minimalapi";
+        public static string gRPCServer => "grpcserver";
         public static string ControllerApi => "controllerapi";
         public static string BlazorApp => "blazorapp";
-        public static string DatabaseMigrator => "cleanarchitecturesampleproject-service-databasemigration";
+        public static string DatabaseMigrator => "dbmigrator";
     }
 
     public static class Services

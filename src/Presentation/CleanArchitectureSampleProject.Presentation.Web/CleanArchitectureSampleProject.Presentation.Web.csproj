@@ -7,11 +7,22 @@
 
 	<ItemGroup>
 		<PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.0.0" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
+
+		<PackageReference Include="Grpc.Net.Client" Version="2.56.0" />
+		<PackageReference Include="Google.Protobuf" Version="3.24.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.56.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" />
 		<ProjectReference Include="..\..\Aspire\CleanArchitectureSampleProject.Aspire.ServiceDefaults\CleanArchitectureSampleProject.Aspire.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Core.Application\CleanArchitectureSampleProject.Core.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Protobuf Include="..\CleanArchitectureSampleProject.Presentation.gRPC\Protos\product.proto" GrpcServices="Client">
+	    <Link>Protos\product.proto</Link>
+	  </Protobuf>
 	</ItemGroup>
 </Project>
