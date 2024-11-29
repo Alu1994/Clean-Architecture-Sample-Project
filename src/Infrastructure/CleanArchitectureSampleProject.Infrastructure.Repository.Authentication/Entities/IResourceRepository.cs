@@ -6,7 +6,7 @@ public interface IResourceRepository
 {
     Task<Results<FrozenSet<Resource>, BaseError>> Get(CancellationToken cancellation = default);
     Task<Results<Resource, BaseError>> GetById(int id, CancellationToken cancellation = default);
-    Task<Results<Resource, BaseError>> GetByName(string name, CancellationToken cancellation = default);
+    Task<Results<Resource, BaseError>> GetResourceByName(string name, CancellationToken cancellation = default);
     Task<ValidationResult> Insert(Resource resource, CancellationToken cancellation);
     Task<ValidationResult> Update(Resource resource, CancellationToken cancellation);
 }
@@ -38,11 +38,11 @@ public sealed class ResourceRepository : IResourceRepository
         }
     }
 
-    public async Task<Results<Resource, BaseError>> GetByName(string name, CancellationToken cancellation = default)
+    public async Task<Results<Resource, BaseError>> GetResourceByName(string name, CancellationToken cancellation = default)
     {
         try
         {
-            var resource = await _context.Resources.Where(x => x.Name == name).FirstAsync();
+            var resource = await _context.Resources.FirstAsync(x => x.Name == name, cancellation);
             return resource;
         }
         catch (Exception ex)

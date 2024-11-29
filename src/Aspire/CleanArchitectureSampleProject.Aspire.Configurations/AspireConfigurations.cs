@@ -8,7 +8,7 @@ public static class AspireConfigurations
         public static string MinimalApi => "minimalapi";
         public static string ControllerApi => "controllerapi";
         public static string BlazorApp => "blazorapp";
-        public static string DatabaseMigrator => "cleanarchitecturesampleproject-service-databasemigration";
+        public static string DatabaseMigrator => "dbmigratorworker";
     }
 
     public static class Services

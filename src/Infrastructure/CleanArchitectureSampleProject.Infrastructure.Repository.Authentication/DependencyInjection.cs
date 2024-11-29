@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication;
 
 public static class DependencyInjection
 {

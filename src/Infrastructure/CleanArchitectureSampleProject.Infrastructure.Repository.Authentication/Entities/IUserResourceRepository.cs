@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
 
@@ -7,7 +8,10 @@ public interface IUserResourceRepository
     Task<Results<FrozenSet<UserResource>, BaseError>> Get(CancellationToken cancellation = default);
     Task<Results<UserResource, BaseError>> GetById(int id, CancellationToken cancellation = default);
 
+
     Task<Results<IReadOnlyCollection<UserResource>, BaseError>> GetUsersResourcesBy(int userId, CancellationToken cancellation = default);
+    Task<Results<IReadOnlyCollection<UserResourceView>, BaseError>> GetCompleteUsersResourcesBy(Expression<Func<UserResource, bool>> filter, CancellationToken cancellation = default);
+
 
     Task<ValidationResult> Insert(UserResource userResource, CancellationToken cancellation);
     Task<ValidationResult> Update(UserResource userResource, CancellationToken cancellation);
@@ -53,6 +57,34 @@ public sealed class UserResourceRepository : IUserResourceRepository
         }
     }
 
+    public async Task<Results<IReadOnlyCollection<UserResourceView>, BaseError>> GetCompleteUsersResourcesBy(Expression<Func<UserResource, bool>> filter, CancellationToken cancellation = default)
+    {
+        try
+        {
+            var usersResources = await _context.UsersResources.AsNoTracking()
+                .Include(x => x.User).AsNoTracking()
+                .Include(x => x.Resource).AsNoTracking()
+                .Where(filter).AsNoTracking()
+                .Select(x => new UserResourceView
+                {
+                    UserResourceId = x.Id,
+                    UserId = x.UserId,
+                    UserName = x.User.Name,
+                    ResourceId = x.ResourceId,
+                    ResourceName = x.Resource.Name,
+                    CanRead = x.CanRead,
+                    CanWrite = x.CanWrite,
+                    CanDelete = x.CanDelete,
+                })
+                .ToListAsync(cancellation);
+            return usersResources.AsReadOnly();
+        }
+        catch (Exception ex)
+        {
+            return new BaseError($"Error while Getting Complete UserResource ': {ex.Message}");
+        }
+    }
+
     public async Task<ValidationResult> Insert(UserResource userResource, CancellationToken cancellation)
     {
         try
@@ -71,4 +103,16 @@ public sealed class UserResourceRepository : IUserResourceRepository
     {
         throw new NotImplementedException();
     }
+}
+
+public record UserResourceView
+{
+    public int UserResourceId { get; set; }
+    public int UserId { get; set; }
+    public string UserName { get; set; }
+    public int ResourceId { get; set; }
+    public string ResourceName { get; set; }
+    public bool CanRead { get; set; }
+    public bool CanWrite { get; set; }
+    public bool CanDelete { get; set; }
 }

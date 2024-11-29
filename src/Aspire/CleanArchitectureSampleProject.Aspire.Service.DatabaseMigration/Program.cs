@@ -1,3 +1,4 @@
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication;
 using CleanArchitectureSampleProject.Infrastructure.Repository;
 using CleanArchitectureSampleProject.Service.DatabaseMigration;
 
