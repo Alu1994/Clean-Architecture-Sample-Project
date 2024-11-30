@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.UsersResources;
 
 public sealed class UserResourceConfiguration : IEntityTypeConfiguration<UserResource>
 {
@@ -12,5 +11,7 @@ public sealed class UserResourceConfiguration : IEntityTypeConfiguration<UserRes
         builder.Property(e => e.CanRead);
         builder.Property(e => e.CanWrite);
         builder.Property(e => e.CanDelete);
+        builder.Property(e => e.CreationDate);
+        builder.HasIndex(e => new { e.UserId, e.ResourceId }).IsUnique();
     }
 }

@@ -8,8 +8,8 @@ public static partial class ResourceEndpoints
 
     public static WebApplication MapResources(this WebApplication app)
     {
-        app.MapCreate()
-           .MapGetByName();
+        app.MapCreate();
+        app.MapGetByName();
 
         return app;
     }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.UsersResources;
 
 public interface IUserResourceRepository
 {
@@ -13,7 +13,7 @@ public interface IUserResourceRepository
     Task<Results<IReadOnlyCollection<UserResourceView>, BaseError>> GetCompleteUsersResourcesBy(Expression<Func<UserResource, bool>> filter, CancellationToken cancellation = default);
 
 
-    Task<ValidationResult> Insert(UserResource userResource, CancellationToken cancellation);
+    Task<Results<BaseError>> Insert(UserResource userResource, CancellationToken cancellation);
     Task<ValidationResult> Update(UserResource userResource, CancellationToken cancellation);
 }
 
@@ -85,17 +85,21 @@ public sealed class UserResourceRepository : IUserResourceRepository
         }
     }
 
-    public async Task<ValidationResult> Insert(UserResource userResource, CancellationToken cancellation)
+    public async Task<Results<BaseError>> Insert(UserResource userResource, CancellationToken cancellation)
     {
         try
         {
             await _context.UsersResources.AddAsync(userResource, cancellation);
             await _context.SaveChangesAsync(true, cancellation);
-            return ValidationResult.Success!;
+            return ResultStates.Ok;
+        }
+        catch (DbUpdateException ex) when (ex.IsDuplicatedKeyException())
+        {
+            return new BaseError($"UserResource with User Id '{userResource.UserId}' and Resource Id '{userResource.ResourceId}' already exists.: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return new ValidationResult($"Error while Inserting UserResource with User '{userResource.UserId}': {ex.Message}");
+            return new BaseError($"Error while Inserting UserResource with User '{userResource.UserId}': {ex.Message}");
         }
     }
 

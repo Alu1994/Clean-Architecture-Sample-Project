@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Users;
+using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Resources;
 
 public interface IResourceRepository
 {
     Task<Results<FrozenSet<Resource>, BaseError>> Get(CancellationToken cancellation = default);
     Task<Results<Resource, BaseError>> GetById(int id, CancellationToken cancellation = default);
     Task<Results<Resource, BaseError>> GetResourceByName(string name, CancellationToken cancellation = default);
-    Task<ValidationResult> Insert(Resource resource, CancellationToken cancellation);
+    Task<Results<BaseError>> Insert(Resource resource, CancellationToken cancellation);
     Task<ValidationResult> Update(Resource resource, CancellationToken cancellation);
 }
 
@@ -51,17 +52,21 @@ public sealed class ResourceRepository : IResourceRepository
         }
     }
 
-    public async Task<ValidationResult> Insert(Resource resource, CancellationToken cancellation)
+    public async Task<Results<BaseError>> Insert(Resource resource, CancellationToken cancellation)
     {
         try
         {
             await _context.Resources.AddAsync(resource, cancellation);
             await _context.SaveChangesAsync(true, cancellation);
-            return ValidationResult.Success!;
+            return ResultStates.Ok;
+        }
+        catch (DbUpdateException ex) when (ex.IsDuplicatedKeyException())
+        {
+            return new BaseError($"Resource '{resource.Name}' already exists.: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return new ValidationResult($"Error while Inserting Resource '{resource.Name}': {ex.Message}");
+            return new BaseError($"Error while Inserting Resource '{resource.Name}': {ex.Message}");
         }
     }
 

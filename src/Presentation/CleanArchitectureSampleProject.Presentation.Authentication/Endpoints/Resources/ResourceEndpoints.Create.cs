@@ -1,6 +1,8 @@
 ﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Resources;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Inputs;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Outputs;
+using System.Net;
 
 namespace CleanArchitectureSampleProject.Presentation.Authentication.Endpoints.Resources;
 
@@ -19,17 +21,25 @@ public static partial class ResourceEndpoints
         return app;
     }
 
-    private static async Task<CreateResourceResponse> CreateResource(IResourceRepository resourceRepository, CreateResourceRequest resourceRequest, CancellationToken cancellationToken)
+    private static async Task<IResult> CreateResource(IResourceRepository resourceRepository, CreateResourceRequest resourceRequest, CancellationToken cancellationToken)
     {
         var resource = new Resource
         {
             Name = resourceRequest.Name
         };
-        var isSuccess = await resourceRepository.Insert(resource, cancellationToken);
-        return new CreateResourceResponse
+        var result = await resourceRepository.Insert(resource, cancellationToken);
+        if (result.IsFail)
+        {
+            return Results.Problem(detail: result.Error.Message,
+                statusCode: BadRequest,
+                title: "Error while inserting new Resource.",
+                type: HttpStatusCode.BadRequest.ToString());
+        }
+
+        return Results.Ok(new CreateResourceResponse
         {
             Id = resource.Id,
             Name = resource.Name
-        };
+        });
     }
 }

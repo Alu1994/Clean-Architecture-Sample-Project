@@ -2,6 +2,7 @@
 
 public enum ResultStates : short
 {
+    Ok,
     Success,
     Created,
     Updated,
@@ -19,6 +20,16 @@ public record class Results<TError>(bool IsSuccess, bool IsFail, ResultStates St
     public Results(ResultStates state) : this(state, default) { }
 
     public Results(ResultStates state, TError? error) : this(state.IsSuccessStatus(), state.IsFailStatus(), state, error) { }
+
+    public static implicit operator Results<TError>(ResultStates state)
+    {
+        return new Results<TError>(state);
+    }
+
+    public static implicit operator Results<TError>(TError error)
+    {
+        return new Results<TError>(error);
+    }
 }
 
 public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool IsFail, ResultStates State, TSuccessResult? Success, TErrorResult? Error) 
@@ -58,7 +69,6 @@ public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool I
         }
         return Fail(Error!);
     }
-
 
     public static implicit operator Results<TSuccessResult, TErrorResult>(TSuccessResult result)
     {

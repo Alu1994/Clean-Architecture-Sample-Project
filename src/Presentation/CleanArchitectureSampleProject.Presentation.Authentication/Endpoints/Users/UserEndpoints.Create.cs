@@ -1,6 +1,8 @@
 ﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Users;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Inputs;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Outputs;
+using System.Net;
 
 namespace CleanArchitectureSampleProject.Presentation.Authentication.Endpoints.Users;
 
@@ -10,8 +12,8 @@ public static partial class UserEndpoints
     {
         app.MapPost($"/{Controller}/create", async (IUserRepository userRepository, CreateUserRequest request, CancellationToken cancellation) =>
         {
-            var user = await CreateUser(userRepository, request, cancellation);
-            return user;
+            var result = await CreateUser(userRepository, request, cancellation);
+            return result;
         })
         .Produces<CreateUserResponse>(Created, ContentType)
         .WithConfigSummaryInfo("Create User", TagName);
@@ -19,7 +21,7 @@ public static partial class UserEndpoints
         return app;
     }
 
-    private static async Task<CreateUserResponse> CreateUser(IUserRepository userRepository, CreateUserRequest userRequest, CancellationToken cancellationToken)
+    private static async Task<IResult> CreateUser(IUserRepository userRepository, CreateUserRequest userRequest, CancellationToken cancellationToken)
     {
         var user = new User
         {
@@ -28,14 +30,22 @@ public static partial class UserEndpoints
             Password = userRequest.Password,
             CreationDate = userRequest.CreationDate
         };
-        var isSuccess = await userRepository.Insert(user, cancellationToken);
-        return new CreateUserResponse
+        var result = await userRepository.Insert(user, cancellationToken);
+        if (result.IsFail)
+        {
+            return Results.Problem(detail: result.Error.Message,
+                statusCode: BadRequest,
+                title: "Error while inserting new User.",
+                type: HttpStatusCode.BadRequest.ToString());
+        }
+
+        return Results.Ok(new CreateUserResponse
         {
             Id = user.Id,
             Name = user.Name,
             Email = user.Email,
             Password = "********",
             CreationDate = user.CreationDate
-        };
+        });
     }
 }

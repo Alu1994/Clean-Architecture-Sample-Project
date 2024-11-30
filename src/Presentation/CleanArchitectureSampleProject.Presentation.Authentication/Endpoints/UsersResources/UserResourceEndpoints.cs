@@ -8,9 +8,9 @@ public static partial class UserResourceEndpoints
 
     public static WebApplication MapUsersResources(this WebApplication app)
     {
-        app.MapCreate()
-           .MapGetById()
-           .MapGetByName();
+        app.MapCreate();
+        app.MapGetById();
+        app.MapGetByName();
 
         return app;
     }

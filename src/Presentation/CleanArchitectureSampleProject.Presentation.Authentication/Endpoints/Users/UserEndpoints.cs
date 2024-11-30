@@ -8,8 +8,8 @@ public static partial class UserEndpoints
 
     public static WebApplication MapUsers(this WebApplication app)
     {
-        app.MapCreate()
-           .MapGetByName();
+        app.MapCreate();
+        app.MapGetByName();
 
         return app;
     }

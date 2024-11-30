@@ -28,6 +28,7 @@ public static class MainEndpointsMapping
             .WithTags(tagName)
             .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
             .Produces<ForbiddenResponse>(Forbidden, ContentType)
+            .AddFluentValidationAutoValidation()
             .WithOpenApi();
     }
 }

@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.UsersResources;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Outputs;
 using CleanArchitectureSampleProject.Presentation.Authentication.Setups;
 using System.Net;
@@ -32,9 +32,11 @@ public static class LoginEndpoint
 
     private static async Task<IResult> Login(IUserResourceRepository userResourceRepository, LoginRequest request, CancellationToken cancellationToken)
     {
-        var result = await userResourceRepository.GetCompleteUsersResourcesBy(x => x.User.Email == request.Email &&
-            x.User.Password == request.Password, cancellationToken);
-        if (result.IsFail)
+        var result = await userResourceRepository.GetCompleteUsersResourcesBy(x => 
+            x.User.Email == request.Email &&
+            x.User.Password == request.Password, 
+            cancellationToken);
+        if (result.IsFail || result.Success is { Count: 0 })
         {
             return Results.Problem(detail: $"User '{request.Email}' not found.",
                 statusCode: StatusCodes.Status400BadRequest,

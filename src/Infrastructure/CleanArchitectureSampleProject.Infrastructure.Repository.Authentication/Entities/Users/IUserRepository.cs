@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Users;
 
 public interface IUserRepository
 {
@@ -8,7 +9,7 @@ public interface IUserRepository
     Task<Results<User, BaseError>> GetById(int id, CancellationToken cancellation = default);
     Task<Results<User, BaseError>> GetUserByName(string name, CancellationToken cancellation = default);
     Task<Results<User, BaseError>> GetUserByEmailAndPassword(string email, string password, CancellationToken cancellation = default);
-    Task<ValidationResult> Insert(User user, CancellationToken cancellation);
+    Task<Results<BaseError>> Insert(User user, CancellationToken cancellation);
     Task<ValidationResult> Update(User user, CancellationToken cancellation);
 }
 
@@ -48,7 +49,7 @@ public sealed class UserRepository : IUserRepository
     {
         try
         {
-            var user = await _context.Users.Where(x => x.Email == email && x.Password == password).FirstAsync();
+            var user = await _context.Users.FirstAsync(x => x.Email == email && x.Password == password, cancellation);
             return user;
         }
         catch (Exception ex)
@@ -57,17 +58,21 @@ public sealed class UserRepository : IUserRepository
         }
     }
 
-    public async Task<ValidationResult> Insert(User user, CancellationToken cancellation)
+    public async Task<Results<BaseError>> Insert(User user, CancellationToken cancellation)
     {
         try
         {
             await _context.Users.AddAsync(user, cancellation);
             await _context.SaveChangesAsync(true, cancellation);
-            return ValidationResult.Success!;
+            return ResultStates.Ok;
+        }
+        catch (DbUpdateException ex) when (ex.IsDuplicatedKeyException())
+        {
+            return new BaseError($"User '{user.Name}' already exists.: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return new ValidationResult($"Error while Inserting User '{user.Name}': {ex.Message}");
+            return new BaseError($"Error while Inserting User '{user.Name}': {ex.Message}");
         }
     }
 

@@ -1,4 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Resources;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Users;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.UsersResources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;

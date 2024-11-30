@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Users;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Outputs;
 
 namespace CleanArchitectureSampleProject.Presentation.Authentication.Endpoints.Users;
@@ -9,9 +9,8 @@ public static partial class UserEndpoints
     {
         app.MapGet($"/{Controller}/user/{{name}}", async (IUserRepository userRepository, string name, CancellationToken cancellation) =>
         {
-            var user = await GetUserByName(userRepository, name, cancellation);
-            if (user.IsFail) return Results.BadRequest(user.Error);
-            return Results.Ok(user.Success!);
+            var result = await GetUserByName(userRepository, name, cancellation);
+            return result;
         })
         .Produces<CreateUserResponse>(Success, ContentType)
         .WithConfigSummaryInfo("Get User By Name", TagName);
@@ -19,18 +18,18 @@ public static partial class UserEndpoints
         return app;
     }
 
-    private static async Task<Results<CreateUserResponse, BaseError>> GetUserByName(IUserRepository userRepository, string name, CancellationToken cancellation)
+    private static async Task<IResult> GetUserByName(IUserRepository userRepository, string name, CancellationToken cancellation)
     {
         var userResponse = await userRepository.GetUserByName(name, cancellation);
-        if (userResponse.IsFail) return userResponse.Error!;
+        if (userResponse.IsFail) return userResponse.Error!.ToProblemDetails();
         var user = userResponse.Success!;
-        return new CreateUserResponse
+        return Results.Ok(new CreateUserResponse
         {
             Id = user.Id,
             Name = user.Name,
             Email = user.Email,
             Password = "********",
             CreationDate = user.CreationDate
-        };
+        });
     }
 }

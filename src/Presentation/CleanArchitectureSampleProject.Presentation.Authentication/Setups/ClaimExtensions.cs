@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.UsersResources;
 
 namespace CleanArchitectureSampleProject.Presentation.Authentication.Setups;
 

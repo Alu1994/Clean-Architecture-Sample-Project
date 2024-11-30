@@ -14,10 +14,10 @@ public static class MainEndpointsMapping
 
     public static WebApplication MapEndpoints(this WebApplication app)
     {
-        app.MapLogin()
-           .MapUsers()
-           .MapResources()
-           .MapUsersResources();
+        app.MapLogin();
+        app.MapUsers();
+        app.MapResources();
+        app.MapUsersResources();
 
         return app;
     }
@@ -30,6 +30,7 @@ public static class MainEndpointsMapping
             .WithSummary(description)
             .WithDisplayName(description)
             .WithTags(tagName)
+            .AddFluentValidationAutoValidation()
             .WithOpenApi();
     }
 }

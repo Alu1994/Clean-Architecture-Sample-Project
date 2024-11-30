@@ -10,6 +10,8 @@ builder.Services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
 builder.Services.AddAuthRepositoryLayer();
 
+builder.Services.AddValidation();
+
 var app = builder.Build();
 
 app.MapOpenApi();

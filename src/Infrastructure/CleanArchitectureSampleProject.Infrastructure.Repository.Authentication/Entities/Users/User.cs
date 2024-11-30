@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.UsersResources;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.Users;
 
 public sealed class User
 {

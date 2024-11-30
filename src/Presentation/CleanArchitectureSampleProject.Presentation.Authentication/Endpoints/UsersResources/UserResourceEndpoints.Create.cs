@@ -1,6 +1,8 @@
 ﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities.UsersResources;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Inputs;
 using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Outputs;
+using System.Net;
 
 namespace CleanArchitectureSampleProject.Presentation.Authentication.Endpoints.UsersResources;
 
@@ -19,7 +21,7 @@ public static partial class UserResourceEndpoints
         return app;
     }
 
-    private static async Task<CreateUserResourceResponse> CreateUserResource(IUserResourceRepository userResourceRepository, CreateUserResourceRequest userResourceRequest, CancellationToken cancellationToken)
+    private static async Task<IResult> CreateUserResource(IUserResourceRepository userResourceRepository, CreateUserResourceRequest userResourceRequest, CancellationToken cancellationToken)
     {
         var userResource = new UserResource
         {
@@ -29,8 +31,16 @@ public static partial class UserResourceEndpoints
             CanWrite = userResourceRequest.CanWrite,
             CanDelete = userResourceRequest.CanDelete,
         };
-        var isSuccess = await userResourceRepository.Insert(userResource, cancellationToken);
-        return new CreateUserResourceResponse
+        var result = await userResourceRepository.Insert(userResource, cancellationToken);
+        if (result.IsFail)
+        {
+            return Results.Problem(detail: result.Error.Message,
+                statusCode: BadRequest,
+                title: "Error while inserting new User Resource.",
+                type: HttpStatusCode.BadRequest.ToString());
+        }
+
+        return Results.Ok(new CreateUserResourceResponse
         {
             Id = userResource.Id,
             UserId = userResource.UserId,
@@ -38,6 +48,6 @@ public static partial class UserResourceEndpoints
             CanRead = userResource.CanRead,
             CanWrite = userResource.CanWrite,
             CanDelete = userResource.CanDelete,
-        };
+        });
     }
 }
