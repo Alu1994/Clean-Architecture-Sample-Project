@@ -16,7 +16,7 @@ public static partial class CategoriesEndpoints
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Create {Controller}", TagName)
         .AddFluentValidationAutoValidation()
-        .RequireAuthorization(AuthenticationSetup.CategoryPolicyCanWrite);
+        .RequireAuthorization(AuthenticationSetup.CategoryCanWritePolicy);
         
         return app;
     }

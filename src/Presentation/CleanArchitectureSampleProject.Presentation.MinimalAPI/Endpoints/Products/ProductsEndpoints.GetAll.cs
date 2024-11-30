@@ -14,7 +14,7 @@ public static partial class ProductsEndpoints
         .Produces<FrozenSet<GetProductOutput>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get All Products", TagName)
-        .RequireAuthorization(AuthenticationSetup.ProductPolicyCanRead);
+        .RequireAuthorization(AuthenticationSetup.ProductCanReadPolicy);
 
         return app;
     }

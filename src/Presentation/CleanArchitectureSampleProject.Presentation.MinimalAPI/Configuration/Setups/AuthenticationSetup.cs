@@ -5,28 +5,18 @@ namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.S
 
 public static class AuthenticationSetup
 {
-    public static string CategoryPolicyCanRead = "CategoryPolicyCanRead";
-    public static string CategoryPolicyCanWrite = "CategoryPolicyCanWrite";
-    public static string CategoryPolicyCanDelete = "CategoryPolicyCanDelete";
-    private static readonly string CategoryClaimCanRead = "categorycanreadclaim";
-    private static readonly string CategoryClaimCanWrite = "categorycanwriteclaim";
-    private static readonly string CategoryClaimCanDelete = "categorycandeleteclaim";
+    public static readonly string CategoryCanReadPolicy = "CategoryCanReadPolicy";
+    public static readonly string CategoryCanWritePolicy = "CategoryCanWritePolicy";
+    public static readonly string CategoryCanDeletePolicy = "CategoryCanDeletePolicy";
+    public static readonly string ProductCanReadPolicy = "ProductCanReadPolicy";
+    public static readonly string ProductCanWritePolicy = "ProductCanWritePolicy";
+    public static readonly string ProductCanDeletePolicy = "ProductCanDeletePolicy";
 
-    public static string ProductPolicyCanRead = "ProductPolicyCanRead";
-    public static string ProductPolicyCanWrite = "ProductPolicyCanWrite";
-    public static string ProductPolicyCanDelete = "ProductPolicyCanDelete";
-    private static readonly string ProductClaimCanRead = "productcanreadclaim";    
-    private static readonly string ProductClaimCanWrite = "productcanwriteclaim";    
-    private static readonly string ProductClaimCanDelete = "productcandeleteclaim";
-
-    private static readonly string ExpectedAccess = "True";
-
-    private static readonly string ValidAudience = "https://cleanarchsampleproject.com.br";
-    private static readonly string ValidIssuer = "https://id.cleanarchsampleproject.com.br";
     private static readonly byte[] SymmetricKey = "MyTokenNeedsToHave256BytesForItToWorkAndBeSecure"u8.ToArray();
-        
-
-
+    private const string ExpectedAccess = "true";
+    private const string ValidAudience = "https://cleanarchsampleproject.com.br";
+    private const string ValidIssuer = "https://id.cleanarchsampleproject.com.br";
+    
     public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services)
     {
         var tokenValidationParameters = new TokenValidationParameters
@@ -47,15 +37,20 @@ public static class AuthenticationSetup
 
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(CategoryPolicyCanRead, p => p.RequireClaim(CategoryClaimCanRead, ExpectedAccess));
-            options.AddPolicy(CategoryPolicyCanWrite, p => p.RequireClaim(CategoryClaimCanWrite, ExpectedAccess));
-            options.AddPolicy(CategoryPolicyCanDelete, p => p.RequireClaim(CategoryClaimCanDelete, ExpectedAccess));
-
-            options.AddPolicy(ProductPolicyCanRead, p => p.RequireClaim(ProductClaimCanRead, ExpectedAccess));            
-            options.AddPolicy(ProductPolicyCanWrite, p => p.RequireClaim(ProductClaimCanWrite, ExpectedAccess));            
-            options.AddPolicy(ProductPolicyCanDelete, p => p.RequireClaim(ProductClaimCanDelete, ExpectedAccess));
+            foreach (var policy in Policies)
+                options.AddPolicy(policy.Key, p => p.RequireClaim(policy.Value, ExpectedAccess));
         });
 
         return services;
     }
+
+    private static IReadOnlyDictionary<string, string> Policies => new Dictionary<string, string>
+    {
+        [CategoryCanReadPolicy] = "categorycanreadclaim",
+        [CategoryCanWritePolicy] = "categorycanwriteclaim",
+        [CategoryCanDeletePolicy] = "categorycandeleteclaim",
+        [ProductCanReadPolicy] = "productcanreadclaim",
+        [ProductCanWritePolicy] = "productcanwriteclaim",
+        [ProductCanDeletePolicy] = "productcandeleteclaim"
+    };
 }
