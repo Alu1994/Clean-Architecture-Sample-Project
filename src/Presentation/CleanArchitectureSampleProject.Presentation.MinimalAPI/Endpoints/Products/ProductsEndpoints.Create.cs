@@ -1,5 +1,4 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
-using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -16,7 +15,7 @@ public static partial class ProductsEndpoints
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Create Product", TagName)
         .AddFluentValidationAutoValidation()
-        .RequireAuthorization(AuthenticationSetup.ProductCanWritePolicy);
+        .RequireAuthorization(ProductCanWritePolicy);
 
         return app;
     }

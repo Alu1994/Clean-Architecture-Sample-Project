@@ -1,6 +1,4 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
-
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static partial class CategoriesEndpoints
 {
@@ -13,7 +11,7 @@ public static partial class CategoriesEndpoints
         .Produces<CategoryOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Get {Controller} By Name", TagName)
-        .RequireAuthorization(AuthenticationSetup.CategoryCanReadPolicy);
+        .RequireAuthorization(CategoryCanReadPolicy);
 
         return app;
     }

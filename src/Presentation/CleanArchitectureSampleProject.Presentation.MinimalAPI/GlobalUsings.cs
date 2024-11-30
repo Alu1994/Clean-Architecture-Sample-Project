@@ -7,3 +7,4 @@ global using FluentValidation.Results;
 global using Microsoft.AspNetCore.Mvc;
 global using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 global using System.Net;
+global using static CleanArchitectureSampleProject.CrossCuttingConcerns.PolicyExtensions;

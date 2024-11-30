@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -14,7 +13,7 @@ public static partial class ProductsEndpoints
         .Produces<FrozenSet<GetProductOutput>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get All Products", TagName)
-        .RequireAuthorization(AuthenticationSetup.ProductCanReadPolicy);
+        .RequireAuthorization(ProductCanReadPolicy);
 
         return app;
     }

@@ -1,14 +1,12 @@
 using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication;
 using CleanArchitectureSampleProject.Presentation.Authentication.Endpoints;
+using CleanArchitectureSampleProject.Presentation.Authentication.Setups;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.BuildAuthRepository();
 
-builder.Services.AddOpenApi(x =>
-{
-    x.AddDocumentTransformer<OpenApiDocumentTransformer>();
-});
+builder.Services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
 builder.Services.AddAuthRepositoryLayer();
 
@@ -16,11 +14,7 @@ var app = builder.Build();
 
 app.MapOpenApi();
 
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/openapi/v1.json", "Test");
-    options.InjectStylesheet("/css/swagger-dark-theme.css");
-});
+app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
 
 app.UseHttpsRedirection();
 

@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
@@ -14,7 +13,7 @@ public static partial class CategoriesEndpoints
         .Produces<FrozenSet<CategoryOutput>>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get All Categories", TagName)
-        .RequireAuthorization(AuthenticationSetup.CategoryCanReadPolicy);
+        .RequireAuthorization(CategoryCanReadPolicy);
 
         return app;
     }

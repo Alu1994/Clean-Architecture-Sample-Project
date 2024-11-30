@@ -1,5 +1,8 @@
 ﻿using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.Entities;
+using CleanArchitectureSampleProject.Presentation.Authentication.Messages.Outputs;
+using CleanArchitectureSampleProject.Presentation.Authentication.Setups;
 using System.Net;
+using static CleanArchitectureSampleProject.CrossCuttingConcerns.PolicyExtensions;
 
 namespace CleanArchitectureSampleProject.Presentation.Authentication.Endpoints.Logins;
 
@@ -8,10 +11,8 @@ public static class LoginEndpoint
     public readonly record struct Logging;
     private const string TagName = "Logins";
     private const string Controller = "login";
-
     private const byte StartItems = 3;
     private const byte AccessCount = 3;
-    private const byte defaultExpiresIn = 60;
 
     public static WebApplication MapLogin(this WebApplication app)
     {
@@ -20,7 +21,7 @@ public static class LoginEndpoint
             LoginRequest request,
             CancellationToken cancellationToken) =>
         {
-            var result = await GenerateToken(userResourceRepository, request, cancellationToken);
+            var result = await Login(userResourceRepository, request, cancellationToken);
             return result;
         })
         .Produces<string>(Success, ContentType)
@@ -29,56 +30,38 @@ public static class LoginEndpoint
         return app;
     }
 
-    private static async Task<IResult> GenerateToken(IUserResourceRepository userResourceRepository, LoginRequest request, CancellationToken cancellationToken)
+    private static async Task<IResult> Login(IUserResourceRepository userResourceRepository, LoginRequest request, CancellationToken cancellationToken)
     {
-        var result = await userResourceRepository.GetCompleteUsersResourcesBy(x => x.User.Email == request.Email && x.User.Password == request.Password, cancellationToken);
+        var result = await userResourceRepository.GetCompleteUsersResourcesBy(x => x.User.Email == request.Email &&
+            x.User.Password == request.Password, cancellationToken);
         if (result.IsFail)
         {
-            return Results.Problem(
-                detail: $"User '{request.Email}' not found.",
+            return Results.Problem(detail: $"User '{request.Email}' not found.",
                 statusCode: StatusCodes.Status400BadRequest,
                 title: "Error while generating token.",
-                type: HttpStatusCode.BadRequest.ToString()
-            );
+                type: HttpStatusCode.BadRequest.ToString());
         }
+
         var resourcesCount = result.Success!.Count;
-        List<Claim> claims = new(StartItems + (resourcesCount * AccessCount))
+        var capacity = StartItems + (resourcesCount * AccessCount);
+        List<Claim> claims = new(capacity)
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Sub, request.Email),
             new(JwtRegisteredClaimNames.Email, request.Email),
         };
         foreach (var userResource in result.Success!)
+        {
             claims.AddRange(userResource.ToClaims());
+        }
 
-        var tokenDescriptor = GenerateSecurityTokenDescriptor(claims, defaultExpiresIn);
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-        var tokenValue = tokenHandler.WriteToken(securityToken);
-
-        return Results.Ok(new TokenResult(
+        var (tokenValue, expiresIn, securityToken) = claims.ToSecurityTokenDescriptor();
+        return Results.Ok(new TokenResultResponse(
             tokenValue,
             securityToken.ValidFrom,
             securityToken.ValidTo,
             securityToken.Issuer,
-            defaultExpiresIn
+            expiresIn
         ));
     }
-
-    private static readonly byte[] SymmetricKey = "MyTokenNeedsToHave256BytesForItToWorkAndBeSecure"u8.ToArray();
-
-    private static SecurityTokenDescriptor GenerateSecurityTokenDescriptor(List<Claim> claims, byte expiresIn)
-    {
-        return new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(expiresIn),
-            Issuer = "https://id.cleanarchsampleproject.com.br",
-            Audience = "https://cleanarchsampleproject.com.br",
-            NotBefore = DateTime.UtcNow.Add(TimeSpan.FromSeconds(5)),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(SymmetricKey), SecurityAlgorithms.HmacSha256Signature),
-        };
-    }
 }
-
-internal record TokenResult(string AccessToken, DateTime ValidFrom, DateTime ValidTo, string Issuer, byte ExpiresInMinutes);

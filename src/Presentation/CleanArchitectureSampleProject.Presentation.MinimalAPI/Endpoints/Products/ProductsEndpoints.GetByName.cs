@@ -1,6 +1,4 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
-
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
+﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
 public static partial class ProductsEndpoints
 {
@@ -13,7 +11,7 @@ public static partial class ProductsEndpoints
         .Produces<GetProductOutput>(Success, ContentType)
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo("Get Product By Name", TagName)
-        .RequireAuthorization(AuthenticationSetup.ProductCanReadPolicy);
+        .RequireAuthorization(ProductCanReadPolicy);
 
         return app;
     }

@@ -1,5 +1,4 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
-using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
@@ -16,7 +15,7 @@ public static partial class CategoriesEndpoints
         .Produces<ProblemDetails>(BadRequest, ContentType)
         .WithConfigSummaryInfo($"Create {Controller}", TagName)
         .AddFluentValidationAutoValidation()
-        .RequireAuthorization(AuthenticationSetup.CategoryCanWritePolicy);
+        .RequireAuthorization(CategoryCanWritePolicy);
         
         return app;
     }
