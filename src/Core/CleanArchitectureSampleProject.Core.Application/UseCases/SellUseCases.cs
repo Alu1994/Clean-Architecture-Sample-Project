@@ -18,11 +18,13 @@ public interface ISellUseCases
 public sealed class SellUseCases(
     ILogger<SellUseCases> logger,
     ISellRepository sellRepository,
-    ICreateSellService createSellService) : ISellUseCases
+    ICreateSellService createSellService,
+    IUpdateSellService updateSellService) : ISellUseCases
 {
     private readonly ILogger<SellUseCases> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly ISellRepository _sellRepository = sellRepository ?? throw new ArgumentNullException(nameof(sellRepository));
     private readonly ICreateSellService _createSellService = createSellService ?? throw new ArgumentNullException(nameof(createSellService));
+    private readonly IUpdateSellService _updateSellService = updateSellService ?? throw new ArgumentNullException(nameof(updateSellService));
 
     public async Task<Results<FrozenSet<GetSellOutput>, BaseError>> GetSells(CancellationToken cancellation)
     {
@@ -63,7 +65,7 @@ public sealed class SellUseCases(
         _logger.LogInformation("Logging {MethodName} with {SellInput}", nameof(UpdateSell), sellInput);
 
         var sell = sellInput.ToSell();
-        var result = await _createSellService.Execute(sell, cancellation);
+        var result = await _updateSellService.Execute(sell, cancellation);
         if (result.IsFail)
         {
             return result.ToErrorList();

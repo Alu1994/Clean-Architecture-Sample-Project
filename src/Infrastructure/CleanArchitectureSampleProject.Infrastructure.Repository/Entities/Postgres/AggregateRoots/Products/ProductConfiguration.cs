@@ -13,7 +13,7 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(e => e.Description);
         builder.Property(e => e.Quantity);
         builder.Property(e => e.Value).HasColumnType("decimal(18,2)");
-        builder.Property(e => e.CreationDate).HasDefaultValue(DateTime.UtcNow);
+        builder.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         // One-to-Many Relationship
         builder.HasMany(u => u.Items)

@@ -1,6 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Messaging;
-using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
 using Microsoft.EntityFrameworkCore;
 

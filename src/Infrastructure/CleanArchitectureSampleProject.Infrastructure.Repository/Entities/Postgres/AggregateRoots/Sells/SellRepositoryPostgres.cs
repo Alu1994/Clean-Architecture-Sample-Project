@@ -51,7 +51,7 @@ public sealed class SellRepositoryPostgres(ProductDataContext context, ISellRepo
 
         async Task<Results<Sell, BaseError>> GetFromDatabase()
         {
-            var result = await _context.Sells.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellation);
+            var result = await _context.Sells.AsNoTracking().Include(x => x.Items).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellation);
             if (result is null)
                 return (ResultStates.NotFound, new BaseError($"Sell '{id}' not found."));
             return result!;
@@ -103,7 +103,7 @@ public sealed class SellRepositoryPostgres(ProductDataContext context, ISellRepo
     {
         try
         {
-            var sells = await _context.Sells.AsNoTracking().ToListAsync(cancellation);
+            var sells = await _context.Sells.AsNoTracking().Include(x => x.Items).AsNoTracking().ToListAsync(cancellation);
             if (sells is { Count: > 0 })
             {
                 return sells.ToFrozenSet();

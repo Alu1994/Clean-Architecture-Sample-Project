@@ -11,7 +11,7 @@ public sealed class UserResourceConfiguration : IEntityTypeConfiguration<UserRes
         builder.Property(e => e.CanRead);
         builder.Property(e => e.CanWrite);
         builder.Property(e => e.CanDelete);
-        builder.Property(e => e.CreationDate).HasDefaultValue(DateTime.UtcNow);
+        builder.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
         builder.HasIndex(e => new { e.UserId, e.ResourceId }).IsUnique();
     }
 }

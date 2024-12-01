@@ -6,7 +6,7 @@ namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
 public sealed class Sell : HasDomainEventsBase
 {
     public Guid Id { get; set; }
-    public string Description { get; set; }    
+    public string Description { get; set; }
     public decimal TotalValue { get; set; }
     public DateTime CreationDate { get; set; }
 
@@ -42,9 +42,28 @@ public sealed class Sell : HasDomainEventsBase
         return this;
     }
 
-    internal Sell UpdateTotalValue(decimal v)
+    internal Sell UpdateTotalValue(decimal totalValue)
     {
-        throw new NotImplementedException();
+        TotalValue = totalValue;
+        return this;
+    }
+
+    internal void Update(Sell sell)
+    {
+        this.TotalValue = sell.TotalValue;
+        this.Description = sell.Description;
+
+        foreach (var item in sell.Items)
+        {
+            var oldSellItem = Items.FirstOrDefault(x => x.Id == item.Id);
+            if (oldSellItem is not null)
+            {
+                oldSellItem.Quantity = item.Quantity;
+                oldSellItem.Value = item.Value;
+                continue;
+            }
+            Items.Add(item);
+        }
     }
     // ==== Navigation Property ====
 }

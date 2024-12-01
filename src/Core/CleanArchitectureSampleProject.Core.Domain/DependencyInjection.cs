@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<ICategoryGetOrCreateService, CategoryGetOrCreateService>();
 
         services.AddScoped<ICreateSellService, CreateSellService>();
+        services.AddScoped<IUpdateSellService, UpdateSellService>();
 
         services.AddDomainValidators();
 

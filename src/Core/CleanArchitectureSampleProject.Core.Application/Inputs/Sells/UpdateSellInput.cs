@@ -11,14 +11,26 @@ public sealed class UpdateSellInput
     public Guid Id { get; set; }
     public string Description { get; set; }
     public decimal TotalValue { get; set; }
-    public List<CreateSellItemInput> Items { get; set; }
+    public List<UpdateSellItemInput> Items { get; set; }
 
     public Sell ToSell(ICollection<SellItem>? sellItems = null)
     {
-        var sell = Sell.MapToSell(Description, TotalValue);
-        sellItems ??= Items?.ToNewSellItems(sell.Id);
+        var sell = Sell.MapToSell(Description, TotalValue, Id);
+        sellItems ??= ToNewSellItems(Items, Id);
         sell.SetItems(sellItems!);
         return sell;
+    }
+
+    public static List<SellItem> ToNewSellItems(List<UpdateSellItemInput>? items, Guid id)
+    {
+        if (items is { Count: 0 }) return [];
+
+        List<SellItem> list = [];
+        foreach (var item in items)
+        {
+            list.Add(new UpdateSellItemInput(id, item));
+        }
+        return list;
     }
 }
 

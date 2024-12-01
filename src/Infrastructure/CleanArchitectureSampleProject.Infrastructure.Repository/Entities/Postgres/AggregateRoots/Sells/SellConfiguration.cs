@@ -12,7 +12,7 @@ public sealed class SellConfiguration : IEntityTypeConfiguration<Sell>
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Description).IsRequired();
         builder.Property(e => e.TotalValue).HasColumnType("decimal(18,2)").IsRequired();
-        builder.Property(e => e.CreationDate).HasDefaultValue(DateTime.UtcNow);
+        builder.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         // One-to-Many Relationship
         builder.HasMany(u => u.Items)

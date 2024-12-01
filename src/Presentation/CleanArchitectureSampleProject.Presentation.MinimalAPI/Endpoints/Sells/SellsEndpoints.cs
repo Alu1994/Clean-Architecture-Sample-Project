@@ -11,6 +11,7 @@ public static partial class SellsEndpoints
         endpoints.MapGetAll();
         endpoints.MapGetById();
         endpoints.MapCreate();
+        endpoints.MapUpdate();
         return app;
     }
 }

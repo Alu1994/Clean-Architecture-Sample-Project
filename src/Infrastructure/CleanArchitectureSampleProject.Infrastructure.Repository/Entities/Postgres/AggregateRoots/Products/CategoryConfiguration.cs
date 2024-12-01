@@ -10,7 +10,7 @@ public sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Name).IsRequired();
-        builder.Property(e => e.CreationDate).HasDefaultValue(DateTime.UtcNow);
+        builder.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
         // One-to-Many Relationship
         builder.HasMany(u => u.Products)

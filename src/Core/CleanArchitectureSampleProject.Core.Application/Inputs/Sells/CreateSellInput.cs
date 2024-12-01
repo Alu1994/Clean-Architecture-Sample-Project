@@ -15,23 +15,12 @@ public sealed class CreateSellInput
     public Sell ToSell(ICollection<SellItem>? sellItems = null)
     {
         var sell = Sell.MapToSell(Description, TotalValue);
-        sellItems ??= Items?.ToNewSellItems(sell.Id);
+        sellItems ??= ToNewSellItems(Items, sell.Id);
         sell.SetItems(sellItems!);
         return sell;
     }
-}
 
-public sealed class CreateSellValidator : AbstractValidator<CreateSellInput>
-{
-    public CreateSellValidator()
-    {
-        RuleFor(sell => sell.ToSell(null)).SetValidator(new SellValidator());
-    }
-}
-
-internal static class SellExtensions
-{
-    public static List<SellItem> ToNewSellItems(this List<CreateSellItemInput> items, Guid id)
+    public static List<SellItem> ToNewSellItems(List<CreateSellItemInput>? items, Guid id)
     {
         if (items is { Count: 0 }) return [];
 
@@ -41,5 +30,13 @@ internal static class SellExtensions
             list.Add(new CreateSellItemInput(id, item));
         }
         return list;
+    }
+}
+
+public sealed class CreateSellValidator : AbstractValidator<CreateSellInput>
+{
+    public CreateSellValidator()
+    {
+        RuleFor(sell => sell.ToSell(null)).SetValidator(new SellValidator());
     }
 }
