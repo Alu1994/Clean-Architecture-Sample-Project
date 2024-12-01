@@ -12,6 +12,7 @@ public static class MainEndpointsMapping
 
     public static WebApplication MapEndpoints(this WebApplication app)
     {
+        app.MapSells();
         app.MapProducts();
         app.MapCategories();
 

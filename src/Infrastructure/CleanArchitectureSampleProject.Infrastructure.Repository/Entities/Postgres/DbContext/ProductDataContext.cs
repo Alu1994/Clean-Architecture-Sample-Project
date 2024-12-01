@@ -1,6 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Messaging;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
@@ -9,7 +10,9 @@ public partial class ProductDataContext : DbContext
 {
     private readonly List<IMessagingHandler> _messagings;
 
-    public ProductDataContext(DbContextOptions<ProductDataContext> options, List<IMessagingHandler> messagings) : base(options)
+    public ProductDataContext(DbContextOptions<ProductDataContext> options
+        , List<IMessagingHandler> messagings
+        ) : base(options)
     {
         ChangeTracker.LazyLoadingEnabled = false;
         _messagings = messagings;
@@ -27,6 +30,9 @@ public partial class ProductDataContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new ProductConfiguration());
+
+        modelBuilder.ApplyConfiguration(new SellConfiguration());
+        modelBuilder.ApplyConfiguration(new SellItemConfiguration());
     }
 
     private async Task DispatchDomainEvents(CancellationToken cancellationToken)

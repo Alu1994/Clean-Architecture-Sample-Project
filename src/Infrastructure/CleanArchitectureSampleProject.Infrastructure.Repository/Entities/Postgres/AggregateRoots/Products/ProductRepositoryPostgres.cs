@@ -2,7 +2,7 @@
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
 
 public sealed class ProductRepositoryPostgres(ProductDataContext context, IProductRepositoryCache productRepositoryCache) : IProductRepositoryDatabase
 {

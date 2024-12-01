@@ -11,7 +11,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(e => e.Name).IsUnique();
         builder.HasIndex(e => e.Email).IsUnique();
         builder.Property(e => e.Password).IsRequired();
-        builder.Property(e => e.CreationDate);
+        builder.Property(e => e.CreationDate).HasDefaultValue(DateTime.UtcNow);
 
         // One-to-Many Relationship
         builder.HasMany(u => u.UserResources)

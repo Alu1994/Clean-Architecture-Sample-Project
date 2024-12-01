@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
 
 public sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
@@ -10,7 +10,7 @@ public sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Name).IsRequired();
-        builder.Property(e => e.CreationDate);
+        builder.Property(e => e.CreationDate).HasDefaultValue(DateTime.UtcNow);
 
         // One-to-Many Relationship
         builder.HasMany(u => u.Products)

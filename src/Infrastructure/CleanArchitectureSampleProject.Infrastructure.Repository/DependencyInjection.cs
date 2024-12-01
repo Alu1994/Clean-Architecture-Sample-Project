@@ -2,7 +2,7 @@
 using CleanArchitectureSampleProject.Infrastructure.Messaging;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
-using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
@@ -43,7 +43,7 @@ public static class DependencyInjection
         //    .AddSingleton<ICategoryRepository, CategoryRepositoryCache>()
         //    .AddSingleton<IProductRepository, ProductRepositoryCache>();
 
-
+        // ============================ PRODUCT ============================
         services
             .AddScoped<ICategoryRepository, CategoryRepositoryPostgres>()
             .AddScoped<IProductRepository, ProductRepositoryPostgres>();
@@ -55,6 +55,21 @@ public static class DependencyInjection
         services
             .AddScoped<ICategoryRepositoryCache, CategoryRepositoryCache>()
             .AddScoped<IProductRepositoryCache, ProductRepositoryCache>();
+        // ============================ PRODUCT ============================
+
+        // ============================ SELL ============================
+        services
+            .AddScoped<ISellItemRepository, SellItemRepositoryPostgres>()
+            .AddScoped<ISellRepository, SellRepositoryPostgres>();
+
+        services
+            .AddScoped<ISellItemRepositoryDatabase, SellItemRepositoryPostgres>()
+            .AddScoped<ISellRepositoryDatabase, SellRepositoryPostgres>();
+
+        services
+            .AddScoped<ISellItemRepositoryCache, SellItemRepositoryCache>()
+            .AddScoped<ISellRepositoryCache, SellRepositoryCache>();
+        // ============================ SELL ============================
 
         return services;
     }

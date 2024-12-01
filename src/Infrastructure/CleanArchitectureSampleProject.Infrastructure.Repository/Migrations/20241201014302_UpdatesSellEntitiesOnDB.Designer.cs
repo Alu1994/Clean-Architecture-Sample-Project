@@ -3,6 +3,7 @@ using System;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CleanArchitectureSampleProject.Repository.Migrations
 {
     [DbContext(typeof(ProductDataContext))]
-    partial class ProductDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241201014302_UpdatesSellEntitiesOnDB")]
+    partial class UpdatesSellEntitiesOnDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

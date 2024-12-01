@@ -3,6 +3,7 @@ using System;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CleanArchitectureSampleProject.Repository.Migrations
 {
     [DbContext(typeof(ProductDataContext))]
-    partial class ProductDataContextModelSnapshot : ModelSnapshot
+    [Migration("20241201004747_AddsSellEntitiesOnDB")]
+    partial class AddsSellEntitiesOnDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +34,7 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 12, 1, 1, 43, 1, 698, DateTimeKind.Utc).AddTicks(2667));
+                        .HasDefaultValue(new DateTime(2024, 12, 1, 0, 47, 46, 730, DateTimeKind.Utc).AddTicks(3071));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -54,7 +57,7 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 12, 1, 1, 43, 1, 698, DateTimeKind.Utc).AddTicks(4670));
+                        .HasDefaultValue(new DateTime(2024, 12, 1, 0, 47, 46, 730, DateTimeKind.Utc).AddTicks(4751));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -86,7 +89,7 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 12, 1, 1, 43, 1, 698, DateTimeKind.Utc).AddTicks(8308));
+                        .HasDefaultValue(new DateTime(2024, 12, 1, 0, 47, 46, 730, DateTimeKind.Utc).AddTicks(8006));
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
@@ -115,14 +118,14 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasDefaultValue(new DateTime(2024, 12, 1, 1, 43, 1, 698, DateTimeKind.Utc).AddTicks(6573));
+                        .HasDefaultValue(new DateTime(2024, 12, 1, 0, 47, 46, 730, DateTimeKind.Utc).AddTicks(6458));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("TotalValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 

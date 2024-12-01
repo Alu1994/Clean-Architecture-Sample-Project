@@ -9,7 +9,7 @@ public sealed class ResourceConfiguration : IEntityTypeConfiguration<Resource>
     {
         builder.HasKey(e => e.Id);
         builder.HasIndex(e => e.Name).IsUnique();
-        builder.Property(e => e.CreationDate);
+        builder.Property(e => e.CreationDate).HasDefaultValue(DateTime.UtcNow);
 
         // One-to-Many Relationship
         builder.HasMany(u => u.UserResources)
