@@ -1,5 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitectureSampleProject.Core.Domain;
@@ -14,6 +15,8 @@ public static class DependencyInjection
         services.AddScoped<IUpdateCategoryService, UpdateCategoryService>();
         services.AddScoped<ICategoryGetOrCreateService, CategoryGetOrCreateService>();
 
+        services.AddScoped<ICreateSellService, CreateSellService>();
+
         services.AddDomainValidators();
 
         return services;
@@ -22,6 +25,8 @@ public static class DependencyInjection
     private static IServiceCollection AddDomainValidators(this IServiceCollection services)
     {
         services
+            .AddValidatorsFromAssemblyContaining<SellValidator>()
+
             .AddValidatorsFromAssemblyContaining<ProductValidator>()
             .AddValidatorsFromAssemblyContaining<CategoryValidator>()
             .AddScoped<IGetOrCreateCategoryValidator, GetOrCreateCategoryValidator>();

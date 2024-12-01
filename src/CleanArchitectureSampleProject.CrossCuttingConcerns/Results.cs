@@ -15,12 +15,15 @@ public enum ResultStates : short
 public record class Results<TError>(bool IsSuccess, bool IsFail, ResultStates State, TError? Error) 
     where TError : IError
 {
+    #region [Constructors]
     public Results(TError error) : this(ResultStates.Error, error) { }
 
     public Results(ResultStates state) : this(state, default) { }
 
     public Results(ResultStates state, TError? error) : this(state.IsSuccessStatus(), state.IsFailStatus(), state, error) { }
+    #endregion [Constructors]
 
+    #region [Implicit Operators]
     public static implicit operator Results<TError>(ResultStates state)
     {
         return new Results<TError>(state);
@@ -30,11 +33,13 @@ public record class Results<TError>(bool IsSuccess, bool IsFail, ResultStates St
     {
         return new Results<TError>(error);
     }
+    #endregion [Implicit Operators]
 }
 
 public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool IsFail, ResultStates State, TSuccessResult? Success, TErrorResult? Error) 
     where TErrorResult : IError
 {
+    #region [Constructors]
     public Results(ResultStates state) : this(state.IsSuccessStatus(), state.IsFailStatus(), state, default, default) { }
 
     public Results(TSuccessResult result) : this(ResultStates.Success, result) { }
@@ -44,9 +49,9 @@ public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool I
     public Results(ResultStates state, TSuccessResult result) : this(true, false, state, result, default) { }
 
     public Results(ResultStates state, TErrorResult error) : this(false, true, state, default, error) { }
+    #endregion [Constructors]
 
-
-
+    #region [Functional Match]
     public async Task<R2> MatchAsync<R2>(Func<TSuccessResult, Task<R2>> SuccAsync, Func<TErrorResult, R2> Fail)
     {
         return await Match(SuccAsync, (TErrorResult f) => Fail(f).AsTask());
@@ -69,7 +74,9 @@ public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool I
         }
         return Fail(Error!);
     }
+    #endregion [Functional Match]
 
+    #region [Implicit Operators]
     public static implicit operator Results<TSuccessResult, TErrorResult>(TSuccessResult result)
     {
         return new Results<TSuccessResult, TErrorResult>(result);
@@ -94,6 +101,7 @@ public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool I
     {
         return new Results<TSuccessResult, TErrorResult>(result.state, result.success);
     }
+    #endregion [Implicit Operators]
 }
 
 public interface IError
@@ -108,6 +116,7 @@ public record class BaseError(string Message, Exception? Exception) : IError
 
 public record class ErrorList : IError
 {
+    #region [Constructors]
     public IEnumerable<ErrorItem> Errors { get; private set; }
 
     public ErrorList(BaseError baseError) : this(new ErrorItem(baseError.Message, baseError.Exception)) { }
@@ -119,11 +128,12 @@ public record class ErrorList : IError
     public ErrorList(ErrorItem error) : this([error]) { }
 
     public ErrorList(FluentValidation.Results.ValidationResult validationResult) : this(GenerateList(validationResult)) { }
-
+    
     public ErrorList(IEnumerable<ErrorItem> errors)
     {
         Errors = errors;
     }
+    #endregion [Constructors]
 
     private static IEnumerable<ErrorItem> GenerateList(FluentValidation.Results.ValidationResult validationResult)
     {

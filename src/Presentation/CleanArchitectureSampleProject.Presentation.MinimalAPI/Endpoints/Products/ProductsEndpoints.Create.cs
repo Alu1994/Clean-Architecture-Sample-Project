@@ -4,15 +4,15 @@ namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Produ
 
 public static partial class ProductsEndpoints
 {
-    private static WebApplication MapCreate(this WebApplication app)
+    private static RouteGroupBuilder MapCreate(this RouteGroupBuilder app)
     {
-        app.MapPost($"/{Controller}", async (ILogger<Logging> logger, IProductUseCases productUseCases, CreateProductInput product, CancellationToken cancellation) =>
+        app.MapPost("", async (ILogger<Logging> logger, IProductUseCases productUseCases, CreateProductInput product, CancellationToken cancellation) =>
         {
             return await Create(logger, productUseCases, product, cancellation);
         })
-        .Accepts<CreateProductInput>(ContentType)
-        .Produces<CreateProductOutput>(Created, ContentType)
-        .Produces<ProblemDetails>(BadRequest, ContentType)
+        .Accepts<CreateProductInput>(DefaultContentType)
+        .Produces<CreateProductOutput>(Created, DefaultContentType)
+        .Produces<ProblemDetails>(BadRequest, DefaultContentType)
         .WithConfigSummaryInfo("Create Product", TagName)
         .RequireAuthorization(ProductCanWritePolicy);
 
@@ -21,31 +21,8 @@ public static partial class ProductsEndpoints
 
     private static async Task<IResult> Create(ILogger<Logging> logger, IProductUseCases productUseCases, CreateProductInput product, CancellationToken cancellation)
     {
-        const string errorTitle = "Error while creating new product.";
-
         var result = await productUseCases.CreateProduct(product, cancellation);
-        return result.Match(success => Results.Created($"/{Controller}", success),
-            error =>
-            {
-                return Results.BadRequest(new
-                {
-                    @Type = HttpStatusCode.BadRequest.ToString(),
-                    Title = errorTitle,
-                    Detail = errorTitle,
-                    Errors = error.Errors.Select(x => x.Message),
-                    StatusCode = StatusCodes.Status400BadRequest
-                });
-            }
-        );
+        return result.ToCreatedOrErrorsResult(logger, "Error while creating new product.");
     }
 
-}
-
-public sealed class CreateProductValidator : AbstractValidator<CreateProductInput>
-{
-    public CreateProductValidator()
-    {
-        RuleFor(product => product.ToProduct(null))
-            .SetValidator(new ProductValidator());
-    }
 }

@@ -6,9 +6,14 @@ namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
 
 public static class MainEndpointsMapping
 {
-    private const string ContentType = "application/json";
-    private const short Unauthorized = StatusCodes.Status401Unauthorized;
-    private const short Forbidden = StatusCodes.Status403Forbidden;
+    public static string DefaultContentType => "application/json";
+    public static string BadRequestDescription => HttpStatusCode.BadRequest.ToString();
+
+    public static short Success => StatusCodes.Status200OK;
+    public static short Created => StatusCodes.Status201Created;
+    public static short BadRequest => StatusCodes.Status400BadRequest;
+    public static short Unauthorized => StatusCodes.Status401Unauthorized;
+    public static short Forbidden => StatusCodes.Status403Forbidden;
 
     public static WebApplication MapEndpoints(this WebApplication app)
     {
@@ -27,8 +32,8 @@ public static class MainEndpointsMapping
             .WithSummary(description)
             .WithDisplayName(description)
             .WithTags(tagName)
-            .Produces<UnauthorizedResponse>(Unauthorized, ContentType)
-            .Produces<ForbiddenResponse>(Forbidden, ContentType)
+            .Produces<UnauthorizedResponse>(Unauthorized, DefaultContentType)
+            .Produces<ForbiddenResponse>(Forbidden, DefaultContentType)
             .AddFluentValidationAutoValidation()
             .WithOpenApi();
     }

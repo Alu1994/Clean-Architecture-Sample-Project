@@ -1,5 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
+using FluentValidation;
 
 namespace CleanArchitectureSampleProject.Core.Application.Inputs;
 
@@ -35,5 +37,14 @@ public sealed class CreateProductInput
     {
         category ??= Category?.ToCategory();
         return Product.MapToProduct(Name, Description, Value, Quantity, category);
+    }
+}
+
+public sealed class CreateProductValidator : AbstractValidator<CreateProductInput>
+{
+    public CreateProductValidator()
+    {
+        RuleFor(product => product.ToProduct(null))
+            .SetValidator(new ProductValidator());
     }
 }

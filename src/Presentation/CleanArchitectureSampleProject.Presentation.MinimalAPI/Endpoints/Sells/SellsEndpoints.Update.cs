@@ -4,15 +4,15 @@ namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Produ
 
 public static partial class SellsEndpoints
 {
-    private static WebApplication MapUpdate(this WebApplication app)
+    private static RouteGroupBuilder MapUpdate(this RouteGroupBuilder app)
     {
-        app.MapPut($"/{Controller}", async (ILogger<Logging> logger, IProductUseCases productUseCases, UpdateProductInput product, CancellationToken cancellation) =>
+        app.MapPut("", async (ILogger<Logging> logger, IProductUseCases productUseCases, UpdateProductInput product, CancellationToken cancellation) =>
         {
             return await Update(logger, productUseCases, product, cancellation);
         })
-        .Accepts<UpdateProductInput>(ContentType)
-        .Produces<UpdateProductOutput>(Success, ContentType)
-        .Produces<ProblemDetails>(BadRequest, ContentType)
+        .Accepts<UpdateProductInput>(DefaultContentType)
+        .Produces<UpdateProductOutput>(Success, DefaultContentType)
+        .Produces<ProblemDetails>(BadRequest, DefaultContentType)
         .WithConfigSummaryInfo("Update Product", TagName)
         .RequireAuthorization(ProductCanWritePolicy);
 
@@ -21,24 +21,8 @@ public static partial class SellsEndpoints
 
     private static async Task<IResult> Update(ILogger<Logging> logger, IProductUseCases productUseCases, UpdateProductInput product, CancellationToken cancellation)
     {
-        const string errorTitle = "Error while updating new product.";
-
         var result = await productUseCases.UpdateProduct(product, cancellation);
-        return result.Match(success => Results.Ok(success),
-            error =>
-            {
-                var errorMessage = logger.LogErrorList(error);
-
-                return Results.BadRequest(new
-                {
-                    @Type = HttpStatusCode.BadRequest.ToString(),
-                    Title = errorTitle,
-                    Detail = errorTitle,
-                    Errors = error.Errors.Select(x => x.Message),
-                    StatusCode = StatusCodes.Status400BadRequest
-                });
-            }
-        );
+        return result.ToOkOrErrorsResult(logger, "Error while updating new product.");
     }
 }
 

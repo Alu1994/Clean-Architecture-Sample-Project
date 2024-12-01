@@ -4,14 +4,14 @@ namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Produ
 
 public static partial class SellsEndpoints
 {
-    private static WebApplication MapGetById(this WebApplication app)
+    private static RouteGroupBuilder MapGetById(this RouteGroupBuilder app)
     {
-        app.MapGet($"/{Controller}/{{sellId:Guid}}", async (ILogger<Logging> logger, ISellRepositoryDatabase sellRepositoryDatabase, Guid sellId, CancellationToken cancellation) =>
+        app.MapGet("/{sellId:Guid}", async (ILogger<Logging> logger, ISellUseCases sellUseCases, Guid sellId, CancellationToken cancellation) =>
         {
-            return await GetById(logger, sellRepositoryDatabase, sellId, cancellation);
+            return await GetById(logger, sellUseCases, sellId, cancellation);
         })
-        .Produces<GetProductOutput>(Success, ContentType)
-        .Produces<ProblemDetails>(BadRequest, ContentType)
+        .Produces<GetProductOutput>(Success, DefaultContentType)
+        .Produces<ProblemDetails>(BadRequest, DefaultContentType)
         .WithConfigSummaryInfo("Get Sell By Id", TagName)
         //.RequireAuthorization(SellCanReadPolicy)
         ;
@@ -19,23 +19,9 @@ public static partial class SellsEndpoints
         return app;
     }
 
-    private static async Task<IResult> GetById(ILogger<Logging> logger, ISellRepositoryDatabase sellRepositoryDatabase, Guid sellId, CancellationToken cancellation)
+    private static async Task<IResult> GetById(ILogger<Logging> logger, ISellUseCases sellUseCases, Guid sellId, CancellationToken cancellation)
     {
-        const string errorTitle = "Error while getting sell by id.";
-
-        var result = await sellRepositoryDatabase.GetById(sellId, cancellation);
-        return result.Match(success => Results.Ok(success),
-            error =>
-            {
-                var errorMessage = logger.LogBaseError(error);
-                return Results.Problem(
-                    type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorTitle,
-                    detail: errorMessage,
-                    statusCode: StatusCodes.Status400BadRequest
-                );
-            }
-        );
+        var result = await sellUseCases.GetSellById(sellId, cancellation);
+        return result.ToOkOrErrorResult(logger, "Error while getting sell by id.");
     }
-
 }

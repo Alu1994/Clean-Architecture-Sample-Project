@@ -1,4 +1,5 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
+﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Results;
@@ -14,6 +15,9 @@ public static class FluentValidatorSetup
         services.AddValidatorsFromAssemblyContaining<UpdateProductValidator>();
         services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
         services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
+
+        services.AddValidatorsFromAssemblyContaining<CreateSellValidator>();
+
         services.AddFluentValidationAutoValidation(configuration =>
         {
             // Replace the default result factory with a custom implementation.

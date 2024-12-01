@@ -1,4 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
+using FluentValidation;
 
 namespace CleanArchitectureSampleProject.Core.Application.Inputs;
 
@@ -25,3 +27,20 @@ public class CategoryInput
 }
 
 public sealed class UpdateCategoryInput : CategoryInput;
+
+public sealed class CreateCategoryValidator : AbstractValidator<CategoryInput>
+{
+    public CreateCategoryValidator()
+    {
+        RuleFor(x => x.ToCategory()).SetValidator(new CategoryValidator());
+    }
+}
+
+public sealed class UpdateCategoryValidator : AbstractValidator<UpdateCategoryInput>
+{
+    public UpdateCategoryValidator()
+    {
+        RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.ToCategory()).SetValidator(new CategoryValidator());
+    }
+}

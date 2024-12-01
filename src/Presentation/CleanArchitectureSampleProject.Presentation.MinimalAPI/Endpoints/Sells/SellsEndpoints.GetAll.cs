@@ -5,14 +5,14 @@ namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Produ
 
 public static partial class SellsEndpoints
 {
-    private static WebApplication MapGetAll(this WebApplication app)
+    private static RouteGroupBuilder MapGetAll(this RouteGroupBuilder app)
     {
-        app.MapGet($"/{Controller}", async (ILogger<Logging> logger, ISellRepositoryDatabase sellRepositoryDatabase, CancellationToken cancellation) =>
+        app.MapGet("", async (ILogger<Logging> logger, ISellUseCases sellUseCases, CancellationToken cancellation) =>
         {
-            return await GetAll(logger, sellRepositoryDatabase, cancellation);
+            return await GetAll(logger, sellUseCases, cancellation);
         })
-        .Produces<FrozenSet<GetProductOutput>>(Success, ContentType)
-        .Produces<ProblemDetails>(BadRequest, ContentType)
+        .Produces<FrozenSet<GetSellOutput>>(Success, DefaultContentType)
+        .Produces<ProblemDetails>(BadRequest, DefaultContentType)
         .WithConfigSummaryInfo("Get All Sells", TagName)
         //.RequireAuthorization(SellCanReadPolicy)
         ;
@@ -20,21 +20,10 @@ public static partial class SellsEndpoints
         return app;
     }
 
-    private static async Task<IResult> GetAll(ILogger<Logging> logger, ISellRepositoryDatabase sellRepositoryDatabase, CancellationToken cancellation)
+    private static async Task<IResult> GetAll(ILogger<Logging> logger, ISellUseCases sellUseCases, CancellationToken cancellation)
     {
-        var result = await sellRepositoryDatabase.Get(cancellation);
-        return result.Match(success => Results.Ok(success),
-            error =>
-            {
-                var errorMessage = logger.LogBaseError(error);
-                return Results.Problem(
-                    type: HttpStatusCode.BadRequest.ToString(),
-                    title: "Error",
-                    detail: errorMessage,
-                    statusCode: StatusCodes.Status400BadRequest
-                );
-            }
-        );
+        var result = await sellUseCases.GetSells(cancellation);
+        return result.ToOkOrErrorResult(logger, "Error");
     }
 
 }
