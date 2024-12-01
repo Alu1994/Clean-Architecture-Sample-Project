@@ -62,14 +62,15 @@ public sealed class SellRepositoryPostgres(ProductDataContext context, ISellRepo
     {
         try
         {
+            await _context.Sells.AddAsync(sell, cancellation);
+            await _context.SaveChangesAsync(true);
+
             var cacheResult = await _cache.Insert(sell, cancellation);
             if (cacheResult != ValidationResult.Success)
             {
                 // Log that the cache was not updated
             }
 
-            await _context.Sells.AddAsync(sell, cancellation);
-            await _context.SaveChangesAsync(true);
             return ValidationResult.Success!;
         }
         catch (Exception ex)
@@ -82,14 +83,14 @@ public sealed class SellRepositoryPostgres(ProductDataContext context, ISellRepo
     {
         try
         {
+            _context.Sells.Update(sell);
+            await _context.SaveChangesAsync(cancellation);
+            
             var cacheResult = await _cache.Update(sell, cancellation);
             if (cacheResult != ValidationResult.Success)
             {
                 // Log that the cache was not updated
             }
-
-            _context.Sells.Update(sell);
-            await _context.SaveChangesAsync(cancellation);
             return ValidationResult.Success!;
         }
         catch (Exception ex)

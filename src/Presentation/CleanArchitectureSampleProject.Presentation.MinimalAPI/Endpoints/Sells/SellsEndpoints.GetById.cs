@@ -1,6 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
-
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
+﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
 public static partial class SellsEndpoints
 {
@@ -10,11 +8,10 @@ public static partial class SellsEndpoints
         {
             return await GetById(logger, sellUseCases, sellId, cancellation);
         })
-        .Produces<GetProductOutput>(Success, DefaultContentType)
+        .Produces<GetSellOutput>(Success, DefaultContentType)
         .Produces<ProblemDetails>(BadRequest, DefaultContentType)
         .WithConfigSummaryInfo("Get Sell By Id", TagName)
-        //.RequireAuthorization(SellCanReadPolicy)
-        ;
+        .RequireAuthorization(SellCanReadPolicy);
 
         return app;
     }

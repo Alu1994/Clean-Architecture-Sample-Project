@@ -12,6 +12,9 @@ public static class PolicyExtensions
     public const string ProductCanReadPolicy = "ProductCanReadPolicy";
     public const string ProductCanWritePolicy = "ProductCanWritePolicy";
     public const string ProductCanDeletePolicy = "ProductCanDeletePolicy";
+    public const string SellCanReadPolicy = "SellCanReadPolicy";
+    public const string SellCanWritePolicy = "SellCanWritePolicy";
+    public const string SellCanDeletePolicy = "SellCanDeletePolicy";
 
     private const byte TokenDelayAccess = 5;
     private const byte DefaultExpiresIn = 60;
@@ -26,7 +29,10 @@ public static class PolicyExtensions
         [CategoryCanDeletePolicy] = "categorycandeleteclaim",
         [ProductCanReadPolicy] = "productcanreadclaim",
         [ProductCanWritePolicy] = "productcanwriteclaim",
-        [ProductCanDeletePolicy] = "productcandeleteclaim"
+        [ProductCanDeletePolicy] = "productcandeleteclaim",
+        [SellCanReadPolicy] = "sellcanreadclaim",
+        [SellCanWritePolicy] = "sellcanwriteclaim",
+        [SellCanDeletePolicy] = "sellcandeleteclaim"
     };
 
     public static (string, byte, SecurityToken) ToSecurityTokenDescriptor(this List<Claim> claims, byte expiresIn = DefaultExpiresIn)

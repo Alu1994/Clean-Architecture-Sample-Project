@@ -1,12 +1,9 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
 using CleanArchitectureSampleProject.Core.Application.Outputs.Sells;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Services;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using System.Collections.Frozen;
-using System.Linq;
 
 namespace CleanArchitectureSampleProject.Core.Application.UseCases;
 
@@ -15,6 +12,7 @@ public interface ISellUseCases
     Task<Results<FrozenSet<GetSellOutput>, BaseError>> GetSells(CancellationToken cancellation);
     Task<Results<GetSellOutput, BaseError>> GetSellById(Guid sellId, CancellationToken cancellation);
     Task<Results<CreateSellOutput, ErrorList>> CreateSell(CreateSellInput productInput, CancellationToken cancellation);
+    Task<Results<UpdateSellOutput, ErrorList>> UpdateSell(UpdateSellInput sellInput, CancellationToken cancellation);
 }
 
 public sealed class SellUseCases(
@@ -58,5 +56,18 @@ public sealed class SellUseCases(
             return result.ToErrorList();
         }
         return (CreateSellOutput)result.ToSuccess()!;
+    }
+
+    public async Task<Results<UpdateSellOutput, ErrorList>> UpdateSell(UpdateSellInput sellInput, CancellationToken cancellation)
+    {
+        _logger.LogInformation("Logging {MethodName} with {SellInput}", nameof(UpdateSell), sellInput);
+
+        var sell = sellInput.ToSell();
+        var result = await _createSellService.Execute(sell, cancellation);
+        if (result.IsFail)
+        {
+            return result.ToErrorList();
+        }
+        return (UpdateSellOutput)result.ToSuccess()!;
     }
 }

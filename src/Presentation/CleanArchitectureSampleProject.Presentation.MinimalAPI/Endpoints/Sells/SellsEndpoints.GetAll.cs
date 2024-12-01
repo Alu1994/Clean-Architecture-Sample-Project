@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -14,8 +13,7 @@ public static partial class SellsEndpoints
         .Produces<FrozenSet<GetSellOutput>>(Success, DefaultContentType)
         .Produces<ProblemDetails>(BadRequest, DefaultContentType)
         .WithConfigSummaryInfo("Get All Sells", TagName)
-        //.RequireAuthorization(SellCanReadPolicy)
-        ;
+        .RequireAuthorization(SellCanReadPolicy);
 
         return app;
     }

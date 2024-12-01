@@ -1,7 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 

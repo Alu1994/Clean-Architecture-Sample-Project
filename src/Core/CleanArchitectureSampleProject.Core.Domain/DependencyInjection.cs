@@ -1,6 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Services;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Validators;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitectureSampleProject.Core.Domain;
@@ -26,6 +27,7 @@ public static class DependencyInjection
     {
         services
             .AddValidatorsFromAssemblyContaining<SellValidator>()
+            .AddValidatorsFromAssemblyContaining<SellItemValidator>()
 
             .AddValidatorsFromAssemblyContaining<ProductValidator>()
             .AddValidatorsFromAssemblyContaining<CategoryValidator>()

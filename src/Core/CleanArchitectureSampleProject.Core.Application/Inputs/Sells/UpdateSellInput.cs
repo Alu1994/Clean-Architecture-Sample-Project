@@ -1,11 +1,12 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Validators;
 using FluentValidation;
 
 namespace CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
 
-public sealed class CreateSellInput
+public sealed class UpdateSellInput
 {
     public Guid Id { get; set; }
     public string Description { get; set; }
@@ -21,25 +22,11 @@ public sealed class CreateSellInput
     }
 }
 
-public sealed class CreateSellValidator : AbstractValidator<CreateSellInput>
+public sealed class UpdateSellValidator : AbstractValidator<UpdateSellInput>
 {
-    public CreateSellValidator()
+    public UpdateSellValidator()
     {
+        RuleFor(sell => sell.Id).NotEmpty();
         RuleFor(sell => sell.ToSell(null)).SetValidator(new SellValidator());
-    }
-}
-
-internal static class SellExtensions
-{
-    public static List<SellItem> ToNewSellItems(this List<CreateSellItemInput> items, Guid id)
-    {
-        if (items is { Count: 0 }) return [];
-
-        List<SellItem> list = [];
-        foreach (var item in items)
-        {
-            list.Add(new CreateSellItemInput(id, item));
-        }
-        return list;
     }
 }

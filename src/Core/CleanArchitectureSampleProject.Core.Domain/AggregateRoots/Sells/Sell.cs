@@ -1,12 +1,9 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities;
-using Newtonsoft.Json.Linq;
-using System.Xml.Linq;
 
 namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
 
-public sealed class Sell
+public sealed class Sell : HasDomainEventsBase
 {
     public Guid Id { get; set; }
     public string Description { get; set; }    
@@ -16,7 +13,7 @@ public sealed class Sell
     // ==== Navigation Property ====
     public ICollection<SellItem> Items { get; set; } = new List<SellItem>();
 
-    public static Sell MapToSell(string description, decimal totalValue, ICollection<SellItem> sellItems, Guid? id = null)
+    public static Sell MapToSell(string description, decimal totalValue, Guid? id = null)
     {
         var sell = new Sell
         {
@@ -24,16 +21,28 @@ public sealed class Sell
             TotalValue = totalValue
         };
 
-        if (id is not null && id != Guid.Empty) sell.Id = id.Value;
-        if (sellItems is not null)
+        if (id is not null && id != Guid.Empty)
         {
-            sell.SetItems(sellItems);
+            sell.Id = id.Value;
+            return sell;
         }
-
+        sell.Id = Guid.NewGuid();
         return sell;
     }
 
-    private void SetItems(ICollection<SellItem> sellItems)
+    public void SetItems(ICollection<SellItem> sellItems)
+    {
+        Items = sellItems;
+    }
+
+    public Sell Create()
+    {
+        // Send Update Stock Event
+        RegisterDomainEvent(new CreateSellEvent(this));
+        return this;
+    }
+
+    internal Sell UpdateTotalValue(decimal v)
     {
         throw new NotImplementedException();
     }

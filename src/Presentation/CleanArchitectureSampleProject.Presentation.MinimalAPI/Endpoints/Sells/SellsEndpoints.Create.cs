@@ -1,5 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
+using CleanArchitectureSampleProject.Core.Application.Outputs.Sells;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
@@ -11,11 +11,11 @@ public static partial class SellsEndpoints
         {
             return await Create(logger, sellUseCases, sell, cancellation);
         })
-        .Accepts<CreateProductInput>(DefaultContentType)
-        .Produces<CreateProductOutput>(Created, DefaultContentType)
+        .Accepts<CreateSellInput>(DefaultContentType)
+        .Produces<CreateSellOutput>(Created, DefaultContentType)
         .Produces<ProblemDetails>(BadRequest, DefaultContentType)
         .WithConfigSummaryInfo("Create Sell", TagName)
-        .RequireAuthorization(ProductCanWritePolicy);
+        .RequireAuthorization(SellCanWritePolicy);
 
         return app;
     }
