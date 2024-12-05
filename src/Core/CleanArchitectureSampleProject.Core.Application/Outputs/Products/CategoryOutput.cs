@@ -1,7 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
 
-namespace CleanArchitectureSampleProject.Core.Application.Outputs;
+namespace CleanArchitectureSampleProject.Core.Application.Outputs.Products;
 
 public sealed class CategoryOutput
 {

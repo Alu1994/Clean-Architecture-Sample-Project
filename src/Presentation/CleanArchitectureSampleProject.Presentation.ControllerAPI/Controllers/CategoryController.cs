@@ -1,4 +1,4 @@
-using CleanArchitectureSampleProject.Core.Application.Inputs;
+using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 using CleanArchitectureSampleProject.Core.Application.UseCases;
 
 namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers

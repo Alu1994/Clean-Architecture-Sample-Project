@@ -1,4 +1,6 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
+using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using System.Collections.Frozen;
