@@ -51,6 +51,7 @@ public sealed class GetSellItemOutput
     public Guid Id { get; set; }
     public Guid SellId { get; set; }
     public Guid ProductId { get; set; }
+    public decimal Value { get; set; }
     public int Quantity { get; set; }
     public DateTime CreationDate { get; set; }
 
@@ -62,6 +63,7 @@ public sealed class GetSellItemOutput
             Id = sellItem.Id,
             SellId = sellItem.SellId,
             ProductId = sellItem.ProductId,
+            Value = sellItem.Value,
             Quantity = sellItem.Quantity,
             CreationDate = sellItem.CreationDate,
         };

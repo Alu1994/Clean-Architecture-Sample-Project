@@ -45,16 +45,31 @@ public sealed class UpdateSellService : IUpdateSellService
     private async Task UpdateValues(Sell sell, CancellationToken cancellation)
     {
         var products = await _productRepository.Get(cancellation);
-        var items = products.Success!.Where(x => sell.Items.Select(x2 => x2.ProductId).Contains(x.Id));
+        var productItems = products.Success!
+            .Where(product => 
+                sell.Items
+                    .Select(sellItem => sellItem.ProductId)
+                    .Contains(product.Id));
+
         var totalValue = 0M;
-        foreach (var i in items)
+
+        foreach (var item in sell.Items)
         {
-            var sellItem = sell.Items.FirstOrDefault(x => x.ProductId == i.Id);
-            if (sellItem is null) continue;
-            sellItem.UpdateValue(i.Value);
-            totalValue += i.Value * sellItem.Quantity;
+            var productItem = productItems.First(x => item.ProductId == x.Id);
+            if (productItem is null) continue;
+            if(item is { Value: <= 0 })
+                item.UpdateValue(productItem.Value);
+            totalValue += item.Value * item.Quantity;
         }
 
         sell.UpdateTotalValue(totalValue);
+
+        //foreach (var i in productItems)
+        //{
+        //    var sellItem = sell.Items.FirstOrDefault(x => x.ProductId == i.Id);
+        //    if (sellItem is null) continue;
+        //    sellItem.UpdateValue(i.Value);
+        //    totalValue += i.Value * sellItem.Quantity;
+        //}
     }
 }

@@ -29,7 +29,7 @@ public sealed class CreateProductInput
 
     public void SetCategory(Category category)
     {
-        if (Category is null) Category = new CategoryInput();
+        Category ??= new CategoryInput();
         Category.SetCategory(category);
     }
 

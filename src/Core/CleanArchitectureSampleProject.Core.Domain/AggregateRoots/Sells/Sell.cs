@@ -13,12 +13,11 @@ public sealed class Sell : HasDomainEventsBase
     // ==== Navigation Property ====
     public ICollection<SellItem> Items { get; set; } = new List<SellItem>();
 
-    public static Sell MapToSell(string description, decimal totalValue, Guid? id = null)
+    public static Sell MapToSell(string description, Guid? id = null)
     {
         var sell = new Sell
         {
-            Description = description,
-            TotalValue = totalValue
+            Description = description
         };
 
         if (id is not null && id != Guid.Empty)
@@ -50,11 +49,17 @@ public sealed class Sell : HasDomainEventsBase
 
     internal void Update(Sell sell)
     {
-        this.TotalValue = sell.TotalValue;
-        this.Description = sell.Description;
+        TotalValue = sell.TotalValue;
+        Description = sell.Description;
 
         foreach (var item in sell.Items)
         {
+            if(item.Id == Guid.Empty)
+            {
+                Items.Add(item);
+                continue;
+            }
+
             var oldSellItem = Items.FirstOrDefault(x => x.Id == item.Id);
             if (oldSellItem is not null)
             {
@@ -62,7 +67,6 @@ public sealed class Sell : HasDomainEventsBase
                 oldSellItem.Value = item.Value;
                 continue;
             }
-            Items.Add(item);
         }
     }
     // ==== Navigation Property ====

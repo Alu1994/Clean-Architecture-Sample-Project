@@ -9,12 +9,11 @@ public sealed class CreateSellInput
 {
     public Guid Id { get; set; }
     public string Description { get; set; }
-    public decimal TotalValue { get; set; }
     public List<CreateSellItemInput> Items { get; set; }
 
     public Sell ToSell(ICollection<SellItem>? sellItems = null)
     {
-        var sell = Sell.MapToSell(Description, TotalValue);
+        var sell = Sell.MapToSell(Description);
         sellItems ??= ToNewSellItems(Items, sell.Id);
         sell.SetItems(sellItems!);
         return sell;
@@ -22,7 +21,7 @@ public sealed class CreateSellInput
 
     public static List<SellItem> ToNewSellItems(List<CreateSellItemInput>? items, Guid id)
     {
-        if (items is { Count: 0 }) return [];
+        if (items is null or { Count: 0 }) return [];
 
         List<SellItem> list = [];
         foreach (var item in items)

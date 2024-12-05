@@ -11,7 +11,8 @@ var queue = storage.AddQueues(Services.AzureQueueConnection);
 // Adds Azure Queue
 
 // PostgresDB
-var dbServer = builder.AddPostgres(Services.PostgresServerName);
+var dbServer = builder.AddPostgres(Services.PostgresServerName)
+    .WithLifetime(ContainerLifetime.Persistent);
 var db = dbServer.AddDatabase(Services.PostgresDatabaseName);
 dbServer.WithDataVolume(Services.PostgresContainerVolume)
     .WithPgAdmin();

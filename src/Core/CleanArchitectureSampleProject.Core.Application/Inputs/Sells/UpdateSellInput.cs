@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Validators;
 using FluentValidation;
@@ -10,12 +9,11 @@ public sealed class UpdateSellInput
 {
     public Guid Id { get; set; }
     public string Description { get; set; }
-    public decimal TotalValue { get; set; }
     public List<UpdateSellItemInput> Items { get; set; }
 
     public Sell ToSell(ICollection<SellItem>? sellItems = null)
     {
-        var sell = Sell.MapToSell(Description, TotalValue, Id);
+        var sell = Sell.MapToSell(Description, Id);
         sellItems ??= ToNewSellItems(Items, Id);
         sell.SetItems(sellItems!);
         return sell;
@@ -23,7 +21,7 @@ public sealed class UpdateSellInput
 
     public static List<SellItem> ToNewSellItems(List<UpdateSellItemInput>? items, Guid id)
     {
-        if (items is { Count: 0 }) return [];
+        if (items is null or { Count: 0 }) return [];
 
         List<SellItem> list = [];
         foreach (var item in items)

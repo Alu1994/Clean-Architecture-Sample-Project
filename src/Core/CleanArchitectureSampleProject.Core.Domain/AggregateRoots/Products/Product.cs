@@ -69,9 +69,14 @@ public sealed class Product : HasDomainEventsBase
         return this;
     }
 
-    public Product Update(Guid id)
+    public Product Update(Product newProduct)
     {
-        Id = id;
+        Id = newProduct.Id;
+        Name = newProduct.Name;
+        Description = newProduct.Description;
+        Value = newProduct.Value;
+        Quantity = newProduct.Quantity;
+        CategoryId = newProduct.CategoryId;        
         RegisterDomainEvent(new UpdateProductEvent(this));
         return this;
     }

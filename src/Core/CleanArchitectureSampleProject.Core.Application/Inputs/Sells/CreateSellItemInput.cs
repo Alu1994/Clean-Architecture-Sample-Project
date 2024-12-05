@@ -6,6 +6,7 @@ public sealed class CreateSellItemInput
 {
     public Guid SellId { get; set; }
     public Guid ProductId { get; set; }
+    public decimal Value { get; set; }
     public int Quantity { get; set; }
 
     public CreateSellItemInput()
@@ -17,11 +18,12 @@ public sealed class CreateSellItemInput
     {
         SellId = sellId;
         ProductId = item.ProductId;
+        Value = item.Value;
         Quantity = item.Quantity;
     }
 
     public static implicit operator SellItem(CreateSellItemInput sellItemInput)
     {
-        return SellItem.MapToSellItem(sellItemInput.ProductId, sellItemInput.SellId, sellItemInput.Quantity);
+        return SellItem.MapToSellItem(sellItemInput.ProductId, sellItemInput.SellId, sellItemInput.Quantity, sellItemInput.Value);
     }
 }

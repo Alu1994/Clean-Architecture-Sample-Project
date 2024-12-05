@@ -16,13 +16,14 @@ public sealed class SellItem
     public Product Product { get; set; }
     // ==== Navigation Properties ====
 
-    public static SellItem MapToSellItem(Guid productId, Guid sellId, int quantity, Guid? id = null)
+    public static SellItem MapToSellItem(Guid productId, Guid sellId, int quantity, decimal value = 0, Guid? id = null)
     {
         var sellItem = new SellItem
         {
             ProductId = productId,
             SellId = sellId,
-            Quantity = quantity
+            Quantity = quantity,
+            Value = value,
         };
         if (id is not null && id != Guid.Empty) sellItem.Id = id.Value;
         return sellItem;
