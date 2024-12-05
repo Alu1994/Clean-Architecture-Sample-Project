@@ -1,38 +1,26 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
-using CleanArchitectureSampleProject.Core.Application.UseCases;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
 public static partial class ProductsEndpoints
 {
-    private static WebApplication MapGetAll(this WebApplication app)
+    private static RouteGroupBuilder MapGetAll(this RouteGroupBuilder app)
     {
-        app.MapGet($"/{Controller}", async (ILogger<Logging> logger, IProductUseCases productUseCases, CancellationToken cancellation) =>
+        app.MapGet("", async (ILogger<Logging> logger, IProductUseCases productUseCases, CancellationToken cancellation) =>
         {
             return await GetAll(logger, productUseCases, cancellation);
         })
-        .Produces<FrozenSet<GetProductOutput>>(Success, ContentType)
-        .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo("Get All Products", TagName);
+        .Produces<FrozenSet<GetProductOutput>>(Success, DefaultContentType)
+        .Produces<ProblemDetails>(BadRequest, DefaultContentType)
+        .WithConfigSummaryInfo("Get All Products", TagName)
+        .RequireAuthorization(ProductCanReadPolicy);
+
         return app;
     }
 
     private static async Task<IResult> GetAll(ILogger<Logging> logger, IProductUseCases productUseCases, CancellationToken cancellation)
     {
         var result = await productUseCases.GetProducts(cancellation);
-        return result.Match(success => Results.Ok(success),
-            error =>
-            {
-                var errorMessage = logger.LogBaseError(error);
-                return Results.Problem(
-                    type: HttpStatusCode.BadRequest.ToString(),
-                    title: "Error",
-                    detail: errorMessage,
-                    statusCode: StatusCodes.Status400BadRequest
-                );
-            }
-        );
+        return result.ToOkOrErrorResult(logger, "Error");
     }
-
 }

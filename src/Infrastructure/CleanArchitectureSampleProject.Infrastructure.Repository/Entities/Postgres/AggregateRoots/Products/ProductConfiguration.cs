@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
 
 public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
@@ -13,6 +13,12 @@ public sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(e => e.Description);
         builder.Property(e => e.Quantity);
         builder.Property(e => e.Value).HasColumnType("decimal(18,2)");
-        builder.Property(e => e.CreationDate);
+        builder.Property(e => e.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        // One-to-Many Relationship
+        builder.HasMany(u => u.Items)
+              .WithOne(o => o.Product)
+              .HasForeignKey(o => o.ProductId)
+              .OnDelete(DeleteBehavior.Cascade); // Cascade delete orders when a user is deleted
     }
 }

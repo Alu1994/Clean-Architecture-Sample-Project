@@ -1,0 +1,155 @@
+﻿/* Tema escuro para o Swagger UI */
+body {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+.swagger-ui .scheme-container form {
+    color: #000000;
+}
+
+.swagger-ui,
+.swagger-ui .info .title,
+.swagger-ui .topbar,
+.swagger-ui .model-title,
+.swagger-ui .model,
+.swagger-ui .prop-format,
+.swagger-ui .wrapper .opblock-tag-section .opblock-tag .nostyle,
+.swagger-ui a.nostyle,
+.swagger-ui a.nostyle:visited,
+.swagger-ui .opblock .opblock-summary-description,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui table thead tr td,
+.swagger-ui table thead tr th,
+.swagger-ui .tab li button.tablinks,
+.swagger-ui .response-col_status,
+.swagger-ui section.models h4,
+.swagger-ui .model .property.primitive,
+.swagger-ui .parameter__in {
+    color: #ffffff;
+}
+
+.swagger-ui section.models .model-container {
+    background-color: #888888;
+}
+
+.swagger-ui section.models .model-container:hover
+{
+    background: rgba(73,204,144,.1);
+}
+
+.swagger-ui .scheme-container {
+    background-color: #3e3e3e;
+    color: #ffffff;
+}
+
+.swagger-ui .info h1,
+.swagger-ui .info h2,
+.swagger-ui .info h3,
+.swagger-ui .info h4 {
+    color: #d4d4d4;
+}
+
+.swagger-ui .opblock {
+    background-color: #2d2d2d;
+    border-color: #444;
+}
+
+.swagger-ui .opblock-summary-description {
+    color: #d4d4d4;
+}
+
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type {
+    color: #9cdcfe;
+}
+
+.swagger-ui .responses-inner h4 {
+    color: #569cd6;
+}
+
+.swagger-ui .btn:hover {
+    background-color: #005a9e;
+    border-color: #004080;
+}
+
+/* Ajuste geral para links */
+.swagger-ui a {
+    color: #569cd6;
+}
+
+.swagger-ui .parameter__name {
+    color: #9cdcfe;
+}
+
+.swagger-ui .prop-type,
+.swagger-ui .parameter__type {
+    color: greenyellow;
+}
+
+
+
+.swagger-ui .btn {
+    background-color: #ffffff;
+    color: #49cc90;
+    border-color: #49cc90;
+}
+
+.swagger-ui .opblock .opblock-summary {
+    background-color: none;
+}
+
+.swagger-ui .opblock .opblock-summary {
+    background-color: none;
+}
+
+.swagger-ui .btn:hover {
+    /*background-color: #89bf04;*/
+    background-color: #49cc90;
+    color: #ffffff;
+    border-color: #ffffff;
+    fill: #1e1e1e;
+}
+
+.swagger-ui .btn.authorize svg {
+    fill: #ffffff;
+    border-color: #ffffff;
+}
+
+.swagger-ui .btn.cancel {
+    background-color: #ffffff;
+}
+
+.swagger-ui .btn.cancel:hover {
+    background-color: #ff6060;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.swagger-ui .parameter__name.required:after {
+    color: #ff0000;
+}
+
+.swagger-ui .opblock.opblock-get {
+    background: rgba(97,175,254,.3);
+}
+
+.swagger-ui .opblock.opblock-post {
+    background: rgba(73,204,144,.3);
+}
+
+.swagger-ui .opblock.opblock-put {
+    background: rgba(252,161,48,.3);
+}
+
+.swagger-ui .opblock.opblock-patch {
+    background: rgba(80,227,194,.3);
+}
+
+.swagger-ui .opblock.opblock-delete {
+    background: rgba(249,62,62,.3);
+}
+
+.swagger-ui .response-control-media-type__accept-message {
+    color: lemonchiffon;
+}

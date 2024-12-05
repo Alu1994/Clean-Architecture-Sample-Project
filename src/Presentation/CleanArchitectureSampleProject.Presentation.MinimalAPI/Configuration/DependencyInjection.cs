@@ -1,16 +1,22 @@
-﻿using NLog.Web;
+﻿using CleanArchitectureSampleProject.Core.Domain;
+using CleanArchitectureSampleProject.Core.Application;
 using CleanArchitectureSampleProject.Infrastructure.Repository;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints;
+using NLog.Web;
 using Scalar.AspNetCore;
-using CleanArchitectureSampleProject.Core.Domain;
-using CleanArchitectureSampleProject.Core.Application;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
 
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration;
 
-public static class PresentationDI
+public static class DependencyInjection
 {
+    private static IWebHostEnvironment Env;
+
     public static WebApplicationBuilder BuildPresentation(this WebApplicationBuilder builder)
     {
+        Env = builder.Environment;
+
         builder.BuildRepository();
 
         // =========== Add NLog ===========
@@ -19,7 +25,7 @@ public static class PresentationDI
         builder.Host.UseNLog();
         // =========== Add NLog ===========
 
-        if (builder.Environment.IsDevelopment())
+        if (Env.IsDevelopment())
         {
             // =========== Add service defaults & Aspire client integrations. ===========
             // (This must be after 'builder.Logging.ClearProviders()' to re-add the LoggingProviders
@@ -40,10 +46,12 @@ public static class PresentationDI
         services.AddProblemDetails();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        services.AddOpenApi(ScalarOpenApi.Configure);
-        services.AddSwaggerGen();
-        services.AddEndpointsApiExplorer();
-                
+        services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
+
+        // =========== Setup Authentication & Authorization ===========
+        services.AddAuthenticationAndAuthorization();
+        // =========== Setup Authentication & Authorization ===========
+
         // =========== Add Layers Dependency Injection ===========
         services.AddDomainLayer();
         services.AddApplicationLayer();
@@ -52,6 +60,9 @@ public static class PresentationDI
         // =========== Add Layers Dependency Injection ===========
 
         services.AddValidation();
+
+        if (Env.IsDevelopment() is false)
+            services.AddAppDefaultHealthChecks();
 
         return services;
     }
@@ -62,20 +73,39 @@ public static class PresentationDI
         app.MapOpenApi();
 
         // ======== Add Scalar UI ========
-        app.MapScalarApiReference(ScalarOpenApi.SetupOptions);
+        app.MapScalarApiReference(OpenApiSetup.SetupScalarOptions);
         // ======== Add Scalar UI ========
 
         // ======== Add Swagger UI ========
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        //app.UseSwagger();
-        app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Test"));
+        app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
         // ======== Add Swagger UI ========
+
+        app.UseMiddleware<JwtMiddleware>();
+
+        // =========== Use Authentication & Authorization ===========
+        app.UseAuthentication();
+        app.UseAuthorization();
+        // =========== Use Authentication & Authorization ===========
 
         // =========== Map Endpoints ===========
         app.UseHttpsRedirection();
-        app.MapDefaultEndpoints();
         app.MapEndpoints();
         // =========== Map Endpoints ===========
+
+        if (Env.IsDevelopment())
+        {
+            // =========== Add DefaultEndpoints From Aspire. ===========
+            app.MapDefaultEndpoints();
+            // =========== Add DefaultEndpoints From Aspire. ===========
+        }
+        else
+        {
+            // Is not local env (Not .NET Aspire)
+            app.MapAppDefaultEndpoints();
+        }
+
+        app.UseStaticFiles();
 
         return app;
     }

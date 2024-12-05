@@ -1,9 +1,8 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres;
+namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
 
 public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICategoryRepositoryCache categoryRepositoryCache) : ICategoryRepositoryDatabase
 {
@@ -132,7 +131,7 @@ public sealed class CategoryRepositoryPostgres(ProductDataContext context, ICate
             var categories = await _context.Categories.AsNoTracking().ToListAsync(cancellation);
             if (categories is null)
             {
-                return Enumerable.Empty<Category>().ToFrozenSet();
+                return FrozenSet<Category>.Empty;
             }
             return categories.ToFrozenSet();
         }

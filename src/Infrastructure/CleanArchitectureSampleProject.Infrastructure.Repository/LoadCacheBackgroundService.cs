@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository;
 
@@ -29,6 +30,7 @@ public sealed class LoadCacheBackgroundService : BackgroundService
                 {
                     await LoadCategories(scope, stoppingToken);
                     await LoadProducts(scope, stoppingToken);
+                    await LoadSells(scope, stoppingToken);
                 }
 
                 _logger.LogInformation("Finish Loading Cache.");
@@ -65,6 +67,18 @@ public sealed class LoadCacheBackgroundService : BackgroundService
         {
             await productRepositoryCache.InsertAll(products, stoppingToken);
             return products;
+        }, e => e);
+    }
+
+    private static async Task LoadSells(IServiceScope scope, CancellationToken stoppingToken)
+    {
+        var repository = scope.ServiceProvider.GetService<ISellRepositoryDatabase>()!;
+        var repositoryCache = scope.ServiceProvider.GetService<ISellRepositoryCache>()!;
+        var result = await repository.Get(true, stoppingToken);
+        await result.MatchAsync<Results<FrozenSet<Sell>, BaseError>>(async items =>
+        {
+            await repositoryCache.InsertAll(items, stoppingToken);
+            return items;
         }, e => e);
     }
 }

@@ -1,4 +1,4 @@
-using CleanArchitectureSampleProject.Presentation.MinimalAPI;
+using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.BuildPresentation();

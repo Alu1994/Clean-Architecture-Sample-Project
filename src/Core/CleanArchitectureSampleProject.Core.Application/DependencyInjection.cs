@@ -9,6 +9,7 @@ public static class DependencyInjection
     {
         return services
             .AddScoped<IProductUseCases, ProductUseCases>()
-            .AddScoped<ICategoryUseCases, CategoryUseCases>();
+            .AddScoped<ICategoryUseCases, CategoryUseCases>()
+            .AddScoped<ISellUseCases, SellUseCases>();
     }
 }

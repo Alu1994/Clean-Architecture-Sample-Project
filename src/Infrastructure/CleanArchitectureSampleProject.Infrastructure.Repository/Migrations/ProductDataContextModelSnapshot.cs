@@ -22,14 +22,16 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities.Category", b =>
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -40,7 +42,7 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Product", b =>
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -50,7 +52,9 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -73,9 +77,64 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Product", b =>
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities.SellItem", b =>
                 {
-                    b.HasOne("CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities.Category", "Category")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("SellId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SellId");
+
+                    b.ToTable("SellItems");
+                });
+
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Sell", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("TotalValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sells");
+                });
+
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Product", b =>
+                {
+                    b.HasOne("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -84,9 +143,38 @@ namespace CleanArchitectureSampleProject.Repository.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("CleanArchitectureSampleProject.Domain.AggregateRoots.Products.Entities.Category", b =>
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities.SellItem", b =>
+                {
+                    b.HasOne("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Product", "Product")
+                        .WithMany("Items")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Sell", "Sell")
+                        .WithMany("Items")
+                        .HasForeignKey("SellId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Sell");
+                });
+
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Product", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Sell", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

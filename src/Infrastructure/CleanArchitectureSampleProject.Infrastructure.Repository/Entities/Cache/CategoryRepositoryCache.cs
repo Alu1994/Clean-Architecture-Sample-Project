@@ -2,6 +2,7 @@
 using CleanArchitectureSampleProject.CrossCuttingConcerns;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+using System.Collections.ObjectModel;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 
@@ -21,7 +22,7 @@ public sealed class CategoryRepositoryCache(IDistributedCache cache) : ICategory
         {
             string? cachedData = await _cache.GetStringAsync(cacheKey, cancellation);
             if (cachedData is null)
-                return Enumerable.Empty<Category>().ToFrozenSet();
+                return FrozenSet<Category>.Empty;
             return JsonConvert.DeserializeObject<List<Category>>(cachedData)!.ToFrozenSet();
         }
         catch (Exception ex)

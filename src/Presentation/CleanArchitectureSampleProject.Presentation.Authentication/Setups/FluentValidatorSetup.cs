@@ -1,19 +1,19 @@
-﻿using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
-using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
+﻿using CleanArchitectureSampleProject.Presentation.Authentication.Messages;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Results;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
+using System.Net;
 
-namespace CleanArchitectureSampleProject.Presentation.MinimalAPI;
+namespace CleanArchitectureSampleProject.Presentation.Authentication.Setups;
 
-public static class ValidatorExtensions
+public static class FluentValidatorSetup
 {
     public static IServiceCollection AddValidation(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
-        services.AddValidatorsFromAssemblyContaining<UpdateProductValidator>();        
-        services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
-        services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateUserRequestValidator>();
         services.AddFluentValidationAutoValidation(configuration =>
         {
             // Replace the default result factory with a custom implementation.

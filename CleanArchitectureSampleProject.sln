@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AllSolutionItems", "AllSolu
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config = src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\NLog.config
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Aspire.AppHost", "src\Aspire\CleanArchitectureSampleProject.Aspire.AppHost\CleanArchitectureSampleProject.Aspire.AppHost.csproj", "{6BB2CDD5-5D4B-4D71-B600-36757E955448}"
@@ -40,6 +41,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{18188F3D-6A0C-40E7-B7DE-939436B50716}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Infrastructure.Messaging", "src\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Messaging\CleanArchitectureSampleProject.Infrastructure.Messaging.csproj", "{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.Authentication", "src\Presentation\CleanArchitectureSampleProject.Presentation.Authentication\CleanArchitectureSampleProject.Presentation.Authentication.csproj", "{14AF6544-7137-446D-98C5-4BA9A1CE1E82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Infrastructure.Repository.Authentication", "src\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.csproj", "{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +100,14 @@ Global
 		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14AF6544-7137-446D-98C5-4BA9A1CE1E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14AF6544-7137-446D-98C5-4BA9A1CE1E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14AF6544-7137-446D-98C5-4BA9A1CE1E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14AF6544-7137-446D-98C5-4BA9A1CE1E82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +124,8 @@ Global
 		{7962E6C8-CC15-4544-8271-0AFE89F69A84} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
 		{118D9290-B5F7-4629-A675-F477A0AD39F2} = {40FB24A5-B349-4F56-A058-C7A8E755415A}
 		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638} = {18188F3D-6A0C-40E7-B7DE-939436B50716}
+		{14AF6544-7137-446D-98C5-4BA9A1CE1E82} = {86058926-AC8A-4E50-875F-CBD5C775377C}
+		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32} = {18188F3D-6A0C-40E7-B7DE-939436B50716}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B6EF806-3606-4DA6-9B36-307FFC99EE82}

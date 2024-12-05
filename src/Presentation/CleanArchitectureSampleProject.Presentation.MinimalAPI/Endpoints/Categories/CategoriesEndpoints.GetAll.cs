@@ -1,39 +1,26 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
-using CleanArchitectureSampleProject.Core.Application.UseCases;
-using System.Collections.Frozen;
+﻿using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
 public static partial class CategoriesEndpoints
 {
-    private static WebApplication MapGetAll(this WebApplication app)
+    private static RouteGroupBuilder MapGetAll(this RouteGroupBuilder app)
     {
-        app.MapGet($"/{Controller}", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CancellationToken cancellation) =>
+        app.MapGet("", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CancellationToken cancellation) =>
         {
             return await GetAll(logger, categoryUseCases, cancellation);
         })
-        .Produces<FrozenSet<CategoryOutput>>(Success, ContentType)
-        .Produces<ProblemDetails>(BadRequest, ContentType)
-        .WithConfigSummaryInfo("Get All Categories", TagName);
+        .Produces<FrozenSet<CategoryOutput>>(Success, DefaultContentType)
+        .Produces<ProblemDetails>(BadRequest, DefaultContentType)
+        .WithConfigSummaryInfo("Get All Categories", TagName)
+        .RequireAuthorization(CategoryCanReadPolicy);
+
         return app;
     }
 
     private static async Task<IResult> GetAll(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CancellationToken cancellation)
     {
-        const string errorTitle = "Error while getting all categories.";
-
         var result = await categoryUseCases.GetCategories(cancellation);
-        return result.Match(success => Results.Ok(success),
-            error =>
-            {
-                var errorMessage = logger.LogBaseError(error);
-                return Results.Problem(
-                    type: HttpStatusCode.BadRequest.ToString(),
-                    title: errorTitle,
-                    detail: errorMessage,
-                    statusCode: StatusCodes.Status400BadRequest
-                );
-            }
-        );
+        return result.ToOkOrErrorResult(logger, "Error while getting all categories.");
     }
 }
