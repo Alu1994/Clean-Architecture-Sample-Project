@@ -1,4 +1,7 @@
-﻿namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
+﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
+using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
+
+namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 
 public static partial class ProductsEndpoints
 {

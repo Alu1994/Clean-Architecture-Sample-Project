@@ -3,7 +3,7 @@ using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entitie
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
 using FluentValidation;
 
-namespace CleanArchitectureSampleProject.Core.Application.Inputs;
+namespace CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 
 public sealed class UpdateProductInput
 {

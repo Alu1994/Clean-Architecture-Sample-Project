@@ -1,5 +1,5 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Inputs;
-using CleanArchitectureSampleProject.Core.Application.Outputs;
+﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
+using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
