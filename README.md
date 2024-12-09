@@ -9,7 +9,7 @@ docker run -p 5050:80 --name pgadmin \
     -d dpage/pgadmin4
 
 ### PostgresDB	
-docker run --name default-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+docker run --name default-postgres-server -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=mypassword -e POSTGRES_DB=postgresDB -d postgres
 
 ### Initialize DB
 dotnet ef migrations add InitializeAuthDb --startup-project ..\..\Presentation\CleanArchitectureSampleProject.Presentation.Authentication
