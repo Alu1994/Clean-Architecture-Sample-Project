@@ -2,7 +2,7 @@
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
 using FluentValidation;
 
-namespace CleanArchitectureSampleProject.Core.Application.Inputs;
+namespace CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 
 public class CategoryInput
 {

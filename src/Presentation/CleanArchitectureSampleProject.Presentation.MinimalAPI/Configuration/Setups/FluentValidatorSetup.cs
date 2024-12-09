@@ -1,4 +1,5 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
+﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
+using CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

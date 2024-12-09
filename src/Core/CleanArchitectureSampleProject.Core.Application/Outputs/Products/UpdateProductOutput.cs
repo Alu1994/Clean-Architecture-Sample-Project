@@ -1,8 +1,8 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 
-namespace CleanArchitectureSampleProject.Core.Application.Outputs;
+namespace CleanArchitectureSampleProject.Core.Application.Outputs.Products;
 
-public sealed class GetProductOutput
+public sealed class UpdateProductOutput
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -12,14 +12,14 @@ public sealed class GetProductOutput
     public CategoryOutput Category { get; set; }
     public DateTime CreationDate { get; set; }
 
-    public GetProductOutput()
+    public UpdateProductOutput()
     {
 
     }
 
-    public static implicit operator GetProductOutput(Product product)
+    public static implicit operator UpdateProductOutput(Product product)
     {
-        return new GetProductOutput
+        return new UpdateProductOutput
         {
             Id = product.Id,
             Name = product.Name,
