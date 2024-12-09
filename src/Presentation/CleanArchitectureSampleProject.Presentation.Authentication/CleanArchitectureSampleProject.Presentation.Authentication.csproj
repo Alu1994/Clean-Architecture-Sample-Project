@@ -34,7 +34,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
-	  <ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.csproj" />
+	  <ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Auth.csproj" />
 	</ItemGroup>
 
 </Project>

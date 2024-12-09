@@ -44,7 +44,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.Authentication", "src\Presentation\CleanArchitectureSampleProject.Presentation.Authentication\CleanArchitectureSampleProject.Presentation.Authentication.csproj", "{14AF6544-7137-446D-98C5-4BA9A1CE1E82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Infrastructure.Repository.Authentication", "src\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication.csproj", "{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Infrastructure.Repository.Auth", "src\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Auth.csproj", "{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
