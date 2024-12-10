@@ -2,7 +2,7 @@
 
 namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
 
-public sealed class CreateProductEvent : DomainEventBase
+public sealed class UpdateProductEvent : DomainEventBase
 {
     public required Product Product { get; init; }
 }

@@ -37,7 +37,7 @@ public sealed class Sell : HasDomainEventsBase
     public Sell Create()
     {
         // Send Update Stock Event
-        RegisterDomainEvent(new CreateSellEvent(this));
+        //RegisterDomainEvent(new CreateSellEvent(this));
         return this;
     }
 

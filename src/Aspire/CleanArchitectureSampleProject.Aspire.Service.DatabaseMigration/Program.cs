@@ -4,13 +4,13 @@ using CleanArchitectureSampleProject.Service.DatabaseMigration;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.BuildRepository().BuildAuthRepository();
+builder.BuildRepositoryMigration().BuildAuthRepository();
 
 builder.AddServiceDefaults();
 
 builder.Services.AddHostedService<Worker>();
 
-builder.Services.AddRepositoryLayer().AddAuthRepositoryLayer();
+builder.Services.AddAuthRepositoryLayer();
 
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing.AddSource(Worker.ActivityName));

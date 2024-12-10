@@ -11,6 +11,16 @@ namespace CleanArchitectureSampleProject.Infrastructure.Repository;
 
 public static class DependencyInjection
 {
+    public static IHostApplicationBuilder BuildRepositoryMigration(this IHostApplicationBuilder builder)
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.AddNpgsqlDbContext<ProductDataContextMigration>(Services.PostgresDatabaseName);
+        }
+
+        return builder;
+    }
+
     public static IHostApplicationBuilder BuildRepository(this IHostApplicationBuilder builder)
     {
         if (builder.Environment.IsDevelopment())
@@ -27,8 +37,6 @@ public static class DependencyInjection
         {
             // Is not local env (Not .NET Aspire)
         }
-
-        builder.Services.AddInfrastructureMessagingLayer(builder);
 
         return builder;
     }

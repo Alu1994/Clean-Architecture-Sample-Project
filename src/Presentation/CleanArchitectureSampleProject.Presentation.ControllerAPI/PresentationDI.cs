@@ -1,6 +1,7 @@
 ﻿using CleanArchitectureSampleProject.Core.Application;
 using CleanArchitectureSampleProject.Core.Domain;
 using CleanArchitectureSampleProject.Infrastructure.Repository;
+using MassTransit;
 
 namespace CleanArchitectureSampleProject.Presentation.ControllerAPI;
 
@@ -17,6 +18,16 @@ public static class PresentationDI
         services.AddDomainLayer();
         services.AddApplicationLayer();
         services.AddRepositoryLayer();
+
+        services.AddMassTransit(x =>
+        {
+            x.AddConsumers(typeof(Program).Assembly);
+            x.UsingInMemory((context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+
         //services.AddCacheAutoRefresh();
         return services;
     }

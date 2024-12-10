@@ -25,19 +25,6 @@ public sealed class Product : HasDomainEventsBase
         CreationDate = DateTime.UtcNow;
     }
 
-    private Product(Category category) : this()
-    {
-        ArgumentNullException.ThrowIfNull(category);
-        SetCategory(category);
-    }
-
-    private Product WithCreationDate(DateTime? creationDate)
-    {
-        if (creationDate is not null)
-            CreationDate = creationDate.Value;
-        return this;
-    }
-
     public static Product MapToProduct(string name, string description, decimal? value, int? quantity, Category? category, Guid? id = null)
     {
         var product = new Product
@@ -65,7 +52,7 @@ public sealed class Product : HasDomainEventsBase
 
     public Product Create()
     {
-        RegisterDomainEvent(new CreateProductEvent(this));
+        RegisterDomainEvent(new CreateProductEvent { Product = new Product { Id = this.Id, Name = this.Name } });
         return this;
     }
 
@@ -77,21 +64,13 @@ public sealed class Product : HasDomainEventsBase
         Value = newProduct.Value;
         Quantity = newProduct.Quantity;
         CategoryId = newProduct.CategoryId;        
-        RegisterDomainEvent(new UpdateProductEvent(this));
+        RegisterDomainEvent(new UpdateProductEvent { Product = new Product { Id = this.Id, Name = this.Name } });
         return this;
     }
 
     public Product WithCategory(Category category)
     {
         SetCategory(category);
-        return this;
-    }
-
-    private Product WithId(Guid id)
-    {
-        Id = id;
-
-        RegisterDomainEvent(new UpdateProductEvent(this));
         return this;
     }
 }

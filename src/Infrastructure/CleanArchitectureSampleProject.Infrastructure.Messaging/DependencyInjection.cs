@@ -1,4 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Messaging;
+﻿using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
@@ -7,16 +7,28 @@ namespace CleanArchitectureSampleProject.Infrastructure.Messaging;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureMessagingLayer(this IServiceCollection services, IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder BuildMessaging(this IHostApplicationBuilder builder)
     {
         builder.AddAzureQueueClient(Services.AzureQueueConnection);
-        services.AddKeyedSingleton<IMessagingHandler, ProductCreatedMessageHandler>("ProductCreatedMessage");
-        services.AddSingleton<List<IMessagingHandler>>(x =>
+        return builder;
+    }
+
+    public static IServiceCollection AddMessagingLayer(this IServiceCollection services)
+    {
+        services.AddMassTransit(x =>
         {
-            Thread.Sleep(10000);
-            var productMessageHandler = x.GetKeyedService<IMessagingHandler>("ProductCreatedMessage");
-            return [productMessageHandler];
+            x.AddEvents();
+            x.UsingInMemory((context, cfg) =>
+            {
+                cfg.ConfigureEndpoints(context);
+            });
         });
+
         return services;
+    }
+
+    public static void AddEvents(this IBusRegistrationConfigurator busRegistration)
+    {
+        busRegistration.AddConsumer(typeof(ProductCreatedMessageMassTransitHandler));
     }
 }

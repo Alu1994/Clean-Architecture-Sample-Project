@@ -11,7 +11,7 @@ var queue = storage.AddQueues(Services.AzureQueueConnection);
 // Adds Azure Queue
 
 // PostgresDB
-var dbServer = builder.AddPostgres(Services.PostgresServerName)
+var dbServer = builder.AddPostgres(Services.PostgresServerName, port: 5433)
     .WithLifetime(ContainerLifetime.Persistent);
 var db = dbServer.AddDatabase(Services.PostgresDatabaseName);
 dbServer.WithDataVolume(Services.PostgresContainerVolume)
@@ -19,7 +19,8 @@ dbServer.WithDataVolume(Services.PostgresContainerVolume)
 // PostgresDB
 
 // Auth PostgresDB
-var dbAuthServer = builder.AddPostgres(Services.PostgresServerAuthenticationName);
+var dbAuthServer = builder.AddPostgres(Services.PostgresServerAuthenticationName, port: 5434)
+    .WithLifetime(ContainerLifetime.Persistent);
 var dbAuth = dbAuthServer.AddDatabase(Services.PostgresDatabaseAuthenticationName);
 dbAuthServer.WithDataVolume(Services.PostgresContainerAuthenticationVolume)
     .WithPgAdmin();
