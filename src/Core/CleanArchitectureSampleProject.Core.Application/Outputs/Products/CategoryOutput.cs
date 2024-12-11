@@ -13,11 +13,6 @@ public sealed class CategoryOutput
 
     }
 
-    public Results<Category, BaseError> ToCategory()
-    {
-        return Category.Create(Id, CategoryName!, CreationDate);
-    }
-
     public static implicit operator CategoryOutput(Category category)
     {
         return new CategoryOutput

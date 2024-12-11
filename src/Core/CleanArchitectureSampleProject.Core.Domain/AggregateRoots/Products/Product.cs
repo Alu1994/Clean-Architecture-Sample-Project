@@ -19,7 +19,7 @@ public sealed class Product : HasDomainEventsBase
     public ICollection<SellItem> Items { get; set; } = new List<SellItem>();
     // ==== Navigation Properties ====
 
-    public Product()
+    internal Product()
     {
         Id = Guid.NewGuid();
         CreationDate = DateTime.UtcNow;
@@ -38,39 +38,47 @@ public sealed class Product : HasDomainEventsBase
         if (id is not null && id != Guid.Empty) product.Id = id.Value;
         if (category is not null)
         {
-            product.SetCategory(category);
+            product.WithCategory(category);
         }
 
         return product;
     }
 
-    public void SetCategory(Category category)
+    public Product Create(Category category)
     {
-        Category = category;
-        CategoryId = category.Id;
-    }
-
-    public Product Create()
-    {
-        RegisterDomainEvent(new CreateProductEvent { Product = new Product { Id = this.Id, Name = this.Name } });
+        WithCategory(category);
+        RegisterDomainEvent(new CreateProductEvent { ProductId = Id });
         return this;
     }
 
-    public Product Update(Product newProduct)
+    public Product Update(Product oldProduct, Category category)
     {
-        Id = newProduct.Id;
-        Name = newProduct.Name;
-        Description = newProduct.Description;
-        Value = newProduct.Value;
-        Quantity = newProduct.Quantity;
-        CategoryId = newProduct.CategoryId;        
-        RegisterDomainEvent(new UpdateProductEvent { Product = new Product { Id = this.Id, Name = this.Name } });
+        if (Id == Guid.Empty)
+            Id = oldProduct.Id;
+
+        if (string.IsNullOrWhiteSpace(Name))
+            Name = oldProduct.Name;
+
+        if (string.IsNullOrWhiteSpace(Description))
+            Description = oldProduct.Description;
+
+        if (Value is 0M)
+            Value = oldProduct.Value;
+
+        if (Quantity < 0M)
+            Quantity = oldProduct.Quantity;
+
+        WithCategory(category);
+        CreationDate = oldProduct.CreationDate;
+
+        RegisterDomainEvent(new UpdateProductEvent { ProductId = Id });
         return this;
     }
 
     public Product WithCategory(Category category)
     {
-        SetCategory(category);
+        Category = category;
+        CategoryId = category.Id;
         return this;
     }
 }

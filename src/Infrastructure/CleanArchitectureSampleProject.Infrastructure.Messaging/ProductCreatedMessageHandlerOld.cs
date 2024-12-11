@@ -5,12 +5,12 @@ using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigur
 
 namespace CleanArchitectureSampleProject.Infrastructure.Messaging;
 
-public sealed class ProductCreatedMessageHandler
+public sealed class ProductCreatedMessageHandlerOld
 {
     private readonly QueueServiceClient _queueServiceClient;
     private readonly QueueClient _queueClient;
 
-    public ProductCreatedMessageHandler(QueueServiceClient queueServiceClient)
+    public ProductCreatedMessageHandlerOld(QueueServiceClient queueServiceClient)
     {
         _queueServiceClient = queueServiceClient;
         _queueClient = _queueServiceClient.GetQueueClient(Services.AzureQueueName);

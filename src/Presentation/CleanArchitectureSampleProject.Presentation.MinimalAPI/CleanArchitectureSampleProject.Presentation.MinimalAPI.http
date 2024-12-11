@@ -1,6 +1,33 @@
-@CleanArchitectureSampleProject.Presentation.MinimalAPI_HostAddress = http://localhost:5020
+@CleanArchitectureSampleProject.Presentation.Auth_HostAddress = https://localhost:7276
+@CleanArchitectureSampleProject.Presentation.MinimalAPI_HostAddress = https://localhost:7435
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0MTQ5YTQwNS1lOTFmLTQ3NDMtOGVjMy1mMjgzOGZlZmE0MzEiLCJzdWIiOiJzdHJpbmciLCJlbWFpbCI6InN0cmluZyIsImNhdGVnb3JpZXNjYW5yZWFkY2xhaW0iOiJ0cnVlIiwiY2F0ZWdvcmllc2NhbndyaXRlY2xhaW0iOiJ0cnVlIiwiY2F0ZWdvcmllc2NhbmRlbGV0ZWNsYWltIjoidHJ1ZSIsImNhdGVnb3J5Y2FucmVhZGNsYWltIjoidHJ1ZSIsImNhdGVnb3J5Y2Fud3JpdGVjbGFpbSI6InRydWUiLCJjYXRlZ29yeWNhbmRlbGV0ZWNsYWltIjoidHJ1ZSIsInByb2R1Y3RjYW5yZWFkY2xhaW0iOiJ0cnVlIiwicHJvZHVjdGNhbndyaXRlY2xhaW0iOiJ0cnVlIiwicHJvZHVjdGNhbmRlbGV0ZWNsYWltIjoidHJ1ZSIsInNlbGxjYW5yZWFkY2xhaW0iOiJ0cnVlIiwic2VsbGNhbndyaXRlY2xhaW0iOiJ0cnVlIiwic2VsbGNhbmRlbGV0ZWNsYWltIjoidHJ1ZSIsIm5iZiI6MTczMzg4OTI0NSwiZXhwIjoxNzMzODkyODQwLCJpYXQiOjE3MzM4ODkyNDAsImlzcyI6Imh0dHBzOi8vaWQuY2xlYW5hcmNoc2FtcGxlcHJvamVjdC5jb20uYnIiLCJhdWQiOiJodHRwczovL2NsZWFuYXJjaHNhbXBsZXByb2plY3QuY29tLmJyIn0.lzHsbTmTy1CrH3pItg6-pbkB2i3YqfUoiGXR2oKejwU
 
-GET {{CleanArchitectureSampleProject.Presentation.MinimalAPI_HostAddress}}/weatherforecast/
+POST {{CleanArchitectureSampleProject.Presentation.Auth_HostAddress}}/login
+Content-Type: application/json
+
+{
+  "email": "string",
+  "password": "string",
+  "twoFactorCode": "string",
+  "twoFactorRecoveryCode": "string"
+}
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.MinimalAPI_HostAddress}}/category
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.MinimalAPI_HostAddress}}/product
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.MinimalAPI_HostAddress}}/sell
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###

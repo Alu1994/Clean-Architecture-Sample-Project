@@ -29,6 +29,7 @@ public static class DependencyInjection
 
     public static void AddEvents(this IBusRegistrationConfigurator busRegistration)
     {
-        busRegistration.AddConsumer(typeof(ProductCreatedMessageMassTransitHandler));
+        busRegistration.AddConsumer(typeof(CreatedProductMessageHandler));
+        busRegistration.AddConsumer(typeof(UpdatedProductMessageHandler));
     }
 }

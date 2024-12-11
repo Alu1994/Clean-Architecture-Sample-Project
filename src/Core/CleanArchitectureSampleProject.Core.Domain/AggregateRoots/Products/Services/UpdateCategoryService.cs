@@ -35,16 +35,14 @@ internal class UpdateCategoryService : IUpdateCategoryService
 
     private async Task<Results<Category, BaseError>> UpdateCatetory(Category categoryInput, Category oldCategory, CancellationToken cancellation)
     {
-        var validationResult = categoryInput.Validate();
-        return await validationResult.MatchAsync<Results<Category, BaseError>>(
-            async newCategory =>
-            {
-                oldCategory.Update(newCategory);
-                var result = await _categoryRepository.Update(oldCategory, cancellation);
-                if (result != ValidationResult.Success)
-                    return new BaseError(result.ErrorMessage!);
-                return oldCategory;
-            },
-            updateError => updateError);
+        var categoryGetResult = await _categoryRepository.GetByName(categoryInput.Name);
+        if (categoryGetResult.State is ResultStates.Error) return categoryGetResult.Error!;
+        if (categoryGetResult.IsSuccess && categoryInput.Id != categoryGetResult.ToSuccess().Id) return new BaseError($"Category '{categoryInput.Name}' already exists.");
+
+        oldCategory.Update(categoryInput);
+        var result = await _categoryRepository.Update(oldCategory, cancellation);
+        if (result != ValidationResult.Success)
+            return new BaseError(result.ErrorMessage!);
+        return oldCategory;
     }
 }
