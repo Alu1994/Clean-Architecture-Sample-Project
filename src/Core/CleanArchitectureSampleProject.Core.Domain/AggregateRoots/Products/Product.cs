@@ -71,7 +71,7 @@ public sealed class Product : HasDomainEventsBase
         WithCategory(category);
         CreationDate = oldProduct.CreationDate;
 
-        RegisterDomainEvent(new UpdateProductEvent { ProductId = Id });
+        RegisterDomainEvent(new UpdateProductEvent { ProductId = Id, Quantity = Quantity });
         return this;
     }
 

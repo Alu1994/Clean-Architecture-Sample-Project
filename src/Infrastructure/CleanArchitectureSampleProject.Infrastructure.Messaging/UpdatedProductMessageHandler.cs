@@ -25,7 +25,7 @@ public sealed class UpdatedProductMessageHandler : IConsumer<UpdateProductEvent>
     {
         _logger.LogInformation("{Event} was fired.", nameof(UpdateProductEvent));
         await _queueClient.CreateIfNotExistsAsync();
-        var jsonMessage = Json.SerializeWithoutReferenceLoop(context.Message.ProductId);
+        var jsonMessage = Json.SerializeWithoutReferenceLoop(new SerializeMessage<UpdateProductEvent>(context.Message));
         await _queueClient.SendMessageAsync(jsonMessage);
     }
 }

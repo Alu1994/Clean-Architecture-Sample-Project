@@ -26,7 +26,7 @@ dbAuthServer.WithDataVolume(Services.PostgresContainerAuthenticationVolume)
     .WithPgAdmin();
 // Auth PostgresDB
 
-var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigrator)
+var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigratorApp)
     .WithReference(dbServer)
     .WithReference(dbAuthServer)
     .WithReference(dbAuth)
@@ -67,6 +67,12 @@ builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames
     .WithExternalHttpEndpoints()
     .WithReference(redis)
     .WaitFor(redis)
+    .WithReference(minimalApi)
+    .WaitFor(minimalApi);
+
+builder.AddProject<CleanArchitectureSampleProject_Presentation_Worker>(ProjectNames.MessageWorkerApp)
+    .WithReference(queue)
+    .WaitFor(queue)
     .WithReference(minimalApi)
     .WaitFor(minimalApi);
 

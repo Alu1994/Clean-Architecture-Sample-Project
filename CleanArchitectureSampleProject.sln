@@ -46,6 +46,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Infrastructure.Repository.Auth", "src\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Auth.csproj", "{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitectureSampleProject.Presentation.Worker", "src\Presentation\CleanArchitectureSampleProject.Presentation.Worker\CleanArchitectureSampleProject.Presentation.Worker.csproj", "{5F947666-0C06-46FD-B728-A85971809CDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F947666-0C06-46FD-B728-A85971809CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F947666-0C06-46FD-B728-A85971809CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F947666-0C06-46FD-B728-A85971809CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F947666-0C06-46FD-B728-A85971809CDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,6 +132,7 @@ Global
 		{9B78AE18-ACBF-45C3-A7A3-EE79DF432638} = {18188F3D-6A0C-40E7-B7DE-939436B50716}
 		{14AF6544-7137-446D-98C5-4BA9A1CE1E82} = {86058926-AC8A-4E50-875F-CBD5C775377C}
 		{9BCF9A43-49F1-457D-9CEA-0D1554CCFA32} = {18188F3D-6A0C-40E7-B7DE-939436B50716}
+		{5F947666-0C06-46FD-B728-A85971809CDE} = {86058926-AC8A-4E50-875F-CBD5C775377C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B6EF806-3606-4DA6-9B36-307FFC99EE82}

@@ -8,4 +8,5 @@ public sealed class CreateProductEvent : DomainEventBase
 public sealed class UpdateProductEvent : DomainEventBase
 {
     public required Guid ProductId { get; init; }
+    public required int Quantity { get; init; }
 }

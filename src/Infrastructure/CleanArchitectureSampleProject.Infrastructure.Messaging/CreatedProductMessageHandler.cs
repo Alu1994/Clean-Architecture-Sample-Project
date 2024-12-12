@@ -25,7 +25,7 @@ public sealed class CreatedProductMessageHandler : IConsumer<CreateProductEvent>
     {
         _logger.LogInformation("{Event} was fired.", nameof(CreateProductEvent));
         await _queueClient.CreateIfNotExistsAsync();
-        var jsonMessage = Json.SerializeWithoutReferenceLoop(context.Message.ProductId);
+        var jsonMessage = Json.SerializeWithoutReferenceLoop(new SerializeMessage<CreateProductEvent>(context.Message));
         await _queueClient.SendMessageAsync(jsonMessage);
     }
 }
