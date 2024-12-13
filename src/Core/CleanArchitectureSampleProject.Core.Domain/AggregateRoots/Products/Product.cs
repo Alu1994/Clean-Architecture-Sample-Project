@@ -71,7 +71,7 @@ public sealed class Product : HasDomainEventsBase
         WithCategory(category);
         CreationDate = oldProduct.CreationDate;
 
-        RegisterDomainEvent(new UpdateProductEvent { ProductId = Id, Quantity = Quantity });
+        RegisterDomainEvent((UpdateProductEvent)this);
         return this;
     }
 
@@ -80,5 +80,10 @@ public sealed class Product : HasDomainEventsBase
         Category = category;
         CategoryId = category.Id;
         return this;
+    }
+
+    public void SubtractFromStock(int quantity)
+    {
+        Quantity -= quantity;
     }
 }

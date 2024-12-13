@@ -1,8 +1,9 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
+using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
 
 namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities;
 
-public sealed class SellItem
+public sealed class SellItem : HasDomainEventsBase
 {
     public Guid Id { get; set; }
     public Guid SellId { get; set; }
@@ -16,7 +17,7 @@ public sealed class SellItem
     public Product Product { get; set; }
     // ==== Navigation Properties ====
 
-    public static SellItem MapToSellItem(Guid productId, Guid sellId, int quantity, decimal value = 0, Guid? id = null)
+    public static SellItem ToSellItem(Guid productId, Guid sellId, int quantity, decimal value = 0, Guid? id = null)
     {
         var sellItem = new SellItem
         {
@@ -29,9 +30,33 @@ public sealed class SellItem
         return sellItem;
     }
 
-    public SellItem UpdateValue(decimal value)
+    public SellItem Create(Product product)
     {
-        Value = value;
+        return UpdateValueBy(product);
+    }
+
+    internal decimal Update(Product? product)
+    {
+        if (product is null) return 0M;
+        UpdateValueBy(product);
+        return Value * Quantity;
+    }
+
+    internal decimal Update(SellItem newItem, Product? product)
+    {
+        decimal oldTotalValue = Quantity * Value;
+        Quantity = newItem.Quantity;
+        Value = newItem.Value;
+        decimal result = Update(product) - oldTotalValue;
+        return result;
+    }
+
+    internal decimal TotalValue() => Value * Quantity;
+
+    private SellItem UpdateValueBy(Product product)
+    {
+        if (Value <= 0M)
+            Value = product.Value;
         return this;
     }
 }

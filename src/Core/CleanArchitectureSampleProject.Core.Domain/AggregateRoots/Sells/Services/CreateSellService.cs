@@ -25,51 +25,14 @@ public sealed class CreateSellService : ICreateSellService
         var validationResult = _validator.Validate(sell);
         if (validationResult.IsValid is false) return new ErrorList(validationResult);
 
-        await UpdateValues(sell, cancellation);
-        sell.Create();
+        var products = await _productRepository.Get(cancellation);
+        var createResult = sell.Create(products.Success!);
 
-        var creationResult = await _sellRepository.Insert(sell, cancellation);
-        if (creationResult != ValidationResult.Success) return new ErrorList(creationResult.ErrorMessage!);
+        if (createResult.IsFail) return createResult.Error!;
+
+        var result = await _sellRepository.Insert(sell, cancellation);
+        if (result != ValidationResult.Success) return new ErrorList(result.ErrorMessage!);
 
         return sell;
-    }
-
-    //private async Task UpdateValues(Sell sell, CancellationToken cancellation)
-    //{
-    //    var products = await _productRepository.Get(cancellation);
-    //    var items = products.Success!.Where(x => sell.Items.Select(x2 => x2.ProductId).Contains(x.Id));
-    //    var totalValue = 0M;
-    //    foreach (var i in items)
-    //    {
-    //        var sellItem = sell.Items.FirstOrDefault(x => x.ProductId == i.Id);
-    //        if (sellItem is null) continue;
-    //        sellItem.UpdateValue(i.Value);
-    //        totalValue += i.Value * sellItem.Quantity;
-    //    }
-
-    //    sell.UpdateTotalValue(totalValue);
-    //}
-
-    private async Task UpdateValues(Sell sell, CancellationToken cancellation)
-    {
-        var products = await _productRepository.Get(cancellation);
-        var productItems = products.Success!
-            .Where(product =>
-                sell.Items
-                    .Select(sellItem => sellItem.ProductId)
-                    .Contains(product.Id));
-
-        var totalValue = 0M;
-
-        foreach (var item in sell.Items)
-        {
-            var productItem = productItems.First(x => item.ProductId == x.Id);
-            if (productItem is null) continue;
-            if (item is { Value: <= 0 })
-                item.UpdateValue(productItem.Value);
-            totalValue += item.Value * item.Quantity;
-        }
-
-        sell.UpdateTotalValue(totalValue);
     }
 }

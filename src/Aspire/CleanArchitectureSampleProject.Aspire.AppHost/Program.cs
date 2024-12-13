@@ -71,6 +71,10 @@ builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames
     .WaitFor(minimalApi);
 
 builder.AddProject<CleanArchitectureSampleProject_Presentation_Worker>(ProjectNames.MessageWorkerApp)
+    .WithReference(db)
+    .WaitFor(db)
+    .WithReference(redis)
+    .WaitFor(redis)
     .WithReference(queue)
     .WaitFor(queue)
     .WithReference(minimalApi)

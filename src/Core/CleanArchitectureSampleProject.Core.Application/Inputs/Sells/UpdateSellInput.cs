@@ -2,6 +2,7 @@
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Validators;
 using FluentValidation;
+using System.Collections.ObjectModel;
 
 namespace CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
 
@@ -9,26 +10,26 @@ public sealed class UpdateSellInput
 {
     public Guid Id { get; set; }
     public string Description { get; set; }
-    public List<UpdateSellItemInput> Items { get; set; }
+    public Collection<UpdateSellItemInput> Items { get; set; }
 
-    public Sell ToSell(ICollection<SellItem>? sellItems = null)
+    public Sell ToSell()
     {
-        var sell = Sell.MapToSell(Description, Id);
-        sellItems ??= ToNewSellItems(Items, Id);
+        var sell = Sell.ToSell(Description, Id);
+        var sellItems = ToNewSellItems(Items, Id);
         sell.SetItems(sellItems!);
         return sell;
     }
 
-    public static List<SellItem> ToNewSellItems(List<UpdateSellItemInput>? items, Guid id)
+    public static Collection<SellItem> ToNewSellItems(Collection<UpdateSellItemInput>? items, Guid id)
     {
         if (items is null or { Count: 0 }) return [];
 
-        List<SellItem> list = [];
+        Collection<SellItem> sellItems = [];
         foreach (var item in items)
         {
-            list.Add(new UpdateSellItemInput(id, item));
+            sellItems.Add(item.ToSellItem(id));
         }
-        return list;
+        return sellItems;
     }
 }
 
@@ -37,6 +38,6 @@ public sealed class UpdateSellValidator : AbstractValidator<UpdateSellInput>
     public UpdateSellValidator()
     {
         RuleFor(sell => sell.Id).NotEmpty();
-        RuleFor(sell => sell.ToSell(null)).SetValidator(new SellValidator());
+        RuleFor(sell => sell.ToSell()).SetValidator(new SellValidator());
     }
 }

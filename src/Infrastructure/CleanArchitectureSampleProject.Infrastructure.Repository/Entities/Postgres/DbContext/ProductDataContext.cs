@@ -22,6 +22,13 @@ public partial class ProductDataContext : DbContext
         return result;
     }
 
+    public async override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        int result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken).ConfigureAwait(false);
+        await DispatchDomainEvents(cancellationToken);
+        return result;
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
