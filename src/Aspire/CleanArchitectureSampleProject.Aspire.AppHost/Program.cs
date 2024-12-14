@@ -63,6 +63,17 @@ var minimalApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_
     .WaitFor(queue)
     .WaitFor(authenticationApi);
 
+var fastEndpointsApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_FastEndpoints>(ProjectNames.FastEndpointsApi)
+    .WithReference(db)
+    .WithReference(redis)
+    .WithReference(queue)
+    .WithReference(authenticationApi)
+    .WaitFor(db)
+    .WaitFor(redis)
+    .WaitFor(dbMigrator)
+    .WaitFor(queue)
+    .WaitFor(authenticationApi);
+
 builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames.BlazorApp)
     .WithExternalHttpEndpoints()
     .WithReference(redis)
@@ -78,7 +89,9 @@ builder.AddProject<CleanArchitectureSampleProject_Presentation_Worker>(ProjectNa
     .WithReference(queue)
     .WaitFor(queue)
     .WithReference(minimalApi)
-    .WaitFor(minimalApi);
+    .WaitFor(minimalApi)
+    .WithReference(fastEndpointsApi)
+    .WaitFor(fastEndpointsApi);
 
 builder.Build().Run();
 

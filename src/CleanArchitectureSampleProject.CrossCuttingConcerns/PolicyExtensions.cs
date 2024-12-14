@@ -16,6 +16,7 @@ public static class PolicyExtensions
     public const string SellCanWritePolicy = "SellCanWritePolicy";
     public const string SellCanDeletePolicy = "SellCanDeletePolicy";
 
+    private const string ExpectedAccess = "true";
     private const byte TokenDelayAccess = 5;
     private const byte DefaultExpiresIn = 60;
     private const string ValidAudience = "https://cleanarchsampleproject.com.br";
@@ -33,6 +34,26 @@ public static class PolicyExtensions
         [SellCanReadPolicy] = "sellcanreadclaim",
         [SellCanWritePolicy] = "sellcanwriteclaim",
         [SellCanDeletePolicy] = "sellcandeleteclaim"
+    };
+
+    public static AuthClaim GetAuthClaim(string policyName)
+    {
+        var hasClaim = AuthPolicies.TryGetValue(policyName, out AuthClaim claim);
+        if (hasClaim is false) return default;
+        return claim;
+    }
+
+    public static IReadOnlyDictionary<string, AuthClaim> AuthPolicies => new Dictionary<string, AuthClaim>
+    {
+        [CategoryCanReadPolicy] = new AuthClaim("categorycanreadclaim", [ExpectedAccess]),
+        [CategoryCanWritePolicy] = new AuthClaim("categorycanwriteclaim", [ExpectedAccess]),
+        [CategoryCanDeletePolicy] = new AuthClaim("categorycandeleteclaim", [ExpectedAccess]),
+        [ProductCanReadPolicy] = new AuthClaim("productcanreadclaim", [ExpectedAccess]),
+        [ProductCanWritePolicy] = new AuthClaim("productcanwriteclaim", [ExpectedAccess]),
+        [ProductCanDeletePolicy] = new AuthClaim("productcandeleteclaim", [ExpectedAccess]),
+        [SellCanReadPolicy] = new AuthClaim("sellcanreadclaim", [ExpectedAccess]),
+        [SellCanWritePolicy] = new AuthClaim("sellcanwriteclaim", [ExpectedAccess]),
+        [SellCanDeletePolicy] = new AuthClaim("sellcandeleteclaim", [ExpectedAccess])
     };
 
     public static (string, byte, SecurityToken) ToSecurityTokenDescriptor(this List<Claim> claims, byte expiresIn = DefaultExpiresIn)
@@ -70,5 +91,18 @@ public static class PolicyExtensions
         };
 
         return tokenValidationParameters;
+    }
+}
+
+public record struct AuthClaim(string Name, IEnumerable<string> AcceptedValues)
+{
+    public static implicit operator (string, IEnumerable<string>)(AuthClaim value)
+    {
+        return (value.Name, value.AcceptedValues);
+    }
+
+    public static implicit operator AuthClaim((string, IEnumerable<string>) value)
+    {
+        return new AuthClaim(value.Item1, value.Item2);
     }
 }
