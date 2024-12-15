@@ -5,7 +5,7 @@ namespace CleanArchitectureSampleProject.Core.Application.Outputs.Products;
 public sealed class CategoryOutput
 {
     public Guid? Id { get; set; }
-    public string? CategoryName { get; set; }
+    public string? Name { get; set; }
     public DateTime CreationDate { get; set; }
 
     public CategoryOutput()
@@ -18,7 +18,7 @@ public sealed class CategoryOutput
         return new CategoryOutput
         {
             Id = category.Id,
-            CategoryName = category.Name,
+            Name = category.Name,
             CreationDate = category.CreationDate
         };
     }

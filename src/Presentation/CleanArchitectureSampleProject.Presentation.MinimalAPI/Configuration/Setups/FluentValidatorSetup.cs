@@ -10,13 +10,12 @@ public static class FluentValidatorSetup
 {
     public static IServiceCollection AddValidation(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
-        services.AddValidatorsFromAssemblyContaining<UpdateProductValidator>();
-        services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
-        //services.AddValidatorsFromAssemblyContaining<CreateCategoryInputValidator>();
-        services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
-
-        services.AddValidatorsFromAssemblyContaining<CreateSellValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateProductInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateProductInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateCategoryInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateCategoryInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateSellInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateSellInputValidator>();
 
         services.AddFluentValidationAutoValidation(configuration =>
         {

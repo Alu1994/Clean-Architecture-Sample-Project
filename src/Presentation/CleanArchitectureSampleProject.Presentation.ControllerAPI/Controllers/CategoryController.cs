@@ -65,7 +65,7 @@ namespace CleanArchitectureSampleProject.Presentation.ControllerAPI.Controllers
         }
 
         [HttpPost(Name = "CreateCategory")]
-        public async Task<IResult> Post(CategoryInput category, CancellationToken cancellation)
+        public async Task<IResult> Post(CreateCategoryInput category, CancellationToken cancellation)
         {
             const string errorTitleMessage = "Error while creating new category.";
 

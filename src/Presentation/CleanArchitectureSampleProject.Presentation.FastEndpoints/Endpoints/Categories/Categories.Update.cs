@@ -4,32 +4,32 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Categories;
 
-public sealed class CreateCategories(ILogger<CreateCategories> logger, ICategoryUseCases categoryUseCases) : 
-    Endpoint<CreateCategoryInput, Results<Created<CategoryOutput>, ProblemHttpResult>>
+public sealed class UpdateCategories(ILogger<UpdateCategories> logger, ICategoryUseCases categoryUseCases) :
+    Endpoint<UpdateCategoryInput, Results<Ok<CategoryOutput>, ProblemHttpResult>>
 {
-    private readonly ILogger<CreateCategories> _logger = logger;
+    private readonly ILogger<UpdateCategories> _logger = logger;
     private readonly ICategoryUseCases _categoryUseCases = categoryUseCases;
 
     public override void Configure()
     {
-        Post("/categories");
+        Put("/categories");
         Description(b => b
-            .Accepts<CreateCategoryInput>(false, "application/json")
-            .Produces<CategoryOutput>(StatusCodes.Status201Created, "application/json")
+            .Accepts<UpdateCategoryInput>(false, "application/json")
+            .Produces<CategoryOutput>(StatusCodes.Status200OK, "application/json")
             .ProducesProblemDetails(StatusCodes.Status400BadRequest, "application/json")
             .Produces<UnauthorizedResponse>(StatusCodes.Status401Unauthorized, "application/json")
             .Produces<ForbiddenResponse>(StatusCodes.Status403Forbidden, "application/json"));
 
         Policy(x => x.SetPolicyClaims(CategoryCanWritePolicy));
-        Validator<CreateCategoryInputValidator>();
+        Validator<UpdateCategoryInputValidator>();
     }
 
-    public override async Task<Results<Created<CategoryOutput>, ProblemHttpResult>> ExecuteAsync(CreateCategoryInput category, CancellationToken cancellation)
+    public override async Task<Results<Ok<CategoryOutput>, ProblemHttpResult>> ExecuteAsync(UpdateCategoryInput category, CancellationToken cancellation)
     {
-        var result = await _categoryUseCases.CreateCategory(category, cancellation);
+        var result = await _categoryUseCases.UpdateCategory(category, cancellation);
 
         if (result.IsSuccess)
-            return TypedResults.Created("", result.Success!);
+            return TypedResults.Ok(result.Success!);
 
         _logger.LogError(message: result.Error!.Message);
         return TypedResults.Problem(

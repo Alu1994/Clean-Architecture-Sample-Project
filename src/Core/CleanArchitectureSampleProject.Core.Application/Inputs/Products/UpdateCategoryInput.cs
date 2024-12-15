@@ -4,12 +4,12 @@ using FluentValidation;
 
 namespace CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 
-public class CategoryInput
+public sealed class UpdateCategoryInput
 {
     public Guid? Id { get; set; }
-    public string? CategoryName { get; set; }
+    public string? Name { get; set; }
 
-    public CategoryInput()
+    public UpdateCategoryInput()
     {
 
     }
@@ -17,28 +17,18 @@ public class CategoryInput
     public void SetCategory(Category category)
     {
         Id = category.Id;
-        CategoryName = category.Name;
+        Name = category.Name;
     }
 
     public Category ToCategory()
     {
-        return Category.MapToCategory(Id, CategoryName);
+        return Category.MapToCategory(Id, Name);
     }
 }
 
-public sealed class UpdateCategoryInput : CategoryInput;
-
-public sealed class CreateCategoryValidator : AbstractValidator<CategoryInput>
+public sealed class UpdateCategoryInputValidator : AbstractValidator<UpdateCategoryInput>
 {
-    public CreateCategoryValidator()
-    {
-        RuleFor(x => x.ToCategory()).SetValidator(new CategoryValidator());
-    }
-}
-
-public sealed class UpdateCategoryValidator : AbstractValidator<UpdateCategoryInput>
-{
-    public UpdateCategoryValidator()
+    public UpdateCategoryInputValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.ToCategory()).SetValidator(new CategoryValidator());

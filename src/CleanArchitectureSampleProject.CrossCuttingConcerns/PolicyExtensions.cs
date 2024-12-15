@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -35,6 +36,12 @@ public static class PolicyExtensions
         [SellCanWritePolicy] = "sellcanwriteclaim",
         [SellCanDeletePolicy] = "sellcandeleteclaim"
     };
+
+    public static void SetPolicyClaims(this AuthorizationPolicyBuilder x, string policyName)
+    {
+        var hasClaim = AuthPolicies.TryGetValue(policyName, out AuthClaim claim);
+        if (hasClaim) x.RequireClaim(claim.Name, claim.AcceptedValues);
+    }
 
     public static AuthClaim GetAuthClaim(string policyName)
     {

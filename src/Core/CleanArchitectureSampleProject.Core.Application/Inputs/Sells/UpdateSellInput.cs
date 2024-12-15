@@ -33,9 +33,9 @@ public sealed class UpdateSellInput
     }
 }
 
-public sealed class UpdateSellValidator : AbstractValidator<UpdateSellInput>
+public sealed class UpdateSellInputValidator : AbstractValidator<UpdateSellInput>
 {
-    public UpdateSellValidator()
+    public UpdateSellInputValidator()
     {
         RuleFor(sell => sell.Id).NotEmpty();
         RuleFor(sell => sell.ToSell()).SetValidator(new SellValidator());

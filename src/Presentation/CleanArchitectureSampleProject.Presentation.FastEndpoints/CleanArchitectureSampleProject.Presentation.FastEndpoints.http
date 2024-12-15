@@ -20,6 +20,18 @@ Accept: application/json
 
 ###
 
+GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/categories/b05be363-2883-464e-916a-257fd90bcdbc
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/categories/by-name/strddffing
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
 GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/products
 Authorization: Bearer {{token}}
 Accept: application/json

@@ -32,9 +32,9 @@ public sealed class CreateSellInput
     }
 }
 
-public sealed class CreateSellValidator : AbstractValidator<CreateSellInput>
+public sealed class CreateSellInputValidator : AbstractValidator<CreateSellInput>
 {
-    public CreateSellValidator()
+    public CreateSellInputValidator()
     {
         RuleFor(sell => sell.ToSell()).SetValidator(new SellValidator());
     }

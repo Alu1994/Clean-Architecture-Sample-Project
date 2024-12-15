@@ -1,20 +1,19 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
 using Microsoft.AspNetCore.Http.HttpResults;
-using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Categories;
 
-public sealed class GetAllCategories(ILogger<GetAllCategories> logger, ICategoryUseCases categoryUseCases) : 
-    EndpointWithoutRequest<Results<Ok<FrozenSet<CategoryOutput>>, NoContent, ProblemHttpResult>>
+public sealed class GetByNameCategories(ILogger<GetByNameCategories> logger, ICategoryUseCases categoryUseCases) :
+    EndpointWithoutRequest<Results<Ok<CategoryOutput>, NoContent, ProblemHttpResult>>
 {
-    private readonly ILogger<GetAllCategories> _logger = logger;
+    private readonly ILogger<GetByNameCategories> _logger = logger;
     private readonly ICategoryUseCases _categoryUseCases = categoryUseCases;
 
     public override void Configure()
     {
-        Get("/categories");
+        Get("/categories/by-name/{categoryName}");
         Description(b => b
-            .Produces<FrozenSet<CategoryOutput>>(StatusCodes.Status200OK, "application/json")
+            .Produces<CategoryOutput>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblemDetails(StatusCodes.Status400BadRequest, "application/json")
             .Produces<UnauthorizedResponse>(StatusCodes.Status401Unauthorized, "application/json")
@@ -23,11 +22,12 @@ public sealed class GetAllCategories(ILogger<GetAllCategories> logger, ICategory
         Policy(x => x.SetPolicyClaims(CategoryCanReadPolicy));
     }
 
-    public override async Task<Results<Ok<FrozenSet<CategoryOutput>>, NoContent, ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
+    public override async Task<Results<Ok<CategoryOutput>, NoContent, ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
     {
-        var result = await _categoryUseCases.GetCategories(cancellation);
+        var categoryName = Route<string>("categoryName");
+        var result = await _categoryUseCases.GetCategoryByName(categoryName!, cancellation);
 
-        if (result.IsSuccess && result.Success!.Count is 0)
+        if (result.IsSuccess && result.Success is null)
             return TypedResults.NoContent();
 
         if (result.IsSuccess)

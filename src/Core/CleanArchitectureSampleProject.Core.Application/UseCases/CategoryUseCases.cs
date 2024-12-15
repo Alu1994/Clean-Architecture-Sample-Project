@@ -13,9 +13,9 @@ public interface ICategoryUseCases
     Task<Results<CategoryOutput, BaseError>> GetCategoryById(Guid categoryId, CancellationToken cancellation);
     Task<Results<CategoryOutput, BaseError>> GetCategoryByName(string categoryName, CancellationToken cancellation);
     Task<Results<CategoryOutput, BaseError>> GetOrCreateCategory(CreateProductInput productInput, CancellationToken cancellation);
-    Task<Results<CategoryOutput, BaseError>> GetOrCreateCategoryInternal(CategoryInput category, CancellationToken cancellation);
-    Task<Results<CategoryOutput, BaseError>> CreateCategory(CategoryInput categoryInput, CancellationToken cancellation);
-    Task<Results<CategoryOutput, BaseError>> UpdateCategory(CategoryInput categoryInput, CancellationToken cancellation);
+    Task<Results<CategoryOutput, BaseError>> GetOrCreateCategoryInternal(UpdateCategoryInput category, CancellationToken cancellation);
+    Task<Results<CategoryOutput, BaseError>> CreateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation);
+    Task<Results<CategoryOutput, BaseError>> UpdateCategory(UpdateCategoryInput categoryInput, CancellationToken cancellation);
 }
 
 public sealed class CategoryUseCases(
@@ -71,20 +71,20 @@ public sealed class CategoryUseCases(
         }
 
         if (productInput.Category.Id is null)
-            return CreateCategory(productInput.Category, cancellation);
+            return CreateCategory(new CreateCategoryInput { Name = productInput.Category.Name }, cancellation);
         return GetCategoryById(productInput.Category.Id.Value, cancellation);
     }
 
-    public Task<Results<CategoryOutput, BaseError>> GetOrCreateCategoryInternal(CategoryInput category, CancellationToken cancellation)
+    public Task<Results<CategoryOutput, BaseError>> GetOrCreateCategoryInternal(UpdateCategoryInput category, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(GetOrCreateCategoryInternal), category);
 
         if (category.Id is null)
-            return CreateCategory(category, cancellation);
+            return CreateCategory(new CreateCategoryInput { Name = category.Name }, cancellation);
         return GetCategoryById(category.Id.Value, cancellation);
     }
 
-    public async Task<Results<CategoryOutput, BaseError>> CreateCategory(CategoryInput categoryInput, CancellationToken cancellation)
+    public async Task<Results<CategoryOutput, BaseError>> CreateCategory(CreateCategoryInput categoryInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(CreateCategory), categoryInput);
 
@@ -94,7 +94,7 @@ public sealed class CategoryUseCases(
         return (CategoryOutput)result.Success!;
     }
 
-    public async Task<Results<CategoryOutput, BaseError>> UpdateCategory(CategoryInput categoryInput, CancellationToken cancellation)
+    public async Task<Results<CategoryOutput, BaseError>> UpdateCategory(UpdateCategoryInput categoryInput, CancellationToken cancellation)
     {
         _logger.LogInformation("Logging {MethodName} with {CategoryInput}", nameof(UpdateCategory), categoryInput);
 

@@ -1,7 +1,6 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain;
 using CleanArchitectureSampleProject.Core.Application;
 using CleanArchitectureSampleProject.Infrastructure.Repository;
-using CleanArchitectureSampleProject.Presentation.FastEndpoints.Configuration.Middlewares;
 using CleanArchitectureSampleProject.Presentation.FastEndpoints.Configuration.Setups;
 using CleanArchitectureSampleProject.Infrastructure.Messaging;
 using FastEndpoints.Swagger;
@@ -43,24 +42,14 @@ public static class DependencyInjection
 
     public static IServiceCollection AddPresentation(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        // Problem Details
         services.AddProblemDetails();
-
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
         services.AddFastEndpoints(o =>
         {
             o.IncludeAbstractValidators = true;
+            o.AssemblyFilter = null;
         });
-        services.SwaggerDocument(
-           //o =>
-           //{
-           //    o.DocumentSettings = s =>
-           //    {
-           //        s.SchemaSettings.SchemaProcessors.Add(new MySchemaProcessor(builder.Services)); //pass down the service collection to the schema processor
-           //    };
-           //}
-           );
+        services.SwaggerDocument();
 
         // =========== Setup Authentication & Authorization ===========
         services.AddAuthenticationAndAuthorization();
@@ -74,15 +63,12 @@ public static class DependencyInjection
         services.AddCacheAutoRefresh();
         // =========== Add Layers Dependency Injection ===========
 
-        services.AddValidation();
         return services;
     }
 
     public static WebApplication UsePresentation(this WebApplication app)
     {
-        // Configure the HTTP request pipeline.
         app.MapOpenApi();
-
         app.UseMiddleware<JwtMiddleware>();
 
         // =========== Use Authentication & Authorization ===========
@@ -106,7 +92,6 @@ public static class DependencyInjection
         app.UseFastEndpoints(c => 
         { 
             c.Errors.ProducesMetadataType = typeof(Microsoft.AspNetCore.Mvc.ProblemDetails);
-            //c.Errors.ProducesMetadataType = typeof(global::FastEndpoints.ProblemDetails);
         });
 
         app.UseStaticFiles();
