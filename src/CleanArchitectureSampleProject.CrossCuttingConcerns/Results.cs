@@ -36,7 +36,7 @@ public record class Results<TError>(bool IsSuccess, bool IsFail, ResultStates St
     #endregion [Implicit Operators]
 }
 
-public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool IsFail, ResultStates State, TSuccessResult? Success, TErrorResult? Error) 
+public record class Results<TSuccessResult, TErrorResult>(bool IsSuccess, bool IsFail, ResultStates State, TSuccessResult? Success, TErrorResult? Error)
     where TErrorResult : IError
 {
     #region [Constructors]
@@ -135,10 +135,25 @@ public record class ErrorList : IError
     }
     #endregion [Constructors]
 
+    #region [Methods]
     private static IEnumerable<ErrorItem> GenerateList(FluentValidation.Results.ValidationResult validationResult)
     {
         return validationResult.Errors.Select(x => new ErrorItem(x.ErrorMessage));
     }
+
+    public string ToDetailMessage()
+    {
+        return string.Join(" - ", ToMessage());
+    }
+
+    private IEnumerable<string> ToMessage()
+    {
+        foreach (var error in Errors)
+        {
+            yield return error.Message;
+        }
+    }
+    #endregion [Methods]
 }
 
 public record class ErrorItem(string Message, Exception? Exception = null);
