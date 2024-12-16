@@ -1,12 +1,11 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Http = Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Products;
 
 public sealed class CreateProducts(ILogger<CreateProducts> logger, IProductUseCases productUseCases) : 
-    Endpoint<CreateProductInput, Microsoft.AspNetCore.Http.HttpResults.Results<Created<CreateProductOutput>, ProblemHttpResult>>
+    Endpoint<CreateProductInput, Http.Results<Http.Created<CreateProductOutput>, Http.ProblemHttpResult>>
 {
     private readonly ILogger<CreateProducts> _logger = logger;
     private readonly IProductUseCases _productUseCases = productUseCases;
@@ -25,7 +24,7 @@ public sealed class CreateProducts(ILogger<CreateProducts> logger, IProductUseCa
         Validator<CreateProductInputValidator>();
     }
 
-    public override async Task<Microsoft.AspNetCore.Http.HttpResults.Results<Created<CreateProductOutput>, ProblemHttpResult>> ExecuteAsync(CreateProductInput product, CancellationToken cancellation)
+    public override async Task<Http.Results<Http.Created<CreateProductOutput>, Http.ProblemHttpResult>> ExecuteAsync(CreateProductInput product, CancellationToken cancellation)
     {
         var result = await _productUseCases.CreateProduct(product, cancellation);
 

@@ -1,31 +1,31 @@
-﻿using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
+﻿using CleanArchitectureSampleProject.Core.Application.Outputs;
 using Http = Microsoft.AspNetCore.Http.HttpResults;
 using System.Collections.Frozen;
 
-namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Products;
+namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Sells;
 
-public sealed class GetAllProducts(ILogger<GetAllProducts> logger, IProductUseCases productUseCases) : 
-    EndpointWithoutRequest<Http.Results<Http.Ok<FrozenSet<GetProductOutput>>, Http.NoContent, Http.ProblemHttpResult>>
+public sealed class GetAllSells(ILogger<GetAllSells> logger, ISellUseCases sellUseCases) : 
+    EndpointWithoutRequest<Http.Results<Http.Ok<FrozenSet<GetSellOutput>>, Http.NoContent, Http.ProblemHttpResult>>
 {
-    private readonly ILogger<GetAllProducts> _logger = logger;
-    private readonly IProductUseCases _productUseCases = productUseCases;
+    private readonly ILogger<GetAllSells> _logger = logger;
+    private readonly ISellUseCases _sellUseCases = sellUseCases;
 
     public override void Configure()
     {
-        Get("/products");
+        Get("/sells");
         Description(b => b
-            .Produces<FrozenSet<GetProductOutput>>(StatusCodes.Status200OK, "application/json")
+            .Produces<FrozenSet<GetSellOutput>>(StatusCodes.Status200OK, "application/json")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblemDetails(StatusCodes.Status400BadRequest, "application/json")
             .Produces<UnauthorizedResponse>(StatusCodes.Status401Unauthorized, "application/json")
             .Produces<ForbiddenResponse>(StatusCodes.Status403Forbidden, "application/json"));
 
-        Policy(x => x.SetPolicyClaims(ProductCanReadPolicy));
+        Policy(x => x.SetPolicyClaims(SellCanReadPolicy));
     }
 
-    public override async Task<Http.Results<Http.Ok<FrozenSet<GetProductOutput>>, Http.NoContent, Http.ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
+    public override async Task<Http.Results<Http.Ok<FrozenSet<GetSellOutput>>, Http.NoContent, Http.ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
     {
-        var result = await _productUseCases.GetProducts(cancellation);
+        var result = await _sellUseCases.GetSells(cancellation);
 
         if (result.IsSuccess && result.Success!.Count is 0)
             return TypedResults.NoContent();

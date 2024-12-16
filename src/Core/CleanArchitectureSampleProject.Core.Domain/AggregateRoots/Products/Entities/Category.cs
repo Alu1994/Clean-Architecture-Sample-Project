@@ -6,8 +6,9 @@ public sealed class Category
     public string Name { get; set; }
     public DateTime CreationDate { get; set; }
 
-    // Navigation Property
-    public ICollection<Product> Products { get; set; } = new List<Product>();
+    // ==== Navigation Property ====
+    public ICollection<Product> Products { get; set; } = [];
+    // ==== Navigation Property ====
 
     internal Category()
     {
@@ -20,7 +21,7 @@ public sealed class Category
         Id = Guid.NewGuid();
     }
 
-    public Category Update(Category category)
+    internal Category Update(Category category)
     {
         Name = category.Name;
         return this;

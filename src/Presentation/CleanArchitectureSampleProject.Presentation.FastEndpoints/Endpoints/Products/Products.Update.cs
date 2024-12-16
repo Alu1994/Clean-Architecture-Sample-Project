@@ -1,12 +1,11 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
-using CleanArchitectureSampleProject.CrossCuttingConcerns;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Http = Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Products;
 
 public sealed class UpdateProducts(ILogger<UpdateProducts> logger, IProductUseCases productUseCases) :
-    Endpoint<UpdateProductInput, Microsoft.AspNetCore.Http.HttpResults.Results<Ok<UpdateProductOutput>, ProblemHttpResult>>
+    Endpoint<UpdateProductInput, Http.Results<Http.Ok<UpdateProductOutput>, Http.ProblemHttpResult>>
 {
     private readonly ILogger<UpdateProducts> _logger = logger;
     private readonly IProductUseCases _productUseCases = productUseCases;
@@ -25,7 +24,7 @@ public sealed class UpdateProducts(ILogger<UpdateProducts> logger, IProductUseCa
         Validator<UpdateProductInputValidator>();
     }
 
-    public override async Task<Microsoft.AspNetCore.Http.HttpResults.Results<Ok<UpdateProductOutput>, ProblemHttpResult>> ExecuteAsync(UpdateProductInput product, CancellationToken cancellation)
+    public override async Task<Http.Results<Http.Ok<UpdateProductOutput>, Http.ProblemHttpResult>> ExecuteAsync(UpdateProductInput product, CancellationToken cancellation)
     {
         var result = await _productUseCases.UpdateProduct(product, cancellation);
 

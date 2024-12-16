@@ -1,10 +1,10 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Http = Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Products;
 
 public sealed class GetByIdProducts(ILogger<GetByIdProducts> logger, IProductUseCases productUseCases) :
-    EndpointWithoutRequest<Results<Ok<GetProductOutput>, NoContent, ProblemHttpResult>>
+    EndpointWithoutRequest<Http.Results<Http.Ok<GetProductOutput>, Http.NoContent, Http.ProblemHttpResult>>
 {
     private readonly ILogger<GetByIdProducts> _logger = logger;
     private readonly IProductUseCases _productUseCases = productUseCases;
@@ -22,7 +22,7 @@ public sealed class GetByIdProducts(ILogger<GetByIdProducts> logger, IProductUse
         Policy(x => x.SetPolicyClaims(ProductCanReadPolicy));
     }
 
-    public override async Task<Results<Ok<GetProductOutput>, NoContent, ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
+    public override async Task<Http.Results<Http.Ok<GetProductOutput>, Http.NoContent, Http.ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
     {
         var productId = Route<Guid>("productId");
         var result = await _productUseCases.GetProductById(productId, cancellation);

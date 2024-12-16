@@ -1,11 +1,11 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Http = Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Categories;
 
 public sealed class CreateCategories(ILogger<CreateCategories> logger, ICategoryUseCases categoryUseCases) : 
-    Endpoint<CreateCategoryInput, Results<Created<CategoryOutput>, ProblemHttpResult>>
+    Endpoint<CreateCategoryInput, Http.Results<Http.Created<CategoryOutput>, Http.ProblemHttpResult>>
 {
     private readonly ILogger<CreateCategories> _logger = logger;
     private readonly ICategoryUseCases _categoryUseCases = categoryUseCases;
@@ -24,7 +24,7 @@ public sealed class CreateCategories(ILogger<CreateCategories> logger, ICategory
         Validator<CreateCategoryInputValidator>();
     }
 
-    public override async Task<Results<Created<CategoryOutput>, ProblemHttpResult>> ExecuteAsync(CreateCategoryInput category, CancellationToken cancellation)
+    public override async Task<Http.Results<Http.Created<CategoryOutput>, Http.ProblemHttpResult>> ExecuteAsync(CreateCategoryInput category, CancellationToken cancellation)
     {
         var result = await _categoryUseCases.CreateCategory(category, cancellation);
 

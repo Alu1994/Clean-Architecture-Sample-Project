@@ -1,10 +1,10 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Http = Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Categories;
 
 public sealed class GetByIdCategories(ILogger<GetByIdCategories> logger, ICategoryUseCases categoryUseCases) :
-    EndpointWithoutRequest<Results<Ok<CategoryOutput>, NoContent, ProblemHttpResult>>
+    EndpointWithoutRequest<Http.Results<Http.Ok<CategoryOutput>, Http.NoContent, Http.ProblemHttpResult>>
 {
     private readonly ILogger<GetByIdCategories> _logger = logger;
     private readonly ICategoryUseCases _categoryUseCases = categoryUseCases;
@@ -22,7 +22,7 @@ public sealed class GetByIdCategories(ILogger<GetByIdCategories> logger, ICatego
         Policy(x => x.SetPolicyClaims(CategoryCanReadPolicy));
     }
 
-    public override async Task<Results<Ok<CategoryOutput>, NoContent, ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
+    public override async Task<Http.Results<Http.Ok<CategoryOutput>, Http.NoContent, Http.ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
     {
         var categoryId = Route<Guid>("categoryId");
         var result = await _categoryUseCases.GetCategoryById(categoryId, cancellation);

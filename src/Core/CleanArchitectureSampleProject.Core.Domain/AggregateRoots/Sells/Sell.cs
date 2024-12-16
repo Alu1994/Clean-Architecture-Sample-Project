@@ -14,7 +14,8 @@ public sealed class Sell : HasDomainEventsBase
     public DateTime CreationDate { get; set; }
 
     // ==== Navigation Property ====
-    public ICollection<SellItem> Items { get; set; } = new List<SellItem>();
+    public ICollection<SellItem> Items { get; set; } = [];
+    // ==== Navigation Property ====
 
     public static Sell ToSell(string description, Guid? id = null)
     {
@@ -104,5 +105,4 @@ public sealed class Sell : HasDomainEventsBase
 
         return ResultStates.Success;
     }
-    // ==== Navigation Property ====
 }

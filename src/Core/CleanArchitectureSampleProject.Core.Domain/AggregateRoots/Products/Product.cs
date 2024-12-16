@@ -16,7 +16,7 @@ public sealed class Product : HasDomainEventsBase
 
     // ==== Navigation Properties ====
     public Category Category { get; set; }
-    public ICollection<SellItem> Items { get; set; } = new List<SellItem>();
+    public ICollection<SellItem> Items { get; set; } = [];
     // ==== Navigation Properties ====
 
     internal Product()
@@ -44,14 +44,14 @@ public sealed class Product : HasDomainEventsBase
         return product;
     }
 
-    public Product Create(Category category)
+    internal Product Create(Category category)
     {
         WithCategory(category);
         RegisterDomainEvent(new CreateProductEvent { ProductId = Id });
         return this;
     }
 
-    public Product Update(Product oldProduct, Category category)
+    internal Product Update(Product oldProduct, Category category)
     {
         if (Id == Guid.Empty)
             Id = oldProduct.Id;

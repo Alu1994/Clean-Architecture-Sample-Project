@@ -1,10 +1,10 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Http = Microsoft.AspNetCore.Http.HttpResults;
 
 namespace CleanArchitectureSampleProject.Presentation.FastEndpoints.Endpoints.Categories;
 
 public sealed class GetByNameCategories(ILogger<GetByNameCategories> logger, ICategoryUseCases categoryUseCases) :
-    EndpointWithoutRequest<Results<Ok<CategoryOutput>, NoContent, ProblemHttpResult>>
+    EndpointWithoutRequest<Http.Results<Http.Ok<CategoryOutput>, Http.NoContent, Http.ProblemHttpResult>>
 {
     private readonly ILogger<GetByNameCategories> _logger = logger;
     private readonly ICategoryUseCases _categoryUseCases = categoryUseCases;
@@ -22,7 +22,7 @@ public sealed class GetByNameCategories(ILogger<GetByNameCategories> logger, ICa
         Policy(x => x.SetPolicyClaims(CategoryCanReadPolicy));
     }
 
-    public override async Task<Results<Ok<CategoryOutput>, NoContent, ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
+    public override async Task<Http.Results<Http.Ok<CategoryOutput>, Http.NoContent, Http.ProblemHttpResult>> ExecuteAsync(CancellationToken cancellation)
     {
         var categoryName = Route<string>("categoryName");
         var result = await _categoryUseCases.GetCategoryByName(categoryName!, cancellation);
