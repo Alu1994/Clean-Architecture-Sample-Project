@@ -12,7 +12,7 @@ public sealed class UpdateProductInput
     public string Description { get; set; }
     public decimal Value { get; set; }
     public int Quantity { get; set; }
-    public CategoryInput Category { get; set; }
+    public UpdateCategoryInput Category { get; set; }
 
     public UpdateProductInput()
     {
@@ -21,7 +21,7 @@ public sealed class UpdateProductInput
 
     public void SetCategory(Category category)
     {
-        if (Category is null) Category = new CategoryInput();
+        if (Category is null) Category = new UpdateCategoryInput();
         Category.SetCategory(category);
     }
 
@@ -32,9 +32,9 @@ public sealed class UpdateProductInput
     }
 }
 
-public sealed class UpdateProductValidator : AbstractValidator<UpdateProductInput>
+public sealed class UpdateProductInputValidator : AbstractValidator<UpdateProductInput>
 {
-    public UpdateProductValidator()
+    public UpdateProductInputValidator()
     {
         RuleFor(product => product.Id).NotEmpty();
         RuleFor(product => product.ToProduct(null))

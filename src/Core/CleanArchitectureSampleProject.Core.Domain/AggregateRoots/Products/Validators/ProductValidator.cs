@@ -1,6 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
-
-namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
+﻿namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
 
 public sealed class ProductValidator : AbstractValidator<Product>
 {

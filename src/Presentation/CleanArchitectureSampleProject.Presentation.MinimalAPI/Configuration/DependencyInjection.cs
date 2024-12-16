@@ -6,6 +6,8 @@ using NLog.Web;
 using Scalar.AspNetCore;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
+using MassTransit;
+using CleanArchitectureSampleProject.Infrastructure.Messaging;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration;
 
@@ -18,13 +20,14 @@ public static class DependencyInjection
         Env = builder.Environment;
 
         builder.BuildRepository();
+        builder.BuildMessaging();
 
         // =========== Add NLog ===========
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
         builder.Host.UseNLog();
         // =========== Add NLog ===========
-
+        
         if (Env.IsDevelopment())
         {
             // =========== Add service defaults & Aspire client integrations. ===========
@@ -56,6 +59,7 @@ public static class DependencyInjection
         services.AddDomainLayer();
         services.AddApplicationLayer();
         services.AddRepositoryLayer();
+        services.AddMessagingLayer();
         services.AddCacheAutoRefresh();
         // =========== Add Layers Dependency Injection ===========
 

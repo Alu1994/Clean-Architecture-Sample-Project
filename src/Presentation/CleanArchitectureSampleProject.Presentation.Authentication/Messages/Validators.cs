@@ -27,8 +27,8 @@ public sealed class CreateUserResourceRequestValidator : AbstractValidator<Creat
     {
         RuleFor(x => x.UserId).NotEmpty();
         RuleFor(x => x.ResourceId).NotEmpty();
-        RuleFor(x => x.CanRead).NotEmpty();
-        RuleFor(x => x.CanWrite).NotEmpty();
-        RuleFor(x => x.CanDelete).NotEmpty();
+        RuleFor(x => x.CanRead).NotNull();
+        RuleFor(x => x.CanWrite).NotNull();
+        RuleFor(x => x.CanDelete).NotNull();
     }
 }

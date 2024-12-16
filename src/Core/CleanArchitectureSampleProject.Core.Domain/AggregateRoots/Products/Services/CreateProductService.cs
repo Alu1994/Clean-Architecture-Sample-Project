@@ -35,13 +35,9 @@ public sealed class CreateProductService : ICreateProductService
         if (categoryResult.IsFail) return (categoryResult.State, categoryResult.Error)!;
 
         Category category = categoryResult.ToSuccess();
-        product.SetCategory(category);
-
-        product.Create();
+        product.Create(category);
         var creationResult = await _productRepository.Insert(product, cancellationToken);
         if (creationResult != ValidationResult.Success) return new ErrorList(creationResult.ErrorMessage!);
-
-        product.SetCategory(category);
         return product;
     }
 }

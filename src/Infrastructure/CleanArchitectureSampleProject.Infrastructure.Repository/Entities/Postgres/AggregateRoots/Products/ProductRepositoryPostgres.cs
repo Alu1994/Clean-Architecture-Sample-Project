@@ -112,6 +112,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
     {
         try
         {
+            var category = product.Category;
             product.Category = null;
 
             var cacheResult = await _cache.Insert(product, cancellation);
@@ -119,9 +120,10 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
             {
                 // Log that the cache was not updated
             }
+            await _context.Products.AddAsync(product, cancellation);
+            await _context.SaveChangesAsync(cancellation);
 
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
+            product.Category = category;
             return ValidationResult.Success!;
 
         }
@@ -135,6 +137,7 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
     {
         try
         {
+            var category = product.Category;
             product.Category = null;
 
             var cacheResult = await _cache.Update(product, cancellation);
@@ -144,7 +147,9 @@ public sealed class ProductRepositoryPostgres(ProductDataContext context, IProdu
             }
 
             _context.Products.Update(product);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellation);
+
+            product.Category = category;
             return ValidationResult.Success!;
         }
         catch (Exception ex)

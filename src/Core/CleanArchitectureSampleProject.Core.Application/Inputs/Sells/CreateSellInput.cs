@@ -2,40 +2,40 @@
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Entities;
 using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Validators;
 using FluentValidation;
+using System.Collections.ObjectModel;
 
 namespace CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
 
 public sealed class CreateSellInput
 {
-    public Guid Id { get; set; }
     public string Description { get; set; }
-    public List<CreateSellItemInput> Items { get; set; }
+    public Collection<CreateSellItemInput> Items { get; set; }
 
-    public Sell ToSell(ICollection<SellItem>? sellItems = null)
+    public Sell ToSell()
     {
-        var sell = Sell.MapToSell(Description);
-        sellItems ??= ToNewSellItems(Items, sell.Id);
+        var sell = Sell.ToSell(Description);
+        var sellItems = ToNewSellItems(sell.Id, Items);
         sell.SetItems(sellItems!);
         return sell;
     }
 
-    public static List<SellItem> ToNewSellItems(List<CreateSellItemInput>? items, Guid id)
+    public static Collection<SellItem> ToNewSellItems(Guid id, Collection<CreateSellItemInput>? items)
     {
         if (items is null or { Count: 0 }) return [];
 
-        List<SellItem> list = [];
+        Collection<SellItem> sellItems = [];
         foreach (var item in items)
         {
-            list.Add(new CreateSellItemInput(id, item));
+            sellItems.Add(item.ToSellItem(id));
         }
-        return list;
+        return sellItems;
     }
 }
 
-public sealed class CreateSellValidator : AbstractValidator<CreateSellInput>
+public sealed class CreateSellInputValidator : AbstractValidator<CreateSellInput>
 {
-    public CreateSellValidator()
+    public CreateSellInputValidator()
     {
-        RuleFor(sell => sell.ToSell(null)).SetValidator(new SellValidator());
+        RuleFor(sell => sell.ToSell()).SetValidator(new SellValidator());
     }
 }

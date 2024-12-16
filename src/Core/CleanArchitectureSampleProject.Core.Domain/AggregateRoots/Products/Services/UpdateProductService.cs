@@ -1,5 +1,4 @@
-﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
+﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Entities;
 using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
 
 namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Services;
@@ -30,21 +29,33 @@ public sealed class UpdateProductService : IUpdateProductService
         var validationResult = _validator.Validate(newProduct);
         if (validationResult.IsValid is false) return new ErrorList(validationResult);
 
-        var getProductByIdResult = await _productRepository.GetById(newProduct.Id, cancellationToken);
-        if (getProductByIdResult.IsFail) return new ErrorList(getProductByIdResult.Error);
-        var oldProduct = getProductByIdResult.Success!;
+        var productIdResult = await _productRepository.GetById(newProduct.Id, cancellationToken);
+        if (productIdResult.IsFail) return new ErrorList(productIdResult.Error!);
+        var oldProduct = productIdResult.Success!;
+
+        var productNameResult = await ValidateIfProductNameExists(newProduct, cancellationToken);
+        if (productNameResult.IsFail) return productNameResult.Error!;
 
         var categoryResult = await _categoryGetOrCreateService.Execute(newProduct.Category, cancellationToken);
         if (categoryResult.IsFail) return categoryResult.ToErrorList();
 
         Category category = categoryResult.ToSuccess();
-        newProduct.SetCategory(category);
-
-        Product product = oldProduct.Update(newProduct);
+        Product product = newProduct.Update(oldProduct, category);
         var creationResult = await _productRepository.Update(product, cancellationToken);
         if (creationResult != ValidationResult.Success) return new ErrorList(creationResult.ErrorMessage!);
-
-        product.SetCategory(category);
         return product;
+    }
+
+    private async Task<Results<ErrorList>> ValidateIfProductNameExists(Product newProduct, CancellationToken cancellationToken)
+    {
+        var result = await _productRepository.GetByName(newProduct.Name, cancellationToken);
+        if (result.IsFail && result.State != ResultStates.NotFound)
+            return new ErrorList(result.Error!);
+
+        var productByName = result.Success!;
+        if (result.IsSuccess && productByName.Id != newProduct.Id)
+            return new ErrorList($"Product Name {newProduct.Name} already exists.");
+
+        return ResultStates.Success;
     }
 }

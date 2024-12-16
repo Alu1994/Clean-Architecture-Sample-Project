@@ -1,0 +1,45 @@
+@CleanArchitectureSampleProject.Presentation.Auth_HostAddress = https://localhost:7276
+@CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress = https://localhost:7204
+@token = sa
+
+POST {{CleanArchitectureSampleProject.Presentation.Auth_HostAddress}}/login
+Content-Type: application/json
+
+{
+  "email": "string",
+  "password": "string",
+  "twoFactorCode": "string",
+  "twoFactorRecoveryCode": "string"
+}
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/categories
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/categories/b05be363-2883-464e-916a-257fd90bcdbc
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/categories/by-name/strddffing
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/products
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{CleanArchitectureSampleProject.Presentation.FastEndpoints_HostAddress}}/sells
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###

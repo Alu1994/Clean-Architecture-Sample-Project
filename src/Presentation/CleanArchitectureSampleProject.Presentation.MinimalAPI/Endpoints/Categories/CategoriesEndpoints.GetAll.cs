@@ -1,4 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
+using MassTransit;
 using System.Collections.Frozen;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
@@ -7,7 +8,7 @@ public static partial class CategoriesEndpoints
 {
     private static RouteGroupBuilder MapGetAll(this RouteGroupBuilder app)
     {
-        app.MapGet("", async (ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CancellationToken cancellation) =>
+        app.MapGet("", async (ILogger<Logging> logger, IBus bus, ICategoryUseCases categoryUseCases, CancellationToken cancellation) =>
         {
             return await GetAll(logger, categoryUseCases, cancellation);
         })

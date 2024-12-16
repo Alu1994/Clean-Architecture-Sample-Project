@@ -29,10 +29,10 @@ public sealed class ProductRepositoryCache(ILogger<ProductRepositoryCache> logge
             foreach (var product in products)
             {
                 var categoryResult = await _categoryRepository.GetById(product.CategoryId, cancellation: cancellation);
-                _ = categoryResult.Match<Results<Product, BaseError>>(category =>
+                _ = categoryResult.Match<Results<Product, BaseError>>((Func<Category, Results<Product, BaseError>>)(category =>
                 {
                     return product.WithCategory(category);
-                }, erCat =>
+                }), erCat =>
                 {
                     _logger.LogBaseError(erCat);
                     return erCat;

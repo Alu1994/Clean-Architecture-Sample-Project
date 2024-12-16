@@ -22,12 +22,10 @@ public sealed class CategoryGetOrCreateService : ICategoryGetOrCreateService
 
     public async Task<Results<Category, ErrorList>> Execute(Category categoryInput, CancellationToken cancellationToken)
     {
-        var validationResult = _validator.Validate(categoryInput);
-        if (validationResult.IsValid is false) return new ErrorList(validationResult);
-
         if (categoryInput is null) return new ErrorList("Category must not be null.");
-        var categoryResult = categoryInput.ValidateGetOrCreate();
-        if (categoryResult.IsFail) return new ErrorList(categoryResult.Error);
+
+        var validationResult = _validator.Validate(categoryInput);
+        if (validationResult.IsValid is false) return new ErrorList(validationResult);        
 
         if (categoryInput.Id != Guid.Empty)
         {

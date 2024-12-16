@@ -11,7 +11,7 @@ var queue = storage.AddQueues(Services.AzureQueueConnection);
 // Adds Azure Queue
 
 // PostgresDB
-var dbServer = builder.AddPostgres(Services.PostgresServerName)
+var dbServer = builder.AddPostgres(Services.PostgresServerName, port: 5433)
     .WithLifetime(ContainerLifetime.Persistent);
 var db = dbServer.AddDatabase(Services.PostgresDatabaseName);
 dbServer.WithDataVolume(Services.PostgresContainerVolume)
@@ -19,13 +19,14 @@ dbServer.WithDataVolume(Services.PostgresContainerVolume)
 // PostgresDB
 
 // Auth PostgresDB
-var dbAuthServer = builder.AddPostgres(Services.PostgresServerAuthenticationName);
+var dbAuthServer = builder.AddPostgres(Services.PostgresServerAuthenticationName, port: 5434)
+    .WithLifetime(ContainerLifetime.Persistent);
 var dbAuth = dbAuthServer.AddDatabase(Services.PostgresDatabaseAuthenticationName);
 dbAuthServer.WithDataVolume(Services.PostgresContainerAuthenticationVolume)
     .WithPgAdmin();
 // Auth PostgresDB
 
-var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigrator)
+var dbMigrator = builder.AddProject<CleanArchitectureSampleProject_Aspire_Service_DatabaseMigration>(ProjectNames.DatabaseMigratorApp)
     .WithReference(dbServer)
     .WithReference(dbAuthServer)
     .WithReference(dbAuth)
@@ -62,12 +63,35 @@ var minimalApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_
     .WaitFor(queue)
     .WaitFor(authenticationApi);
 
+var fastEndpointsApi = builder.AddProject<CleanArchitectureSampleProject_Presentation_FastEndpoints>(ProjectNames.FastEndpointsApi)
+    .WithReference(db)
+    .WithReference(redis)
+    .WithReference(queue)
+    .WithReference(authenticationApi)
+    .WaitFor(db)
+    .WaitFor(redis)
+    .WaitFor(dbMigrator)
+    .WaitFor(queue)
+    .WaitFor(authenticationApi);
+
 builder.AddProject<CleanArchitectureSampleProject_Presentation_Web>(ProjectNames.BlazorApp)
     .WithExternalHttpEndpoints()
     .WithReference(redis)
     .WaitFor(redis)
     .WithReference(minimalApi)
     .WaitFor(minimalApi);
+
+builder.AddProject<CleanArchitectureSampleProject_Presentation_Worker>(ProjectNames.MessageWorkerApp)
+    .WithReference(db)
+    .WaitFor(db)
+    .WithReference(redis)
+    .WaitFor(redis)
+    .WithReference(queue)
+    .WaitFor(queue)
+    .WithReference(minimalApi)
+    .WaitFor(minimalApi)
+    .WithReference(fastEndpointsApi)
+    .WaitFor(fastEndpointsApi);
 
 builder.Build().Run();
 

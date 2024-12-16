@@ -1,25 +1,30 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Events;
-using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Messaging;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 
 public partial class ProductDataContext : DbContext
 {
-    private readonly List<IMessagingHandler> _messagings;
+    private readonly IBus _bus;
 
-    public ProductDataContext(DbContextOptions<ProductDataContext> options
-        , List<IMessagingHandler> messagings
-        ) : base(options)
+    public ProductDataContext(DbContextOptions<ProductDataContext> options, IBus bus) : base(options)
     {
         ChangeTracker.LazyLoadingEnabled = false;
-        _messagings = messagings;
+        _bus = bus ?? throw new ArgumentNullException(nameof(bus));
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
         int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        await DispatchDomainEvents(cancellationToken);
+        return result;
+    }
+
+    public async override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        int result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken).ConfigureAwait(false);
         await DispatchDomainEvents(cancellationToken);
         return result;
     }
@@ -36,21 +41,26 @@ public partial class ProductDataContext : DbContext
 
     private async Task DispatchDomainEvents(CancellationToken cancellationToken)
     {
-        // dispatch events only if save was successful
-        var entitiesWithEvents = ChangeTracker.Entries<HasDomainEventsBase>()
-        .Select(e => e.Entity)
-            .Where(e => e.DomainEvents.Any())
-            .ToArray();
-
-        foreach (var entity in entitiesWithEvents)
+        try
         {
-            foreach (var @event in entity.DomainEvents)
+            // dispatch events only if save was successful
+            var entitiesWithEvents = ChangeTracker.Entries<HasDomainEventsBase>()
+            .Select(e => e.Entity)
+                .Where(e => e.DomainEvents.Any())
+                .ToArray();
+
+            foreach (var entity in entitiesWithEvents)
             {
-                var messaging = _messagings.FirstOrDefault(x => x.Event.Any(c => c == @event.GetType()));
-                if (messaging is not null)
-                    await messaging.SendMessage(@event.Message!, cancellationToken);
+                foreach (var @event in entity.DomainEvents)
+                {
+                    await _bus.Publish(@event, @event.GetType(), cancellationToken);
+                }
+                entity.ClearDomainEvents();
             }
-            entity.ClearDomainEvents();
         }
-    }    
+        catch (Exception ex)
+        {
+            string message = ex.Message;
+        }
+    }
 }

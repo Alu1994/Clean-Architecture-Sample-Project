@@ -29,7 +29,6 @@ public static class DependencyInjection
         services
             .AddValidatorsFromAssemblyContaining<SellValidator>()
             .AddValidatorsFromAssemblyContaining<SellItemValidator>()
-
             .AddValidatorsFromAssemblyContaining<ProductValidator>()
             .AddValidatorsFromAssemblyContaining<CategoryValidator>()
             .AddScoped<IGetOrCreateCategoryValidator, GetOrCreateCategoryValidator>();

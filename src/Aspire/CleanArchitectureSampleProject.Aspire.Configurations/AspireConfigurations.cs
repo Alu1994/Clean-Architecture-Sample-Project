@@ -5,10 +5,12 @@ public static class AspireConfigurations
     public static class ProjectNames
     {
         public static string AuthenticationApp => "authenticationapi";
+        public static string FastEndpointsApi => "fastendpointsapi";
         public static string MinimalApi => "minimalapi";
         public static string ControllerApi => "controllerapi";
         public static string BlazorApp => "blazorapp";
-        public static string DatabaseMigrator => "dbmigratorworker";
+        public static string DatabaseMigratorApp => "dbmigratorworker";
+        public static string MessageWorkerApp => "messageworkerapp";
     }
 
     public static class Services

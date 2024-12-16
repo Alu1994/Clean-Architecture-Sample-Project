@@ -29,7 +29,7 @@ public class Worker : BackgroundService
         try
         {
             using var scope = serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ProductDataContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ProductDataContextMigration>();
             await dbContext.Database.MigrateAsync(stoppingToken);
 
             var dbAuthContext = scope.ServiceProvider.GetRequiredService<AuthenticationDataContext>();

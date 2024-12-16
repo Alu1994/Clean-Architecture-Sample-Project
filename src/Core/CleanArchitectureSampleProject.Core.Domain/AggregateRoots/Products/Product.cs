@@ -16,26 +16,13 @@ public sealed class Product : HasDomainEventsBase
 
     // ==== Navigation Properties ====
     public Category Category { get; set; }
-    public ICollection<SellItem> Items { get; set; } = new List<SellItem>();
+    public ICollection<SellItem> Items { get; set; } = [];
     // ==== Navigation Properties ====
 
-    public Product()
+    internal Product()
     {
         Id = Guid.NewGuid();
         CreationDate = DateTime.UtcNow;
-    }
-
-    private Product(Category category) : this()
-    {
-        ArgumentNullException.ThrowIfNull(category);
-        SetCategory(category);
-    }
-
-    private Product WithCreationDate(DateTime? creationDate)
-    {
-        if (creationDate is not null)
-            CreationDate = creationDate.Value;
-        return this;
     }
 
     public static Product MapToProduct(string name, string description, decimal? value, int? quantity, Category? category, Guid? id = null)
@@ -51,47 +38,52 @@ public sealed class Product : HasDomainEventsBase
         if (id is not null && id != Guid.Empty) product.Id = id.Value;
         if (category is not null)
         {
-            product.SetCategory(category);
+            product.WithCategory(category);
         }
 
         return product;
     }
 
-    public void SetCategory(Category category)
+    internal Product Create(Category category)
     {
-        Category = category;
-        CategoryId = category.Id;
-    }
-
-    public Product Create()
-    {
-        RegisterDomainEvent(new CreateProductEvent(this));
+        WithCategory(category);
+        RegisterDomainEvent(new CreateProductEvent { ProductId = Id });
         return this;
     }
 
-    public Product Update(Product newProduct)
+    internal Product Update(Product oldProduct, Category category)
     {
-        Id = newProduct.Id;
-        Name = newProduct.Name;
-        Description = newProduct.Description;
-        Value = newProduct.Value;
-        Quantity = newProduct.Quantity;
-        CategoryId = newProduct.CategoryId;        
-        RegisterDomainEvent(new UpdateProductEvent(this));
+        if (Id == Guid.Empty)
+            Id = oldProduct.Id;
+
+        if (string.IsNullOrWhiteSpace(Name))
+            Name = oldProduct.Name;
+
+        if (string.IsNullOrWhiteSpace(Description))
+            Description = oldProduct.Description;
+
+        if (Value is 0M)
+            Value = oldProduct.Value;
+
+        if (Quantity < 0M)
+            Quantity = oldProduct.Quantity;
+
+        WithCategory(category);
+        CreationDate = oldProduct.CreationDate;
+
+        RegisterDomainEvent((UpdateProductEvent)this);
         return this;
     }
 
     public Product WithCategory(Category category)
     {
-        SetCategory(category);
+        Category = category;
+        CategoryId = category.Id;
         return this;
     }
 
-    private Product WithId(Guid id)
+    public void SubtractFromStock(int quantity)
     {
-        Id = id;
-
-        RegisterDomainEvent(new UpdateProductEvent(this));
-        return this;
+        Quantity -= quantity;
     }
 }

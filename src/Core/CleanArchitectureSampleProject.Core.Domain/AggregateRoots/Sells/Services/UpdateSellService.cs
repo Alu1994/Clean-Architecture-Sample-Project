@@ -1,5 +1,4 @@
 ﻿using CleanArchitectureSampleProject.Core.Domain.Interfaces.Infrastructure.Repositories;
-using System.Threading;
 
 namespace CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Sells.Services;
 
@@ -30,46 +29,14 @@ public sealed class UpdateSellService : IUpdateSellService
         if (getSellResult.IsFail) return new ErrorList(getSellResult.Error!);
         var oldSell = getSellResult.Success;
 
+        var productsResult = await _productRepository.Get(cancellation);
+        var updateResult = oldSell!.Update(sell, productsResult.Success!);
 
-        oldSell!.Update(sell);
-        await UpdateValues(oldSell, cancellation);
-        oldSell.Create();
+        if (updateResult.IsFail) return updateResult.Error!;
 
-
-        var creationResult = await _sellRepository.Update(oldSell, cancellation);
-        if (creationResult != ValidationResult.Success) return new ErrorList(creationResult.ErrorMessage!);
+        var result = await _sellRepository.Update(oldSell, cancellation);
+        if (result != ValidationResult.Success) return new ErrorList(result.ErrorMessage!);
 
         return oldSell;
-    }
-
-    private async Task UpdateValues(Sell sell, CancellationToken cancellation)
-    {
-        var products = await _productRepository.Get(cancellation);
-        var productItems = products.Success!
-            .Where(product => 
-                sell.Items
-                    .Select(sellItem => sellItem.ProductId)
-                    .Contains(product.Id));
-
-        var totalValue = 0M;
-
-        foreach (var item in sell.Items)
-        {
-            var productItem = productItems.First(x => item.ProductId == x.Id);
-            if (productItem is null) continue;
-            if(item is { Value: <= 0 })
-                item.UpdateValue(productItem.Value);
-            totalValue += item.Value * item.Quantity;
-        }
-
-        sell.UpdateTotalValue(totalValue);
-
-        //foreach (var i in productItems)
-        //{
-        //    var sellItem = sell.Items.FirstOrDefault(x => x.ProductId == i.Id);
-        //    if (sellItem is null) continue;
-        //    sellItem.UpdateValue(i.Value);
-        //    totalValue += i.Value * sellItem.Quantity;
-        //}
     }
 }

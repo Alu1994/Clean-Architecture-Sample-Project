@@ -1,7 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 using CleanArchitectureSampleProject.Core.Application.Inputs.Sells;
-using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
-using CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Products;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Results;
 using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
@@ -12,12 +10,12 @@ public static class FluentValidatorSetup
 {
     public static IServiceCollection AddValidation(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
-        services.AddValidatorsFromAssemblyContaining<UpdateProductValidator>();
-        services.AddValidatorsFromAssemblyContaining<CreateCategoryValidator>();
-        services.AddValidatorsFromAssemblyContaining<UpdateCategoryValidator>();
-
-        services.AddValidatorsFromAssemblyContaining<CreateSellValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateProductInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateProductInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateCategoryInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateCategoryInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateSellInputValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateSellInputValidator>();
 
         services.AddFluentValidationAutoValidation(configuration =>
         {

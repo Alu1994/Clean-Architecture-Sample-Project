@@ -20,8 +20,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Presentation\CleanArchitectureSampleProject.Presentation.Authentication\CleanArchitectureSampleProject.Presentation.Authentication.csproj" />
 		<ProjectReference Include="..\..\Presentation\CleanArchitectureSampleProject.Presentation.ControllerAPI\CleanArchitectureSampleProject.Presentation.ControllerAPI.csproj" />
+		<ProjectReference Include="..\..\Presentation\CleanArchitectureSampleProject.Presentation.FastEndpoints\CleanArchitectureSampleProject.Presentation.FastEndpoints.csproj" />
 		<ProjectReference Include="..\..\Presentation\CleanArchitectureSampleProject.Presentation.Web\CleanArchitectureSampleProject.Presentation.Web.csproj" />
 		<ProjectReference Include="..\..\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj" />
+		<ProjectReference Include="..\..\Presentation\CleanArchitectureSampleProject.Presentation.Worker\CleanArchitectureSampleProject.Presentation.Worker.csproj" />
 		<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration\CleanArchitectureSampleProject.Aspire.Service.DatabaseMigration.csproj" />
 		<ProjectReference Include="..\CleanArchitectureSampleProject.Aspire.Configurations\CleanArchitectureSampleProject.Aspire.Configurations.csproj" IsAspireProjectResource="false" />
 	</ItemGroup>
