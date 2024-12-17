@@ -10,7 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
+		<ProjectReference Include="..\CleanArchitectureSampleProject.Core.CrossCuttingConcerns\CleanArchitectureSampleProject.Core.CrossCuttingConcerns.csproj" />
 		<ProjectReference Include="..\CleanArchitectureSampleProject.Core.Domain\CleanArchitectureSampleProject.Core.Domain.csproj" />
 	</ItemGroup>
 </Project>

@@ -12,6 +12,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\CleanArchitectureSampleProject.CrossCuttingConcerns\CleanArchitectureSampleProject.CrossCuttingConcerns.csproj" />
+	  <ProjectReference Include="..\CleanArchitectureSampleProject.Core.CrossCuttingConcerns\CleanArchitectureSampleProject.Core.CrossCuttingConcerns.csproj" />
 	</ItemGroup>
 </Project>
