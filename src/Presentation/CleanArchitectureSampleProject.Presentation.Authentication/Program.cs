@@ -2,26 +2,34 @@ using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication;
 using CleanArchitectureSampleProject.Presentation.Authentication.Endpoints;
 using CleanArchitectureSampleProject.Presentation.Authentication.Setups;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace CleanArchitectureSampleProject.Presentation.Authentication;
 
-builder.BuildAuthRepository();
+public sealed class Program
+{
+    static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
+        builder.BuildAuthRepository();
 
-builder.Services.AddAuthRepositoryLayer();
+        builder.Services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
-builder.Services.AddValidation();
+        builder.Services.AddAuthRepositoryLayer();
 
-var app = builder.Build();
+        builder.Services.AddValidation();
 
-app.MapOpenApi();
+        var app = builder.Build();
 
-app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
+        app.MapOpenApi();
 
-app.UseHttpsRedirection();
+        app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
 
-app.MapEndpoints();
+        app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+        app.MapEndpoints();
 
-app.Run();
+        app.UseStaticFiles();
+
+        app.Run();
+    }
+}

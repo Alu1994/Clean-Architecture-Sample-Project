@@ -3,8 +3,10 @@ using CleanArchitectureSampleProject.Infrastructure.Messaging;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Cache;
 using CleanArchitectureSampleProject.Infrastructure.Repository.Entities.Postgres.AggregateRoots.Products;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using static CleanArchitectureSampleProject.Aspire.Configurations.AspireConfigurations;
 
 namespace CleanArchitectureSampleProject.Infrastructure.Repository;
@@ -16,6 +18,12 @@ public static class DependencyInjection
         if (builder.Environment.IsDevelopment())
         {
             builder.AddNpgsqlDbContext<ProductDataContextMigration>(Services.PostgresDatabaseName);
+        }
+        else
+        {
+            // Is not local env (Not .NET Aspire)
+            builder.Services.AddDbContext<ProductDataContextMigration>(options =>
+                options.UseNpgsql("Host=localhost;Port=5441;Username=postgres;Password=dzJfU-Xv1rBzmckyTm05Cg;Database=dbproducts"));
         }
 
         return builder;

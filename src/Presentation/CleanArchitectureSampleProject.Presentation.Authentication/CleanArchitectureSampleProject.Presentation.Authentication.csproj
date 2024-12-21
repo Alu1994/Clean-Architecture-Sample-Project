@@ -33,6 +33,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="CleanArchitectureSampleProject.Tests.Integration" />
+		<InternalsVisibleTo Include="CleanArchitectureSampleProject.Tests.Unit" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\..\Core\CleanArchitectureSampleProject.Core.CrossCuttingConcerns\CleanArchitectureSampleProject.Core.CrossCuttingConcerns.csproj" />
 	  <ProjectReference Include="..\..\Infrastructure\CleanArchitectureSampleProject.Infrastructure.Repository.Authentication\CleanArchitectureSampleProject.Infrastructure.Repository.Auth.csproj" />
 	</ItemGroup>

@@ -6,7 +6,6 @@ using NLog.Web;
 using Scalar.AspNetCore;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
-using MassTransit;
 using CleanArchitectureSampleProject.Infrastructure.Messaging;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration;
@@ -43,7 +42,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    public static IServiceCollection AddPresentation(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         // Problem Details
         services.AddProblemDetails();
@@ -60,13 +59,18 @@ public static class DependencyInjection
         services.AddApplicationLayer();
         services.AddRepositoryLayer();
         services.AddMessagingLayer();
-        services.AddCacheAutoRefresh();
         // =========== Add Layers Dependency Injection ===========
 
         services.AddValidation();
 
         if (Env.IsDevelopment() is false)
+        {
             services.AddAppDefaultHealthChecks();
+        }
+        if (Env.IsEnvironment("Tests") is false)
+        {
+            services.AddCacheAutoRefresh();
+        }
 
         return services;
     }

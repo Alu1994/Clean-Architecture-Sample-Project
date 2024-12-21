@@ -43,6 +43,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="CleanArchitectureSampleProject.Tests.Integration" />
+		<InternalsVisibleTo Include="CleanArchitectureSampleProject.Tests.Unit" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Content Update="NLog.config">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
