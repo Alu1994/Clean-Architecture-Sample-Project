@@ -14,6 +14,7 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
 		<PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.12.0" />
+		<PackageReference Include="WireMock.Net" Version="1.6.10" />
 		<PackageReference Include="xunit" Version="2.9.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.0">
 			<PrivateAssets>all</PrivateAssets>
@@ -22,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Core\CleanArchitectureSampleProject.Core.CrossCuttingConcerns\CleanArchitectureSampleProject.Core.CrossCuttingConcerns.csproj" />
 	  <ProjectReference Include="..\..\src\Presentation\CleanArchitectureSampleProject.Presentation.Authentication\CleanArchitectureSampleProject.Presentation.Authentication.csproj" />
 	  <ProjectReference Include="..\..\src\Presentation\CleanArchitectureSampleProject.Presentation.MinimalAPI\CleanArchitectureSampleProject.Presentation.MinimalAPI.csproj" />
 	</ItemGroup>

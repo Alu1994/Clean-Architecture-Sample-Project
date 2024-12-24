@@ -18,8 +18,6 @@ public class MinimalWebApplicationFactory : WebApplicationFactory<Program>
                 x.Configuration = "localhost:6379";
                 x.InstanceName = "SellAPI";
             });
-            // Replace services for testing purposes
-            //services.AddPresentation();
         });
     }
 }

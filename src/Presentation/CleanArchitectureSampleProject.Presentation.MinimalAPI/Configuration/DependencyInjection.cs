@@ -26,7 +26,7 @@ public static class DependencyInjection
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
         builder.Host.UseNLog();
         // =========== Add NLog ===========
-        
+
         if (Env.IsDevelopment())
         {
             // =========== Add service defaults & Aspire client integrations. ===========
@@ -50,9 +50,12 @@ public static class DependencyInjection
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
-        // =========== Setup Authentication & Authorization ===========
-        services.AddAuthenticationAndAuthorization();
-        // =========== Setup Authentication & Authorization ===========
+        if (Env.IsEnvironment("Tests") is false)
+        {
+            // =========== Setup Authentication & Authorization ===========
+            services.AddAuthenticationAndAuthorization();
+            // =========== Setup Authentication & Authorization ===========
+        }
 
         // =========== Add Layers Dependency Injection ===========
         services.AddDomainLayer();
