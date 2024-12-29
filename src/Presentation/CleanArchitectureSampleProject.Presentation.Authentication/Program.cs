@@ -14,6 +14,17 @@ public sealed class Program
 
         builder.Services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                // Allow requests from your frontend's origin (e.g., localhost:3000)
+                policy.WithOrigins("http://127.0.0.1:3000")  // Replace with your frontend URL
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
         builder.Services.AddAuthRepositoryLayer();
 
         builder.Services.AddValidation();
@@ -21,6 +32,8 @@ public sealed class Program
         var app = builder.Build();
 
         app.MapOpenApi();
+
+        app.UseCors("AllowFrontend");
 
         app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
 

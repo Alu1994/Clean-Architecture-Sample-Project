@@ -4,13 +4,6 @@ namespace CleanArchitectureSampleProject.Tests.Integration.Presentations.Minimal
 
 public class GetAllCategoriesTests : IntegrationTestSetup
 {
-    private readonly HttpClient _externalClientAPI;
-
-    public GetAllCategoriesTests()
-    {
-        _externalClientAPI = WiremockServer.CreateClient();
-    }
-
     [Fact]
     public async Task GivenValidRequest_WhenGettingAllCategories_ShouldReturn200OK_2()
     {

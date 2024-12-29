@@ -44,6 +44,17 @@ public static class DependencyInjection
 
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                // Allow requests from your frontend's origin (e.g., localhost:3000)
+                policy.WithOrigins("http://127.0.0.1:3000")  // Replace with your frontend URL
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
         // Problem Details
         services.AddProblemDetails();
 
@@ -80,6 +91,8 @@ public static class DependencyInjection
 
     public static WebApplication UsePresentation(this WebApplication app)
     {
+        app.UseCors("AllowFrontend");
+
         // Configure the HTTP request pipeline.
         app.MapOpenApi();
 
