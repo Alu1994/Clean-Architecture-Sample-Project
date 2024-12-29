@@ -2,26 +2,47 @@ using CleanArchitectureSampleProject.Infrastructure.Repository.Authentication;
 using CleanArchitectureSampleProject.Presentation.Authentication.Endpoints;
 using CleanArchitectureSampleProject.Presentation.Authentication.Setups;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace CleanArchitectureSampleProject.Presentation.Authentication;
 
-builder.BuildAuthRepository();
+public sealed class Program
+{
+    static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
+        builder.BuildAuthRepository();
 
-builder.Services.AddAuthRepositoryLayer();
+        builder.Services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
-builder.Services.AddValidation();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                // Allow requests from your frontend's origin (e.g., localhost:3000)
+                policy.WithOrigins("http://127.0.0.1:3000")  // Replace with your frontend URL
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
 
-var app = builder.Build();
+        builder.Services.AddAuthRepositoryLayer();
 
-app.MapOpenApi();
+        builder.Services.AddValidation();
 
-app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
+        var app = builder.Build();
 
-app.UseHttpsRedirection();
+        app.MapOpenApi();
 
-app.MapEndpoints();
+        app.UseCors("AllowFrontend");
 
-app.UseStaticFiles();
+        app.UseSwaggerUI(OpenApiSetup.SetupSwaggerOptions);
 
-app.Run();
+        app.UseHttpsRedirection();
+
+        app.MapEndpoints();
+
+        app.UseStaticFiles();
+
+        app.Run();
+    }
+}

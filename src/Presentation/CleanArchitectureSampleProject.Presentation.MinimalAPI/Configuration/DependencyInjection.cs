@@ -6,7 +6,6 @@ using NLog.Web;
 using Scalar.AspNetCore;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Middlewares;
 using CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration.Setups;
-using MassTransit;
 using CleanArchitectureSampleProject.Infrastructure.Messaging;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Configuration;
@@ -27,7 +26,7 @@ public static class DependencyInjection
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
         builder.Host.UseNLog();
         // =========== Add NLog ===========
-        
+
         if (Env.IsDevelopment())
         {
             // =========== Add service defaults & Aspire client integrations. ===========
@@ -43,36 +42,57 @@ public static class DependencyInjection
         return builder;
     }
 
-    public static IServiceCollection AddPresentation(this IServiceCollection services, WebApplicationBuilder builder)
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                // Allow requests from your frontend's origin (e.g., localhost:3000)
+                policy.WithOrigins("http://127.0.0.1:3000")  // Replace with your frontend URL
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
         // Problem Details
         services.AddProblemDetails();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         services.AddOpenApi(OpenApiSetup.SetupOpenApiOptions);
 
-        // =========== Setup Authentication & Authorization ===========
-        services.AddAuthenticationAndAuthorization();
-        // =========== Setup Authentication & Authorization ===========
+        if (Env.IsEnvironment("Tests") is false)
+        {
+            // =========== Setup Authentication & Authorization ===========
+            services.AddAuthenticationAndAuthorization();
+            // =========== Setup Authentication & Authorization ===========
+        }
 
         // =========== Add Layers Dependency Injection ===========
         services.AddDomainLayer();
         services.AddApplicationLayer();
         services.AddRepositoryLayer();
         services.AddMessagingLayer();
-        services.AddCacheAutoRefresh();
         // =========== Add Layers Dependency Injection ===========
 
         services.AddValidation();
 
         if (Env.IsDevelopment() is false)
+        {
             services.AddAppDefaultHealthChecks();
+        }
+        if (Env.IsEnvironment("Tests") is false)
+        {
+            services.AddCacheAutoRefresh();
+        }
 
         return services;
     }
 
     public static WebApplication UsePresentation(this WebApplication app)
     {
+        app.UseCors("AllowFrontend");
+
         // Configure the HTTP request pipeline.
         app.MapOpenApi();
 

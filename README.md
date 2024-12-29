@@ -15,3 +15,8 @@ docker run --name default-postgres-server -p 5432:5432 -e POSTGRES_USER=postgres
 dotnet ef migrations add InitializeAuthDb --startup-project ..\..\Presentation\CleanArchitectureSampleProject.Presentation.Authentication
 
 dotnet ef database update --startup-project ..\..\Presentation\CleanArchitectureSampleProject.Presentation.Authentication
+
+
+
+docker run -d --name dbAuthTests -e POSTGRES_PASSWORD=senninbankai@ -v db-auth-volume-tests:/var/lib/postgresql/data -p 5440:5432 postgres
+docker run -d --name dbAPITests -e POSTGRES_PASSWORD=senninbankai@ -v db-products-volume-tests:/var/lib/postgresql/data -p 5441:5432 postgres

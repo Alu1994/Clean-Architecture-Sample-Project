@@ -1,6 +1,5 @@
 ﻿using CleanArchitectureSampleProject.Core.Application.Inputs.Products;
 using CleanArchitectureSampleProject.Core.Application.Outputs.Products;
-using CleanArchitectureSampleProject.Core.Domain.AggregateRoots.Products.Validators;
 
 namespace CleanArchitectureSampleProject.Presentation.MinimalAPI.Endpoints.Categories;
 
@@ -21,7 +20,7 @@ public static partial class CategoriesEndpoints
         return app;
     }
 
-    private static async Task<IResult> Create(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation)
+    internal static async Task<IResult> Create(ILogger<Logging> logger, ICategoryUseCases categoryUseCases, CreateCategoryInput category, CancellationToken cancellation)
     {
         var result = await categoryUseCases.CreateCategory(category, cancellation);
         return result.ToCreatedOrErrorResult(logger, "Error while creating new category.");
